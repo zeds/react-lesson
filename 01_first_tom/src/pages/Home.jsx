@@ -1,33 +1,21 @@
-import "./App.css";
-import logo from "./assets/mercari.svg";
-import search from "./assets/search-icon.svg";
-import twitter from "./assets/twitter.svg";
-import facebook from "./assets/facebook.svg";
-import home from "./assets/home.svg";
-import bell from "./assets/bell.svg";
-import camera from "./assets/camera.svg";
-import person from "./assets/person.svg";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import "../App.css";
+import logo from "../assets/mercari.svg";
+import search from "../assets/search-icon.svg";
+import twitter from "../assets/twitter.svg";
+import facebook from "../assets/facebook.svg";
+import home from "../assets/home.svg";
+import bell from "../assets/bell.svg";
+import camera from "../assets/camera.svg";
+import person from "../assets/person.svg";
 
-function App() {
+function Home() {
+    const [count, setCount] = useState(0);
 
     return (
         <>
             <div className="container">
-                <div className="my_header">
-                    <div className="logo_container">
-                        <img className="logo" src={logo} alt="" />
-                        <input type="text" placeholder="なにをお探しですか？" />
-                        <img className="search_icon" src={search} alt="" />
-                    </div>
-                    <ul>
-                        <li>お知らせ</li>
-                        <li>ログイン</li>
-                        <li>会員登録</li>
-                        <button>出品</button>
-                    </ul>
-                </div>
-                <hr className="hr_top" />
-
                 <div className="tab_container">
                     <div>
                         <span className="border">おすすめ</span>
@@ -70,22 +58,25 @@ function App() {
                             tenetur laboriosam.
                         </p>
                     </div>
-                    <div className="nekoBox">
-                        <div>
-                            <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m85935112334_1.jpg?1672205879"
-                                alt=""
-                            />
-                            <span>3,800</span>
+                    <Link to="/item">
+                        <div className="nekoBox">
+                            <div>
+                                <img
+                                    src="https://static.mercdn.net/c!/w=240/thumb/photos/m85935112334_1.jpg?1672205879"
+                                    alt=""
+                                />
+                                <span>9,999</span>
+                            </div>
+                            <p>
+                                Lorem ipsum dolor sit amet consectetur,
+                                adipisicing elit. Neque nesciunt ullam
+                                repellendus perspiciatis animi sint modi fuga
+                                facilis nihil officiis enim quas necessitatibus,
+                                totam quae iusto at, provident tenetur
+                                laboriosam.
+                            </p>
                         </div>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Neque nesciunt ullam repellendus perspiciatis
-                            animi sint modi fuga facilis nihil officiis enim
-                            quas necessitatibus, totam quae iusto at, provident
-                            tenetur laboriosam.
-                        </p>
-                    </div>
+                    </Link>
                     <div className="nekoBox">
                         <div>
                             <img
@@ -165,6 +156,7 @@ function App() {
                             <li>偽ブランド品撲滅への取り組み</li>
                         </ul>
                     </div>
+                    {/* <!-- 　&copy; 2020-2023 All Rights Reserved. --> */}
                 </div>
 
                 <div className="social">
@@ -216,4 +208,4 @@ function App() {
     );
 }
 
-export default App;
+export default Home;

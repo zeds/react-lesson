@@ -1,14 +1,16 @@
+import { useState } from "react";
 import "./App.css";
-import logo from "./assets/mercari.svg";
-import search from "./assets/search-icon.svg";
-import twitter from "./assets/twitter.svg";
-import facebook from "./assets/facebook.svg";
-import home from "./assets/home.svg";
-import bell from "./assets/bell.svg";
-import camera from "./assets/camera.svg";
-import person from "./assets/person.svg";
+import logo from "../assets/mercari.svg";
+import search from "../assets/search-icon.svg";
+import twitter from "../assets/twitter.svg";
+import facebook from "../assets/facebook.svg";
+import home from "../assets/home.svg";
+import bell from "../assets/bell.svg";
+import camera from "../assets/camera.svg";
+import person from "../assets/person.svg";
 
-function App() {
+function Home() {
+    const [count, setCount] = useState(0);
 
     return (
         <>
@@ -165,6 +167,7 @@ function App() {
                             <li>偽ブランド品撲滅への取り組み</li>
                         </ul>
                     </div>
+                    {/* <!-- 　&copy; 2020-2023 All Rights Reserved. --> */}
                 </div>
 
                 <div className="social">
