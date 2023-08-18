@@ -38,7 +38,7 @@ html {
 .my_header ul button {
     width: 62px;
     height: 36px;
-    font-size: 14px;
+    font-size: 1.4rem;
     border: none;
     background: #ff333f;
     font-weight: bold;
@@ -71,7 +71,7 @@ html {
     }
 }
 .logo_container input {
-    font-size: 20px;
+    font-size: 2rem;
     width: 100%;
     height: 80%;
     background: #f5f5f5;
@@ -83,7 +83,7 @@ html {
     }
 }
 ::placeholder {
-    font-size: 16px;
+    font-size: 1.6rem;
     color: #999999;
 }
 .search_icon {
@@ -108,7 +108,7 @@ html {
 }
 .my_header li {
     width: 80px;
-    font-size: 14px;
+    font-size: 1.4rem;
     padding: 8px;
 }
 .my_header li:hover {
@@ -123,7 +123,7 @@ html {
 }
 .footer li {
     color: #333333;
-    font-size: 14px;
+    font-size: 1.4rem;
     padding: 8px;
 }
 .footer li:hover {
@@ -206,7 +206,7 @@ html {
 .nekoBox span:before {
     content: "¥";
     color: white;
-    font-size: 11px;
+    font-size: 1.1rem;
     font-weight: 700;
     position: absolute;
     left: 4px;
@@ -214,7 +214,7 @@ html {
 }
 
 .nekoBox p {
-    font-size: 14px;
+    font-size: 1.4rem;
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -224,7 +224,7 @@ html {
     }
 }
 .nekoBox span {
-    font-size: 14px;
+    font-size: 1.4rem;
     color: white;
     font-weight: bold;
     position: absolute;
@@ -256,7 +256,7 @@ html {
 }
 .footer ul li {
     line-height: 0.1;
-    font-size: 12px;
+    font-size: 1.2rem;
 }
 .social {
     width: 100%;
@@ -273,7 +273,7 @@ html {
     height: 35px;
 }
 .social .right {
-    font-size: 12px;
+    font-size: 1.2rem;
     color: gray;
 }
 .margin {
@@ -304,7 +304,7 @@ html {
     width: 100%;
     height: 100%;
     border: 1px solid black;
-    font-size: 12px;
+    font-size: 1.2rem;
     text-align: center;
 }
 .footer-nav li {
