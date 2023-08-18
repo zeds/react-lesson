@@ -2,8 +2,10 @@
 npm create vite@latest .
 
 
-[01_first_amila]
-[01_first_mexroj]
-[01_first_a]
-[01_first_asil]
+🔥[01_first_amila]
+🔥[01_first_mexroj]
+🔥[01_first_asya]
+🔥[01_first_asil]
+
+
 
