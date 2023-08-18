@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import logo from "../assets/mercari.svg";
 import search from "../assets/search-icon.svg";
 
@@ -11,7 +12,9 @@ function Navbar() {
         <>
             <div className="my_header">
                 <div className="logo_container">
-                    <img className="logo" src={logo} alt="" />
+                    <Link to="/">
+                        <img className="logo" src={logo} alt="" />
+                    </Link>
                     <input type="text" placeholder="なにをお探しですか？" />
                     <img className="search_icon" src={search} alt="" />
                 </div>
