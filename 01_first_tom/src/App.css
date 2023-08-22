@@ -57,6 +57,7 @@ html {
 }
 
 .logo_container {
+    background: red;
     position: relative;
     display: flex;
     width: 100%;
