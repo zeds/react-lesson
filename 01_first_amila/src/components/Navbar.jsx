@@ -12,8 +12,8 @@ const Header = styled.header`
 
     .logo_container {
         position: relative;
-        width: 720px;
         display: flex;
+        width: 720px;
         align-items: center;
         gap: 10px;
 
@@ -22,22 +22,25 @@ const Header = styled.header`
         }
         input {
             width: 100%;
-            background: #f5f5f5;
             height: 34px;
             border-radius: 4px;
-            border: 1px solid #cccccc;
+            border: none;
             padding: 0 16px;
             font-size: 16px;
             font-weight: 400;
+            background: #f5f5f5;
+            font-weight: 400px;
         }
         .search_icon {
             position: absolute;
-            right: 3px;
+            right: 5px;
             padding: 3px;
             border-radius: 4px;
             &:hover {
                 cursor: pointer;
+                opacity: 0.5;
                 background: #dfdfdf;
+
             }
         }
     }
@@ -45,13 +48,14 @@ const Header = styled.header`
     ul {
         list-style: none;
         display: flex;
+        gap: 10px;
         align-items: center;
         li {
             width: 80px;
-            /* font-size: 1.4rem; */
+            font-size: 14px;
+            font-weight: 400;
             padding: 8px;
             text-align: center;
-            border-radius: 4px;
             &:hover {
                 background: #f5f5f5;
                 cursor: pointer;
@@ -60,33 +64,29 @@ const Header = styled.header`
         button {
             width: 62px;
             height: 36px;
+            font-size: 1.4rem;
             border: none;
             background: #ff333f;
             font-weight: bold;
             color: white;
             border-radius: 4px;
-            &:hover {
-                opacity: 0.6;
-            }
-            @media (max-width: 800px) {
-                display: none;
-            }
+    &:hover {
+        opacity: 0.4;
+    }
+    @media (max-width: 800px) {
+        display: none;
+    }
         }
     }
 `;
 
-const Test = styled.div`
-    width: 100px;
-    height: 100px;
-    background: red;
-`;
-
+// 
 function Navbar() {
-    const [count, setCount] = useState(0);
+    // const [count, setCount] = useState(0);
 
     return (
         <>
-            {/* <Test /> */}
+            
             <Header>
                 <div className="logo_container">
                     <Link to="/">
