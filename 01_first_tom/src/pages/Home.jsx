@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import "../App.css";
 import logo from "../assets/mercari.svg";
 import search from "../assets/search-icon.svg";
 import twitter from "../assets/twitter.svg";
