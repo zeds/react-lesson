@@ -1,3 +1,4 @@
+import GlobalStyle from "./GlobalStyle";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
@@ -12,16 +13,19 @@ const Container = styled.div`
 
 function App() {
     return (
-        <BrowserRouter>
-            <Container>
-                <Navbar />
-                <Routes>
-                    <Route path="/" element={<Home />}></Route>
-                    <Route path="/item" element={<Detail />}></Route>
-                    <Route path="/styled" element={<Styled />}></Route>
-                </Routes>
-            </Container>
-        </BrowserRouter>
+        <>
+            <GlobalStyle />
+            <BrowserRouter>
+                <Container>
+                    <Navbar />
+                    <Routes>
+                        <Route path="/" element={<Home />}></Route>
+                        <Route path="/item" element={<Detail />}></Route>
+                        <Route path="/styled" element={<Styled />}></Route>
+                    </Routes>
+                </Container>
+            </BrowserRouter>
+        </>
     );
 }
 
