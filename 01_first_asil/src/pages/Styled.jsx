@@ -13,7 +13,7 @@ const Button = styled.button`
 const Styled = () => {
     return (
         <div>
-            <Button>Don't Push!</Button>
+            <Button>押して！</Button>
         </div>
     );
 };
