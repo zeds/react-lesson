@@ -47,6 +47,52 @@ const TabContainer = styled.div`
         }
     }
 `;
+const NekoContainer = styled.div`
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 36px;
+    gap: 16px;
+    @media (max-width: 800px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .nekoBox{
+        width: 100%;
+        height: 100%;
+        /* position: relative; */
+        background: red;
+        div {
+            position: relative;
+            width: 100%;
+            img {
+                width: 100%;
+                height: 100%;
+            }
+            span {
+                position:absolute;
+                font-size: 1.4rem;
+                color: white;
+                font-weight: bold;
+                left: 0;
+                bottom: 5px;
+                background: rgb(0, 0, 0, 0.4);
+                padding :5px 15px 5px 5px ;
+                border-radius: 0 20px 20px 0;
+
+               &:before {
+                 content: "¥";
+                 color: white;
+                 font-size: 1.1rem;
+                 font-weight: 700;
+                 left: -8px;
+                 top: 5px;
+                }
+            }
+        }
+    }
+`;
+
 
 function Home() {
     const [count, setCount] = useState(0);
@@ -62,7 +108,7 @@ function Home() {
             </TabContainer>
 
             <hr />
-            <div className="nekoContainer">
+            <NekoContainer>
                 <div className="nekoBox">
                     <div>
                         <img
@@ -95,57 +141,8 @@ function Home() {
                         laboriosam.
                     </p>
                 </div>
-                <Link to="/item">
-                    <div className="nekoBox">
-                        <div>
-                            <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m85935112334_1.jpg?1672205879"
-                                alt=""
-                            />
-                            <span>9,999</span>
-                        </div>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Neque nesciunt ullam repellendus perspiciatis
-                            animi sint modi fuga facilis nihil officiis enim
-                            quas necessitatibus, totam quae iusto at, provident
-                            tenetur laboriosam.
-                        </p>
-                    </div>
-                </Link>
-                <div className="nekoBox">
-                    <div>
-                        <img
-                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m77373788402_1.jpg?1678769728"
-                            alt=""
-                        />
-                        <span>3,800</span>
-                    </div>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Neque nesciunt ullam repellendus perspiciatis
-                        animi sint modi fuga facilis nihil officiis enim quas
-                        necessitatibus, totam quae iusto at, provident tenetur
-                        laboriosam.
-                    </p>
-                </div>
-                <div className="nekoBox">
-                    <div>
-                        <img
-                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m43312854834_1.jpg?1686563105"
-                            alt=""
-                        />
-                        <span>3,800</span>
-                    </div>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Neque nesciunt ullam repellendus perspiciatis
-                        animi sint modi fuga facilis nihil officiis enim quas
-                        necessitatibus, totam quae iusto at, provident tenetur
-                        laboriosam.
-                    </p>
-                </div>
-            </div>
+
+            </NekoContainer>
 
             <div className="footer">
                 <div>
