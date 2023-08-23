@@ -6,15 +6,14 @@ import Navbar from "./components/Navbar";
 import Styled from "./pages/Styled";
 import styled from "styled-components";
 
-
  const Container = styled.div`
     width: 100%;
     height: 100vh;
-    background:skyblue;
     text-decoration: none;
  `
 function App() {
     return (
+        // <GlobalStyle>
         <BrowserRouter>
         <Container>
             <Navbar />
@@ -26,6 +25,7 @@ function App() {
             </Container>
 
         </BrowserRouter>
+        // </GlobalStyle>
     );
 }
 

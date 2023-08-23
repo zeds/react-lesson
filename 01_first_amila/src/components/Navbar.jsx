@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/mercari.svg";
 import search from "../assets/search-icon.svg";

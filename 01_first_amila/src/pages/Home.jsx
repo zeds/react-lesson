@@ -6,20 +6,60 @@ import home from "../assets/home.svg";
 import bell from "../assets/bell.svg";
 import camera from "../assets/camera.svg";
 import person from "../assets/person.svg";
+import styled from "styled-components";
 
+
+const TabContainer = styled.div`
+     width: 100%;
+    height: 44px;
+    /* padding: 0 36px; */
+    
+    @media (max-width: 800px) {
+        padding: 0 5px;
+        
+    }
+    div {
+    display: flex;
+    align-items: center;
+    max-width: 1280px;
+    height: 100%;
+    margin: 0 auto;
+    gap: 15px;
+  span {
+    padding: 0 24px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: gray;
+}
+
+.border {
+    position: relative;
+&:before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    left: 0%;
+    bottom: -12px;
+    width: 100%;
+    height: 4px;
+    border-radius: 5px;
+    background: red;
+}
+    }
+    }
+`
 function Home() {
     // const [count, setCount] = useState(0);
 
     return (
         <>
-            <div className="container">
-                <div className="tab_container">
+                <TabContainer>
                     <div>
                         <span className="border">おすすめ</span>
                         <span>マイリスト</span>
                         <span>ピックアップ</span>
                     </div>
-                </div>
+                    </TabContainer>
 
                 <hr />
                 <div className="nekoContainer">
@@ -199,7 +239,7 @@ function Home() {
                         </li>
                     </ul>
                 </div>
-            </div>
+            
         </>
     );
 }
