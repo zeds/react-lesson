@@ -48,6 +48,73 @@ const TabContainer = styled.div`
     }
     }
 `
+
+ const NekoContainer = styled.div`
+     max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 36px;
+    gap: 16px;
+    @media (max-width: 800px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .nekoBox {
+
+    width: 100%;
+    height: 100%;
+    /* position: relative; */
+    div {
+        width: 100%;
+        position: relative;
+    }
+    p {
+    font-weight: 400px;
+    padding: 0 5px;
+    font-size: 1.4rem;
+    color: #333333;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    @media (max-width: 800px) {
+        display: none;
+    }
+    }
+    span {
+    font-size: 1.4rem;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    bottom: 5px;
+    @media (max-width: 800px) {
+        bottom: 10%;
+    }
+    background: rgb(0, 0, 0, 0.4);
+    padding: 5px 15px 5px 14px;
+    border-radius: 0 20px 20px 0;
+    &::before {
+    content: "¥";
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    position: absolute;
+    left: 4px;
+    bottom: 5px; 
+    top:5px;
+        }
+    }
+    img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    aspect-ratio:1/1;
+    }
+    
+
+    }
+ `
 function Home() {
     // const [count, setCount] = useState(0);
 
@@ -62,11 +129,29 @@ function Home() {
                     </TabContainer>
 
                 <hr />
-                <div className="nekoContainer">
+                <NekoContainer>
+                  <Link to="./item">
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m54429009865_1.jpg"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m95699223823_1.jpg?1692263194"
+                                alt=""
+                            />
+                            <span>3,800</span>
+                        </div>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur, adipisicing
+                            elit. Neque nesciunt ullam repellendus perspiciatis
+                            animi sint modi fuga facilis nihil officiis enim
+                            quas necessitatibus, totam quae iusto at, provident
+                            tenetur laboriosam.
+                        </p>
+                    </div>
+                    </Link>
+                    <div className="nekoBox">
+                        <div>
+                            <img
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m95699223823_1.jpg?1692263194"
                                 alt=""
                             />
                             <span>3,800</span>
@@ -82,7 +167,7 @@ function Home() {
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m24864889779_1.jpg?1689308356"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m95699223823_1.jpg?1692263194"
                                 alt=""
                             />
                             <span>3,800</span>
@@ -95,7 +180,39 @@ function Home() {
                             tenetur laboriosam.
                         </p>
                     </div>
-                    <Link to="/item">
+                    <div className="nekoBox">
+                        <div>
+                            <img
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m95699223823_1.jpg?1692263194"
+                                alt=""
+                            />
+                            <span>3,800</span>
+                        </div>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur, adipisicing
+                            elit. Neque nesciunt ullam repellendus perspiciatis
+                            animi sint modi fuga facilis nihil officiis enim
+                            quas necessitatibus, totam quae iusto at, provident
+                            tenetur laboriosam.
+                        </p>
+                    </div>
+                    <div className="nekoBox">
+                        <div>
+                            <img
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m95699223823_1.jpg?1692263194"
+                                alt=""
+                            />
+                            <span>3,800</span>
+                        </div>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur, adipisicing
+                            elit. Neque nesciunt ullam repellendus perspiciatis
+                            animi sint modi fuga facilis nihil officiis enim
+                            quas necessitatibus, totam quae iusto at, provident
+                            tenetur laboriosam.
+                        </p>
+                    </div>
+                    {/* <Link to="/item">
                         <div className="nekoBox">
                             <div>
                                 <img
@@ -145,10 +262,9 @@ function Home() {
                             quas necessitatibus, totam quae iusto at, provident
                             tenetur laboriosam.
                         </p>
-                    </div>
-                </div>
-
-                <div className="footer">
+                    </div> */}
+                    </NekoContainer>
+                {/* <div className="footer">
                     <div>
                         メルカリについて
                         <ul>
@@ -235,10 +351,10 @@ function Home() {
                             <a href="./camera.html" alt="camera">
                                 <img src={person} />
                                 <p>マイページ</p>
-                            </a>
-                        </li>
+                            </a> */}
+                        {/* </li>
                     </ul>
-                </div>
+                </div> */}
             
         </>
     );
