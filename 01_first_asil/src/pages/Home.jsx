@@ -13,7 +13,7 @@ import styled from "styled-components";
 const TabContainer = styled.div`
     width: 100%;
     height: 44px;
-    /* padding: 0 36px; */
+    padding: 0 36px;
     @media (max-width: 800px) {
         padding: 0 5px;
     }
@@ -48,6 +48,65 @@ const TabContainer = styled.div`
     }
 `;
 
+const NekoContainer = styled.div`
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 36px;
+    gap: 16px;
+    @media (max-width: 800px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .nekoBox {
+        width: 100%;
+        height: 100%;
+        div {
+            position: relative;
+            width: 100%;
+            img {
+                width: 100%;
+                aspect-ratio: 1/1;
+                height: 100%;
+                object-fit: contain;
+            }
+            span {
+                position: absolute;
+                font-size: 1.4rem;
+                color: white;
+                font-weight: bold;
+                left: 0;
+                bottom: 5px;
+                background: rgb(0, 0, 0, 0.4);
+                padding: 3px 15px 3px 5px;
+                border-radius: 0 20px 20px 0;
+
+                &:before {
+                    content: "￥";
+                    color: white;
+                    font-size: 1rem;
+                    font-weight: 700;
+                    top: 0px;
+                    left: 10px;
+                }
+            }
+        }
+        p {
+            padding: 0 5px;
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: #333333;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            @media (max-width: 800px) {
+                display: none;
+            }
+        }
+    }
+`;
+
 function Home() {
     const [count, setCount] = useState(0);
 
@@ -62,90 +121,82 @@ function Home() {
             </TabContainer>
 
             <hr />
-            <div className="nekoContainer">
-                <div className="nekoBox">
-                    <div>
-                        <img
-                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m54429009865_1.jpg"
-                            alt=""
-                        />
-                        <span>3,800</span>
-                    </div>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Neque nesciunt ullam repellendus perspiciatis
-                        animi sint modi fuga facilis nihil officiis enim quas
-                        necessitatibus, totam quae iusto at, provident tenetur
-                        laboriosam.
-                    </p>
-                </div>
-                <div className="nekoBox">
-                    <div>
-                        <img
-                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m24864889779_1.jpg?1689308356"
-                            alt=""
-                        />
-                        <span>3,800</span>
-                    </div>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Neque nesciunt ullam repellendus perspiciatis
-                        animi sint modi fuga facilis nihil officiis enim quas
-                        necessitatibus, totam quae iusto at, provident tenetur
-                        laboriosam.
-                    </p>
-                </div>
+            <NekoContainer>
                 <Link to="/item">
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m85935112334_1.jpg?1672205879"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m45040536986_1.jpg?1678499057"
                                 alt=""
-                            />
-                            <span>9,999</span>
+                           />
+                            <span>2,499</span>
                         </div>
                         <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Neque nesciunt ullam repellendus perspiciatis
-                            animi sint modi fuga facilis nihil officiis enim
-                            quas necessitatibus, totam quae iusto at, provident
-                            tenetur laboriosam.
+                            -"【廃盤】怪しい隣人たち('10韓国)、力道山DVD2枚セット
                         </p>
                     </div>
                 </Link>
+                {/* <div className="nekoBox">
+                    <div>
+                        <img
+                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m29967384635_1.jpg?1692502880"
+                            alt=""
+                        />
+                        <span>1,100</span>
+                    </div>
+                    <p>
+                        お値下げ❢スーパードンキーコングの綺麗なソフト❢
+                    </p>
+                </div> */}
                 <div className="nekoBox">
                     <div>
                         <img
-                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m77373788402_1.jpg?1678769728"
+                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m29967384635_1.jpg?1692502880"
                             alt=""
                         />
-                        <span>3,800</span>
+                        <span>1,100</span>
                     </div>
                     <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Neque nesciunt ullam repellendus perspiciatis
-                        animi sint modi fuga facilis nihil officiis enim quas
-                        necessitatibus, totam quae iusto at, provident tenetur
-                        laboriosam.
+                        お値下げ❢スーパードンキーコングの綺麗なソフト❢
                     </p>
                 </div>
                 <div className="nekoBox">
                     <div>
                         <img
-                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m43312854834_1.jpg?1686563105"
+                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m79658146995_1.jpg?1691381602"
                             alt=""
                         />
-                        <span>3,800</span>
+                        <span>888</span>
                     </div>
                     <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Neque nesciunt ullam repellendus perspiciatis
-                        animi sint modi fuga facilis nihil officiis enim quas
-                        necessitatibus, totam quae iusto at, provident tenetur
-                        laboriosam.
+                        SHEIN パイソン柄ミニロングワンピース
                     </p>
                 </div>
-            </div>
+                <div className="nekoBox">
+                    <div>
+                        <img
+                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m95359794661_1.jpg?1692457484"
+                            alt=""
+                        />
+                        <span>2,150</span>
+                    </div>
+                    <p>
+                        エクリプス バロール90 レンズキャンディグローベリー
+                    </p>
+                </div>
+                <div className="nekoBox">
+                    <div>
+                        <img
+                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m22591810894_1.jpg?1681772602"
+                            alt=""
+                        />
+                        <span>10,300</span>
+                    </div>
+                    <p>
+                        魔法少女 プリティサミー タカラ ドール
+                    </p>
+                </div>
+            </NekoContainer>
 
             <div className="footer">
                 <div>
