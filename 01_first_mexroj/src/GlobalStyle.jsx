@@ -25,7 +25,7 @@ const GlobalStyle = createGlobalStyle`
 	}
 	h3 {
 		font-size: 1.3rem;
-
+		
 	}
 	h4 {
 		font-size: 1.5rem;
