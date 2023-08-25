@@ -6,6 +6,11 @@ import {
     RightBox,
     IconContainer,
     AuthorContainer,
+    InfoContainer,
+    SellerContainer,
+    AvatarContainer,
+    Avatar,
+    MamaBox
 } from "./DetailStyle";
 
 import heart from "../assets/icons/heart.svg";
@@ -14,6 +19,8 @@ import dot from "../assets/icons/dot.svg";
 import link from "../assets/icons/link.svg";
 import lock from "../assets/icons/lock.svg";
 import arrow from "../assets/icons/arrow.svg";
+import star from "../assets/icons/star.svg";
+import check_mark from "../assets/icons/check_mark.svg";
 
 function Detail() {
     return (
@@ -84,7 +91,7 @@ function Detail() {
                     </div>
 
                     <hr />
-                    <div className="info">
+                    <InfoContainer>
                         <h2>商品の情報</h2>
                         <div>
                             <p>カテゴリー</p>
@@ -119,24 +126,68 @@ function Detail() {
                             <p>発送までの日数</p>
                             <span>目立った傷や汚れなし</span>
                         </div>
-                    </div>
+                    </InfoContainer>
 
                     <hr />
 
                     <AuthorContainer>
-                        <div>
-                            <img src={lock} alt="lock" />
-                            <span>メルカリ安心への取り組み</span>
+                        <div className="Locktext">
+                            <div className="lock">
+                                <img src={lock} alt="" />
+                                <p>メルカリ安心への取り組み</p>
+                            </div>
+                            <div className="safetext">
+							    <p>お金は事務局に支払われ、評価後に振り込まれます</p>
+						    </div>
                         </div>
                         <div>
-                            <p>
-                                お金は事務局に支払われ、評価後に振り込まれます
-                            </p>
-                        </div>
-                        <div className="arrow">
                             <img src={arrow} alt="arrow" />
                         </div>
                     </AuthorContainer>
+                    <span className="text">出品者</span>
+                    <SellerContainer>
+                        <AvatarContainer>
+                            <Avatar>
+                                <img src="https://static.mercdn.net/thumb/members/546395247.jpg?1401007656" alt="" />
+                            </Avatar>
+                            <MamaBox>
+                                <span className="mama">mama</span>
+                                <ul className="star">
+                                    <li> 
+                                        <img src={star} alt="" />
+                                    </li>
+                                    <li>
+                                        <img src={star} alt="" />
+                                    </li>
+                                    <li>
+                                        <img src={star} alt="" />
+                                    </li>
+                                    <li>
+                                        <img src={star} alt="" />
+                                    </li>
+                                    <li>
+                                        <img src={star} alt="" />
+                                    </li>
+                                    <li>
+                                        <span className="count">319</span>
+                                    </li>
+                                </ul>
+                                <div className="checkmarktext">
+                                    <div className="checkmark">
+                                        <img src={check_mark} alt="" />
+                                    </div>
+                                    <span class="checktext">本人確認済</span>
+                                </div>
+                            </MamaBox>
+                        </AvatarContainer>
+                        <div className="safearrow2">
+                            <img src={arrow} alt="" />
+                        </div>
+				    </SellerContainer>
+                    <div className="text_comment">
+                        <span>コメント (0)</span>
+                    </div>
+                    <button className="login">ログインしてコメントする</button>
                 </RightBox>
             </NekoContainer>
         </>
