@@ -11,9 +11,9 @@ const Header = styled.header`
     padding: 0 10px;
 
     .logo_container {
+        display: flex;
         position: relative;
         width: 720px;
-        display: flex;
         align-items: center;
         gap: 10px;
 
