@@ -24,12 +24,13 @@ export const RightBox = styled.div`
     height: 1000px;
     border: 2px solid black;
     padding: 10px;
+    font-size: 1.5rem;
     .title {
-        font-size: 24px;
+        font-size: 2.4rem;
         font-weight: 700;
     }
     .brand {
-        font-size: 15px;
+        font-size: 1.5rem;
         font-weight: 400;
         color: #666666;
     }
@@ -58,14 +59,24 @@ export const RightBox = styled.div`
             cursor: pointer;
             opacity: 0.6;
         }
+    }
         .thanks {
             margin-top: 10px;
             font-size: 15px;
             color: #666666;
             line-height: 21px;
         }
+        .desc {
+            /* background: yellow; */
+            font-size: 1.5rem;
+            margin-top: 20px;
+            h2 {
+                margin-bottom: 15px;
+            }
+        }
 
         .info {
+            /* background: red; */
             div {
                 display: flex;
                 gap: 20px;
@@ -83,13 +94,13 @@ export const RightBox = styled.div`
                 }
             }
         }
-    }
+    
 `;
 
 export const IconContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    background: green;
+    /* background: green; */
 `;
 
 export const AuthorContainer = styled.div`
@@ -99,4 +110,21 @@ export const AuthorContainer = styled.div`
     padding: 10px;
     background: #f5f5f5;
     font-size: 12px;
+    div {
+        span {
+            margin-left: 4px;
+        }
+    }
+    .arrow {
+    position: absolute;
+    top: 25%;
+    right: 0;
+}
+&:hover {
+    background: #dfdfdf;
+    display: flex;
+	align-items: center;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
 `;
