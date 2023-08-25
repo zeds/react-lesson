@@ -42,82 +42,62 @@ function Home() {
                 <div className="nekoContainer">
                     <div className="nekoBox">
                         <div>
-                            <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m54429009865_1.jpg"
+                        <img
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m45040536986_1.jpg?1678499057"
                                 alt=""
                             />
-                            <span>3,800</span>
+                            <span>2,499</span>
                         </div>
                         <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Neque nesciunt ullam repellendus perspiciatis
-                            animi sint modi fuga facilis nihil officiis enim
-                            quas necessitatibus, totam quae iusto at, provident
-                            tenetur laboriosam.
+                            -"【廃盤】怪しい隣人たち('10韓国)、力道山DVD2枚セット
                         </p>
                     </div>
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m24864889779_1.jpg?1689308356"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m29967384635_1.jpg?1692502880"
                                 alt=""
                             />
-                            <span>3,800</span>
+                            <span>1,100</span>
                         </div>
                         <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Neque nesciunt ullam repellendus perspiciatis
-                            animi sint modi fuga facilis nihil officiis enim
-                            quas necessitatibus, totam quae iusto at, provident
-                            tenetur laboriosam.
+                            お値下げ❢スーパードンキーコングの綺麗なソフト❢
                         </p>
                     </div>
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m85935112334_1.jpg?1672205879"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m79658146995_1.jpg?1691381602"
                                 alt=""
                             />
-                            <span>3,800</span>
+                            <span>888</span>
                         </div>
                         <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Neque nesciunt ullam repellendus perspiciatis
-                            animi sint modi fuga facilis nihil officiis enim
-                            quas necessitatibus, totam quae iusto at, provident
-                            tenetur laboriosam.
+                            SHEIN パイソン柄ミニロングワンピース
                         </p>
                     </div>
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m77373788402_1.jpg?1678769728"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m95359794661_1.jpg?1692457484"
                                 alt=""
                             />
-                            <span>3,800</span>
+                            <span>2,150</span>
                         </div>
                         <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Neque nesciunt ullam repellendus perspiciatis
-                            animi sint modi fuga facilis nihil officiis enim
-                            quas necessitatibus, totam quae iusto at, provident
-                            tenetur laboriosam.
+                            エクリプス バロール90 レンズキャンディグローベリー
                         </p>
                     </div>
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m43312854834_1.jpg?1686563105"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m22591810894_1.jpg?1681772602"
                                 alt=""
                             />
-                            <span>3,800</span>
+                            <span>10,300</span>
                         </div>
                         <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Neque nesciunt ullam repellendus perspiciatis
-                            animi sint modi fuga facilis nihil officiis enim
-                            quas necessitatibus, totam quae iusto at, provident
-                            tenetur laboriosam.
+                            魔法少女 プリティサミー タカラ ドール
                         </p>
                     </div>
                 </div>

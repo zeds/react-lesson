@@ -13,7 +13,7 @@ import styled from "styled-components";
 const TabContainer = styled.div`
     width: 100%;
     height: 44px;
-    /* padding: 0 36px; */
+    padding: 0 36px;
     @media (max-width: 800px) {
         padding: 0 5px;
     }
@@ -48,6 +48,65 @@ const TabContainer = styled.div`
     }
 `;
 
+const NekoContainer = styled.div`
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 36px;
+    gap: 16px;
+    @media (max-width: 800px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .nekoBox {
+        width: 100%;
+        height: 100%;
+        div {
+            position: relative;
+            width: 100%;
+            img {
+                width: 100%;
+                aspect-ratio: 1/1;
+                height: 100%;
+                object-fit: contain;
+            }
+            span {
+                position: absolute;
+                font-size: 1.4rem;
+                color: white;
+                font-weight: bold;
+                left: 0;
+                bottom: 5px;
+                background: rgb(0, 0, 0, 0.4);
+                padding: 3px 15px 3px 5px;
+                border-radius: 0 20px 20px 0;
+
+                &:before {
+                    content: "￥";
+                    color: white;
+                    font-size: 1rem;
+                    font-weight: 700;
+                    top: 0px;
+                    left: 10px;
+                }
+            }
+        }
+        p {
+            padding: 0 5px;
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: #333333;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            @media (max-width: 800px) {
+                display: none;
+            }
+        }
+    }
+`;
+
 function Home() {
     const [count, setCount] = useState(0);
 
@@ -62,23 +121,25 @@ function Home() {
             </TabContainer>
 
             <hr />
-            <div className="nekoContainer">
-                <div className="nekoBox">
-                    <div>
-                        <img
-                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m54429009865_1.jpg"
-                            alt=""
-                        />
-                        <span>3,800</span>
+            <NekoContainer>
+                <Link to="/item">
+                    <div className="nekoBox">
+                        <div>
+                            <img
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m54429009865_1.jpg"
+                                alt=""
+                            />
+                            <span>3,800</span>
+                        </div>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur, adipisicing
+                            elit. Neque nesciunt ullam repellendus perspiciatis
+                            animi sint modi fuga facilis nihil officiis enim
+                            quas necessitatibus, totam quae iusto at, provident
+                            tenetur laboriosam.
+                        </p>
                     </div>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Neque nesciunt ullam repellendus perspiciatis
-                        animi sint modi fuga facilis nihil officiis enim quas
-                        necessitatibus, totam quae iusto at, provident tenetur
-                        laboriosam.
-                    </p>
-                </div>
+                </Link>
                 <div className="nekoBox">
                     <div>
                         <img
@@ -95,28 +156,10 @@ function Home() {
                         laboriosam.
                     </p>
                 </div>
-                <Link to="/item">
-                    <div className="nekoBox">
-                        <div>
-                            <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m85935112334_1.jpg?1672205879"
-                                alt=""
-                            />
-                            <span>9,999</span>
-                        </div>
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing
-                            elit. Neque nesciunt ullam repellendus perspiciatis
-                            animi sint modi fuga facilis nihil officiis enim
-                            quas necessitatibus, totam quae iusto at, provident
-                            tenetur laboriosam.
-                        </p>
-                    </div>
-                </Link>
                 <div className="nekoBox">
                     <div>
                         <img
-                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m77373788402_1.jpg?1678769728"
+                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m26756153199_1.jpg?1692846432"
                             alt=""
                         />
                         <span>3,800</span>
@@ -132,7 +175,7 @@ function Home() {
                 <div className="nekoBox">
                     <div>
                         <img
-                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m43312854834_1.jpg?1686563105"
+                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m73878802648_1.jpg?1692846442"
                             alt=""
                         />
                         <span>3,800</span>
@@ -145,7 +188,39 @@ function Home() {
                         laboriosam.
                     </p>
                 </div>
-            </div>
+                <div className="nekoBox">
+                    <div>
+                        <img
+                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m79734608302_1.jpg?1691830417"
+                            alt=""
+                        />
+                        <span>3,800</span>
+                    </div>
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing
+                        elit. Neque nesciunt ullam repellendus perspiciatis
+                        animi sint modi fuga facilis nihil officiis enim quas
+                        necessitatibus, totam quae iusto at, provident tenetur
+                        laboriosam.
+                    </p>
+                </div>
+                <div className="nekoBox">
+                    <div>
+                        <img
+                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m95699223823_1.jpg?1692263194"
+                            alt=""
+                        />
+                        <span>3,800</span>
+                    </div>
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing
+                        elit. Neque nesciunt ullam repellendus perspiciatis
+                        animi sint modi fuga facilis nihil officiis enim quas
+                        necessitatibus, totam quae iusto at, provident tenetur
+                        laboriosam.
+                    </p>
+                </div>
+            </NekoContainer>
 
             <div className="footer">
                 <div>
