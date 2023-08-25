@@ -122,23 +122,23 @@ function Home() {
 
             <hr />
             <NekoContainer>
-                <Link to = "/item">
-                  <div className="nekoBox">
-                      <div>
-                          <img
-                              src="https://static.mercdn.net/c!/w=240/thumb/photos/m54429009865_1.jpg"
-                              alt=""
-                          />
-                          <span>3,800</span>
-                      </div>
-                      <p>
-                          Lorem ipsum dolor sit amet consectetur, adipisicing
-                          elit. Neque nesciunt ullam repellendus perspiciatis
-                          animi sint modi fuga facilis nihil officiis enim quas
-                          necessitatibus, totam quae iusto at, provident tenetur
-                          laboriosam.
-                      </p>
-                  </div>
+                <Link to="/item">
+                    <div className="nekoBox">
+                        <div>
+                            <img
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m54429009865_1.jpg"
+                                alt=""
+                            />
+                            <span>3,800</span>
+                        </div>
+                        <p>
+                            Lorem ipsum dolor sit amet consectetur, adipisicing
+                            elit. Neque nesciunt ullam repellendus perspiciatis
+                            animi sint modi fuga facilis nihil officiis enim
+                            quas necessitatibus, totam quae iusto at, provident
+                            tenetur laboriosam.
+                        </p>
+                    </div>
                 </Link>
                 <div className="nekoBox">
                     <div>

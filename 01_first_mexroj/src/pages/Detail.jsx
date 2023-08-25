@@ -1,9 +1,17 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { NekoContainer } from "./DetailStyle";
+import {
+    NekoContainer,
+    LeftBox,
+    RightBox,
+    IconContainer,
+    AuthorContainer,
+} from "./DetailStyle";
 
 import heart from "../assets/icons/heart.svg";
-
+import comment from "../assets/icons/comment.svg";
+import dot from "../assets/icons/dot.svg";
+import link from "../assets/icons/link.svg";
 
 function Detail() {
     return (
@@ -22,18 +30,18 @@ function Detail() {
                     <div className="brand">120cm / ツモリチサト</div>
                     <div className="price">¥5,200(税込)送料込み</div>
                     <IconContainer>
-                        <div className="icons">
+                        <div>
                             <img src={heart} alt="heart" />
-                            <img src="comment.svg" alt="comment" />
+                            <img src={comment} alt="comment" />
                         </div>
 
-                        <div className="dot">
-                            <img src="dot.svg" alt="dot" />
+                        <div>
+                            <img src={dot} alt="dot" />
                         </div>
                     </IconContainer>
                     <div className="button_buy">
                         Buy this item!
-                        <img src="link.svg" alt="link" />
+                        <img src={link} alt="link" />
                     </div>
                     <div className="thanks">
                         Thanks to our partnership with Buyee, we ship to over
@@ -113,7 +121,7 @@ function Detail() {
 
                     <hr />
 
-                    <div className="author">
+                    <AuthorContainer>
                         <div>
                             <img src="./lock.svg" alt="lock" />
                             <span>メルカリ安心への取り組み</span>
@@ -126,7 +134,7 @@ function Detail() {
                         <div className="arrow">
                             <img src="./arrow.svg" alt="arrow" />
                         </div>
-                    </div>
+                    </AuthorContainer>
                 </RightBox>
             </NekoContainer>
         </>
