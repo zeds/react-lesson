@@ -1,35 +1,47 @@
 import { useState } from "react";
 import styled from "styled-components";
-import {NekoContainer} from "./DetailStyle";
+import {
+    NekoContainer,
+    LeftBox,
+    RightBox,
+    IconContainer,
+    AuthorContainer,
+} from "./DetailStyle";
 
+import heart from "../assets/icons/heart.svg";
+import comment from "../assets/icons/comment.svg";
+import dot from "../assets/icons/dot.svg";
+import link from "../assets/icons/link.svg";
 
 function Detail() {
     return (
         <>
             <NekoContainer>
-                <div className="box-left">
+                <LeftBox>
                     <img
                         src="https://static.mercdn.net/item/detail/orig/photos/m43871960855_1.jpg?1690880161"
                         alt="aaa"
                     />
-                </div>
-                <div className="box-right">
-                    <div className="title">新品　ツモリチサト　120センチ　浴衣</div>
+                </LeftBox>
+                <RightBox>
+                    <div className="title">
+                        新品　ツモリチサト　120センチ　浴衣
+                    </div>
                     <div className="brand">120cm / ツモリチサト</div>
                     <div className="price">¥5,200(税込)送料込み</div>
-                    <div className="iconContainer">
-                        <div className="icons">
-                            <img src="heart.svg" alt="heart" />
-                            <img src="comment.svg" alt="comment" />
+                    <IconContainer>
+                        <div>
+                            <img src={heart} alt="heart" />
+                            <img src={comment} alt="comment" />
                         </div>
 
-                        <div className="dot">
-                            <img src="dot.svg" alt="dot" />
+                        <div>
+                            <img src={dot} alt="dot" />
                         </div>
-                    </div>
+                    </IconContainer>
                     <div className="button_buy">
                         Buy this item!
-                        <img src="link.svg" alt="link" />
+                        <img src={link} alt="link" />
                     </div>
                     <div className="thanks">
                         Thanks to our partnership with Buyee, we ship to over
@@ -109,7 +121,7 @@ function Detail() {
 
                     <hr />
 
-                    <div className="author">
+                    <AuthorContainer>
                         <div>
                             <img src="./lock.svg" alt="lock" />
                             <span>メルカリ安心への取り組み</span>
@@ -122,8 +134,8 @@ function Detail() {
                         <div className="arrow">
                             <img src="./arrow.svg" alt="arrow" />
                         </div>
-                    </div>
-                </div>
+                    </AuthorContainer>
+                </RightBox>
             </NekoContainer>
         </>
     );
