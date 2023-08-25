@@ -93,10 +93,16 @@ export const IconContainer = styled.div`
 `;
 
 export const AuthorContainer = styled.div`
-    position: relative;
-    margin-top: 20px;
-    border-radius: 4px;
-    padding: 10px;
-    background: #f5f5f5;
-    font-size: 12px;
+    margin-top: 10px;
+	padding: 10px;
+	width: 100%;
+	height: 45px;
+	border-radius: 4px;
+	position: relative;
+	text-align: center;
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	background: #F5F5F5;   
 `;
+
