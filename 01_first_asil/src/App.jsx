@@ -11,6 +11,8 @@ const Container = styled.div`
     height: 100vh;
 `;
 
+// <> </>フラグメント
+
 function App() {
     return (
         <>
