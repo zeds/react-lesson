@@ -151,7 +151,7 @@ function Home() {
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m95699223823_1.jpg?1692263194"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m79734608302_1.jpg?1691830417"
                                 alt=""
                             />
                             <span>3,800</span>
@@ -167,7 +167,7 @@ function Home() {
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m95699223823_1.jpg?1692263194"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m73878802648_1.jpg?1692846442"
                                 alt=""
                             />
                             <span>3,800</span>
@@ -183,7 +183,7 @@ function Home() {
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m95699223823_1.jpg?1692263194"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m26756153199_1.jpg?1692846432"
                                 alt=""
                             />
                             <span>3,800</span>
@@ -199,7 +199,7 @@ function Home() {
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m95699223823_1.jpg?1692263194"
+                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m24864889779_1.jpg?1689308356"
                                 alt=""
                             />
                             <span>3,800</span>
@@ -263,8 +263,8 @@ function Home() {
                             tenetur laboriosam.
                         </p>
                     </div> */}
-                    </NekoContainer>
-                {/* <div className="footer">
+                    </NekoContainer> 
+                 <div className="footer">
                     <div>
                         メルカリについて
                         <ul>
@@ -309,7 +309,7 @@ function Home() {
                             <li>偽ブランド品撲滅への取り組み</li>
                         </ul>
                     </div>
-                </div>
+                </div> 
 
                 <div className="social">
                     <div className="left">
@@ -351,10 +351,10 @@ function Home() {
                             <a href="./camera.html" alt="camera">
                                 <img src={person} />
                                 <p>マイページ</p>
-                            </a> */}
-                        {/* </li>
+                            </a> 
+                         </li>
                     </ul>
-                </div> */}
+                </div> 
             
         </>
     );
