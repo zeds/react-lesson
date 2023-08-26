@@ -6,12 +6,21 @@ import {
     RightBox,
     IconContainer,
     AuthorContainer,
+    InfoContainer,
+    VerifyContainer,
+    AvatarContainer,
+    Avatar,
+    VerifyBox
 } from "./DetailStyle";
 
 import heart from "../assets/icons/heart.svg";
 import comment from "../assets/icons/comment.svg";
 import dot from "../assets/icons/dot.svg";
 import link from "../assets/icons/link.svg";
+import lock from "../assets/icons/lock.svg";
+import arrow from "../assets/icons/arrow.svg";
+import star from "../assets/icons/star.svg";
+import check_icon from "../assets/icons/check_icon.svg";
 
 function Detail() {
     return (
@@ -82,7 +91,7 @@ function Detail() {
                     </div>
 
                     <hr />
-                    <div className="info">
+                    <InfoContainer>
                         <h2>商品の情報</h2>
                         <div>
                             <p>カテゴリー</p>
@@ -117,24 +126,68 @@ function Detail() {
                             <p>発送までの日数</p>
                             <span>目立った傷や汚れなし</span>
                         </div>
-                    </div>
+                    </InfoContainer>
 
                     <hr />
 
                     <AuthorContainer>
-                        <div>
-                            <img src="./lock.svg" alt="lock" />
-                            <span>メルカリ安心への取り組み</span>
+                        <div className="Locktext">
+                            <div className="lock">
+                                <img src={lock} alt="" />
+                                <p>メルカリ安心への取り組み</p>
+                            </div>
+                            <div className="safetext">
+							    <p>お金は事務局に支払われ、評価後に振り込まれます</p>
+						    </div>
                         </div>
                         <div>
-                            <p>
-                                お金は事務局に支払われ、評価後に振り込まれます
-                            </p>
-                        </div>
-                        <div className="arrow">
-                            <img src="./arrow.svg" alt="arrow" />
+                            <img src={arrow} alt="arrow" />
                         </div>
                     </AuthorContainer>
+                    <span className="text">出品者</span>
+                    <VerifyContainer>
+                        <AvatarContainer>
+                            <Avatar>
+                                <img src="https://static.mercdn.net/thumb/members/320377822.jpg?1638851200" alt="" />
+                            </Avatar>
+                            <VerifyBox>
+                                <span className="verify">アミラ💛メルカリへようこそ❕</span>
+                                <ul className="star_mark">
+                                    <li> 
+                                        <img src={star} alt="" />
+                                    </li>
+                                    <li>
+                                        <img src={star} alt="" />
+                                    </li>
+                                    <li>
+                                        <img src={star} alt="" />
+                                    </li>
+                                    <li>
+                                        <img src={star} alt="" />
+                                    </li>
+                                    <li>
+                                        <img src={star} alt="" />
+                                    </li>
+                                    <li>
+                                        <span className="count">123u</span>
+                                    </li>
+                                </ul>
+                                <div className="checkicon">
+                                    <div className="">
+                                        <img src={check_icon} alt="" />
+                                    </div>
+                                    <span class="">本人確認済</span>
+                                </div>
+                            </VerifyBox>
+                        </AvatarContainer>
+                        <div className="">
+                            <img src={arrow} alt="" />
+                        </div>
+				    </VerifyContainer>
+                    <div className="">
+                        <span>コメント (0)</span>
+                    </div>
+                    <button className="login">ログインしてコメントする</button>
                 </RightBox>
             </NekoContainer>
         </>
