@@ -7,6 +7,8 @@ import {
     IconContainer,
     AuthorContainer,
     Users,
+    Delivery,
+    Comment,
 } from "./DetailStyle";
 
 import heart from "../assets/icons/heart.svg";
@@ -15,7 +17,9 @@ import dot from "../assets/icons/dot.svg";
 import link from "../assets/icons/link.svg";
 import arrow from "../assets/icons/arrow.svg";
 import lock from "../assets/icons/lock.svg";
-import check from "../assets/icons/check.svg";
+import checkicon from "../assets/icons/check.svg";
+import star from "../assets/icons/star.svg";
+import truck from "../assets/icons/truck.svg";
 
 
 function Detail() {
@@ -143,19 +147,43 @@ function Detail() {
                     <Users>
                         <div class="出品者">出品者</div>
                         <div class="box">
-                            <img src="https://static.mercdn.net/thumb/members/877832910.jpg?1641424992" alt="avatar" />
+                            <img className="avatar" src="https://static.mercdn.net/thumb/members/877832910.jpg?1641424992" alt="avatar" />
                             <div className="UserName">メフロジュ</div>
                             <div className="StarComponent">
-                            ★★★★★
+                                <ul>
+                                    <li><img src= {star} alt="star" /></li>
+                                    <li><img src= {star} alt="star" /></li>
+                                    <li><img src= {star} alt="star" /></li>
+                                    <li><img src= {star} alt="star" /></li>
+                                    <li><img src= {star} alt="star" /></li>
+                                </ul>
                             <span>47879</span>
                             </div>
-                            <img className="check"  src= {check} alt="check"/>
+                            <img className="check"  src= {checkicon} alt="check"/>
                             <span>本人確認済</span>
                         </div>
                     </Users>
+                    <Delivery>
+                     <div>
+                         <img src={truck} alt="truck" />
+                         <span>スピード発送</span>
+                    </div>
+                    <div>
+                        <p>
+                            この出品者は平均24時間以内に発送しています
+                        </p>
+                    </div>
+                    <div className="arrow">
+                       <img src= {arrow} alt="arrow" />
+                    </div>
+                    </Delivery>
 
-
-
+                    <Comment>
+                        <div className="comment">
+                            <h2>コメント (0) </h2>
+                            <button>ログインしてコメントする</button>
+                        </div>
+                    </Comment>
                 </RightBox>
             </NekoContainer>
         </>
