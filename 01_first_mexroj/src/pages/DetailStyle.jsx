@@ -125,6 +125,7 @@ export const AuthorContainer = styled.div`
         right: 0;
     }
     &:hover {
+        cursor: pointer;
         background: #999494;
     }
 `;
@@ -197,41 +198,39 @@ export const Delivery = styled.div`
         right: 0;
     }
     &:hover {
+        cursor: pointer;
         background: #95d8f3;
     }
 
 `;
 
 export const Comment = styled.div`
-        h2{
-            padding-top: 14px;
-            padding-bottom: 10px;
-            font-weight: 700;
-            font-size: 20px;
-            color: #666666;
+    h2{
+        padding-top: 14px;
+        padding-bottom: 10px;
+        font-weight: 700;
+        font-size: 20px;
+        color: #666666;
+    }
+    button{
+        background-color: white;
+        display: flex;
+        margin-top: 10px;
+        border: solid 1px red;
+        width: 100%;
+        height: 45px;
+        border-radius: 4px;
+        font-size: 15px;
+        color: red;
+        font-weight: bold;
+        align-items: center;
+        justify-content: center;
+        img {
+            margin-left: 5px;
         }
-        button{
-            background-color: white;
-            display: flex;
-            margin-top: 10px;
-            border: solid 1px red;
-
-            width: 100%;
-            height: 45px;
-            border-radius: 4px;
-
-            font-size: 15px;
-            color: red;
-            font-weight: bold;
-            align-items: center;
-            justify-content: center;
-            img {
-                margin-left: 5px;
-            }
-            &:hover {
-                cursor: pointer;
-                background-color: #ead8dd;
-            }
-
+         &:hover {
+            cursor: pointer;
+            background-color: #ead8dd;
         }
+    }
 `;

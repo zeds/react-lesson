@@ -147,7 +147,7 @@ function Detail() {
                     <Users>
                         <div class="出品者">出品者</div>
                         <div class="box">
-                            <img className="avatar" src="https://static.mercdn.net/thumb/members/877832910.jpg?1641424992" alt="avatar" />
+                            <img className="avatar" src="https://static.mercdn.net/images/member_photo_noimage_thumb.png" alt="avatar" />
                             <div className="UserName">メフロジュ</div>
                             <div className="StarComponent">
                                 <ul>
