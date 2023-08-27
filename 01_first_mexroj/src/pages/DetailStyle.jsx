@@ -21,7 +21,7 @@ export const LeftBox = styled.div`
 `;
 
 export const RightBox = styled.div`
-    height: 1000px;
+    height: 1500px;
     border: 2px solid black;
     padding: 10px;
     font-size: 1.5rem;
@@ -113,18 +113,64 @@ export const AuthorContainer = styled.div`
     div {
         span {
             margin-left: 4px;
+            font-weight: bold;
         }
     }
     .arrow {
-    position: absolute;
-    top: 25%;
-    right: 0;
-}
-&:hover {
-    background: #dfdfdf;
-    display: flex;
-	align-items: center;
-	font-weight: bold;
-	margin-bottom: 5px;
-}
+        position: absolute;
+        top: 25%;
+        right: 0;
+    }
+    &:hover {
+        background: #666666;
+    }
+    `;
+    export const Users = styled.div`
+
+    .出品者{
+        padding-top: 14px;
+        padding-bottom: 10px;
+        font-weight: 700;
+        font-size: 20px;
+        color: #666666;
+    }
+    .box{
+        position: relative;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        border-top: 1px #666666 solid;
+        border-bottom: 1px #666666 solid;
+        &:hover{
+            background: #666666;
+
+        }
+        img{
+            width: 20px;
+            height: 20px;
+            margin: 0 auto;
+            justify-content: center;
+            align-items: center;
+        }
+        .UserName{
+            margin-left: 50px;
+            padding-top: 5px;
+
+        }
+        .StarComponent{
+            margin-left: 50px;
+            margin-top: 5px;
+            font-size: 20px;
+            color: #eeb816;
+            gap: 3px;
+         }
+         .StarComponent span{
+            color: blue;
+         }
+         .check{
+            margin-left: 50px;
+            margin-top: 5px;
+
+         }
+    }
 `;

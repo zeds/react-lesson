@@ -6,12 +6,17 @@ import {
     RightBox,
     IconContainer,
     AuthorContainer,
+    Users,
 } from "./DetailStyle";
 
 import heart from "../assets/icons/heart.svg";
 import comment from "../assets/icons/comment.svg";
 import dot from "../assets/icons/dot.svg";
 import link from "../assets/icons/link.svg";
+import arrow from "../assets/icons/arrow.svg";
+import lock from "../assets/icons/lock.svg";
+import check from "../assets/icons/check.svg";
+
 
 function Detail() {
     return (
@@ -119,11 +124,11 @@ function Detail() {
                         </div>
                     </div>
 
-                    <hr />
+                    <hr/>
 
                     <AuthorContainer>
                         <div>
-                            <img src="./lock.svg" alt="lock" />
+                            <img src= {lock} alt="lock" />
                             <span>メルカリ安心への取り組み</span>
                         </div>
                         <div>
@@ -132,9 +137,25 @@ function Detail() {
                             </p>
                         </div>
                         <div className="arrow">
-                            <img src="./arrow.svg" alt="arrow" />
+                            <img src= {arrow} alt="arrow" />
                         </div>
                     </AuthorContainer>
+                    <Users>
+                        <div class="出品者">出品者</div>
+                        <div class="box">
+                            <img src="https://static.mercdn.net/thumb/members/877832910.jpg?1641424992" alt="avatar" />
+                            <div className="UserName">メフロジュ</div>
+                            <div className="StarComponent">
+                            ★★★★★
+                            <span>47879</span>
+                            </div>
+                            <img className="check"  src= {check} alt="check"/>
+                            <span>本人確認済</span>
+                        </div>
+                    </Users>
+
+
+
                 </RightBox>
             </NekoContainer>
         </>
