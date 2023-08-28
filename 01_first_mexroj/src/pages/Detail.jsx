@@ -19,6 +19,7 @@ import arrow from "../assets/icons/arrow.svg";
 import lock from "../assets/icons/lock.svg";
 import checkicon from "../assets/icons/check.svg";
 import star from "../assets/icons/star.svg";
+import star2 from "../assets/icons/star2.svg";
 import truck from "../assets/icons/truck.svg";
 
 
@@ -151,11 +152,11 @@ function Detail() {
                             <div className="UserName">メフロジュ</div>
                             <div className="StarComponent">
                                 <ul>
-                                    <li><img src= {star} alt="star" /></li>
-                                    <li><img src= {star} alt="star" /></li>
-                                    <li><img src= {star} alt="star" /></li>
-                                    <li><img src= {star} alt="star" /></li>
-                                    <li><img src= {star} alt="star" /></li>
+                                    <li><img src= {star} alt="star1" /></li>
+                                    <li><img src= {star} alt="star2" /></li>
+                                    <li><img src= {star} alt="star3" /></li>
+                                    <li><img src= {star2} alt="star4" /></li>
+                                    <li><img src= {star2} alt="star5" /></li>
                                 </ul>
                             <span>47879</span>
                             </div>
