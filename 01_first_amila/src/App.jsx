@@ -5,16 +5,19 @@ import Detail from "./pages/Detail";
 import Navbar from "./components/Navbar";
 import Styled from "./pages/Styled";
 import styled from "styled-components";
+import GlobalStyle from "./GlobalStyle";
 
 
  const Container = styled.div`
     width: 100%;
     height: 100vh;
-    background:skyblue;
     text-decoration: none;
  `
+//  <>//flugment
 function App() {
     return (
+        <>
+        <GlobalStyle />
         <BrowserRouter>
         <Container>
             <Navbar />
@@ -24,8 +27,8 @@ function App() {
                 <Route path="/styled" element={<Styled />}></Route>
             </Routes>
             </Container>
-
         </BrowserRouter>
+        </>
     );
 }
 

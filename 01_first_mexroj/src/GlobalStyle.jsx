@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
 		box-sizing: border-box;
 	}
 	html {
-		font-size: 62.5%; // 1rem=10px
+		font-size: 62.5%;
 	}
 	body {
 		font-family: 'Roboto', sans-serif;
@@ -21,11 +21,11 @@ const GlobalStyle = createGlobalStyle`
 		font-size: 3rem;
 	}
 	h2 {
-		font-size: 1.4rem;
+		font-size:2.0rem;
 	}
 	h3 {
 		font-size: 1.3rem;
-		
+
 	}
 	h4 {
 		font-size: 1.5rem;
