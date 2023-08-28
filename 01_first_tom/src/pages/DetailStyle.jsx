@@ -24,17 +24,17 @@ export const RightBox = styled.div`
     height: 1000px;
     border: 2px solid black;
     padding: 10px;
+    font-size: 1.5rem;
     .title {
-        font-size: 24px;
+        font-size: 2.4rem;
         font-weight: 700;
     }
     .brand {
-        font-size: 15px;
         font-weight: 400;
         color: #666666;
     }
     .price {
-        font-size: 28px;
+        font-size: 2.8rem;
         font-weight: 400;
     }
     .button_buy {
@@ -46,7 +46,6 @@ export const RightBox = styled.div`
         background: #ff323f;
         border-radius: 4px;
 
-        font-size: 15px;
         color: white;
         font-weight: bold;
         align-items: center;
@@ -58,29 +57,34 @@ export const RightBox = styled.div`
             cursor: pointer;
             opacity: 0.6;
         }
-        .thanks {
-            margin-top: 10px;
-            font-size: 15px;
-            color: #666666;
-            line-height: 21px;
+    }
+    .thanks {
+        margin-top: 10px;
+        color: #666666;
+        line-height: 21px;
+    }
+    .desc {
+        margin-top: 20px;
+        background: white;
+        h2 {
+            margin-bottom: 15px;
         }
-
-        .info {
-            div {
-                display: flex;
-                gap: 20px;
-                align-items: center;
-                font-size: 15px;
-                margin-bottom: 10px;
-                p {
-                    width: 30%;
-                    font-weight: bold;
-                }
-                ul {
-                    width: 50%;
-                    color: blue;
-                    text-decoration: underline;
-                }
+    }
+    .info {
+        div {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 15px;
+            margin-bottom: 10px;
+            p {
+                width: 30%;
+                font-weight: bold;
+            }
+            ul {
+                width: 50%;
+                color: blue;
+                text-decoration: underline;
             }
         }
     }
@@ -89,7 +93,6 @@ export const RightBox = styled.div`
 export const IconContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    background: green;
 `;
 
 export const AuthorContainer = styled.div`
@@ -99,4 +102,23 @@ export const AuthorContainer = styled.div`
     padding: 10px;
     background: #f5f5f5;
     font-size: 12px;
+    div:nth-child(1) {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        margin-bottom: 5px;
+
+        span {
+            margin-left: 4px;
+        }
+    }
+    .arrow {
+        position: absolute;
+        top: 25%;
+        right: 0;
+    }
+
+    &:hover {
+        background: #dfdfdf;
+    }
 `;

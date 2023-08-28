@@ -6,12 +6,22 @@ import {
     RightBox,
     IconContainer,
     AuthorContainer,
+    Users,
+    Delivery,
+    Comment,
 } from "./DetailStyle";
 
 import heart from "../assets/icons/heart.svg";
 import comment from "../assets/icons/comment.svg";
 import dot from "../assets/icons/dot.svg";
 import link from "../assets/icons/link.svg";
+import arrow from "../assets/icons/arrow.svg";
+import lock from "../assets/icons/lock.svg";
+import checkicon from "../assets/icons/check.svg";
+import star from "../assets/icons/star.svg";
+import star2 from "../assets/icons/star2.svg";
+import truck from "../assets/icons/truck.svg";
+
 
 function Detail() {
     return (
@@ -119,11 +129,11 @@ function Detail() {
                         </div>
                     </div>
 
-                    <hr />
+                    <hr/>
 
                     <AuthorContainer>
                         <div>
-                            <img src="./lock.svg" alt="lock" />
+                            <img src= {lock} alt="lock" />
                             <span>メルカリ安心への取り組み</span>
                         </div>
                         <div>
@@ -132,9 +142,49 @@ function Detail() {
                             </p>
                         </div>
                         <div className="arrow">
-                            <img src="./arrow.svg" alt="arrow" />
+                            <img src= {arrow} alt="arrow" />
                         </div>
                     </AuthorContainer>
+                    <Users>
+                        <div class="出品者">出品者</div>
+                        <div class="box">
+                            <img className="avatar" src="https://static.mercdn.net/images/member_photo_noimage_thumb.png" alt="avatar" />
+                            <div className="UserName">メフロジュ</div>
+                            <div className="StarComponent">
+                                <ul>
+                                    <li><img src= {star} alt="star1" /></li>
+                                    <li><img src= {star} alt="star2" /></li>
+                                    <li><img src= {star} alt="star3" /></li>
+                                    <li><img src= {star2} alt="star4" /></li>
+                                    <li><img src= {star2} alt="star5" /></li>
+                                </ul>
+                            <span>47879</span>
+                            </div>
+                            <img className="check"  src= {checkicon} alt="check"/>
+                            <span>本人確認済</span>
+                        </div>
+                    </Users>
+                    <Delivery>
+                     <div>
+                         <img src={truck} alt="truck" />
+                         <span>スピード発送</span>
+                    </div>
+                    <div>
+                        <p>
+                            この出品者は平均24時間以内に発送しています
+                        </p>
+                    </div>
+                    <div className="arrow">
+                       <img src= {arrow} alt="arrow" />
+                    </div>
+                    </Delivery>
+
+                    <Comment>
+                        <div className="comment">
+                            <h2>コメント (0) </h2>
+                            <button>ログインしてコメントする</button>
+                        </div>
+                    </Comment>
                 </RightBox>
             </NekoContainer>
         </>
