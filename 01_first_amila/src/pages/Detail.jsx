@@ -137,8 +137,8 @@ function Detail() {
                                 <p>メルカリ安心への取り組み</p>
                             </div>
                             <div className="safetext">
-							    <p>お金は事務局に支払われ、評価後に振り込まれます</p>
-						    </div>
+						<p>お金は事務局に支払われ、評価後に振り込まれます</p>
+                         </div>
                         </div>
                         <div>
                             <img src={arrow} alt="arrow" />
@@ -165,9 +165,7 @@ function Detail() {
                                     <li>
                                         <img src={star} alt="" />
                                     </li>
-                                    <li>
-                                        <img src={star} alt="" />
-                                    </li>
+                                   
                                     <li>
                                         <span className="count">123u</span>
                                     </li>
@@ -176,14 +174,14 @@ function Detail() {
                                     <div className="">
                                         <img src={check_icon} alt="" />
                                     </div>
-                                    <span class="">本人確認済</span>
+                                    <span className="">本人確認済</span>
                                 </div>
                             </VerifyBox>
                         </AvatarContainer>
                         <div className="">
                             <img src={arrow} alt="" />
                         </div>
-				    </VerifyContainer>
+                  </VerifyContainer>
                     <div className="">
                         <span>コメント (0)</span>
                     </div>
