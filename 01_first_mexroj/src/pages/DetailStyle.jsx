@@ -166,17 +166,26 @@ export const Users = styled.div`
             display: flex;
             margin-left: 70px;
         }
-        .StarComponent ul{
-            display: flex;
-            font-size: 14px;
-        }
-        .StarComponent span{
+        .StarComponent :nth-child(2){
             color: #0073cc;
+            font-size: 1em;
+            letter-spacing: 0.1rem;
+            text-align: center;
+            background-color: #666666;
          }
         .check{
             font-size: 16px;
             margin-left: 70px;
+            background-color: #cb397d;
          }
+         .check:nth-child(1){
+            /* padding-top: 5px; */
+         }
+        .arrow{
+            position: absolute;
+            right: 3px;
+            top: 32px;
+        }
     }
 `;
 export const Delivery = styled.div`
