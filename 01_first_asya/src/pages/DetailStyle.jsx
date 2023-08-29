@@ -129,7 +129,27 @@ export const RightBox = styled.div`
 export const IconContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    
+    .heart {
+        &:hover {
+        cursor: pointer;
+	    background: #E5E5E5;
+        border-radius: 10%;        
+    }
+    }
+    .comment {
+        &:hover {
+        cursor: pointer;
+	    background: #E5E5E5;
+        border-radius: 10%;
+    }
+    }
+    .dot {
+        &:hover {
+        cursor: pointer;
+	    background: #E5E5E5;
+        border-radius: 40%;        
+    }
+    }
 `;
 
 export const AuthorContainer = styled.div`
@@ -216,12 +236,37 @@ export const MamaBox = styled.div`
     padding: 10px;
     .star  {
 	    display: flex;
+        
     }
     .checkmarktext {
         display: flex;
         flex-direction: row;
     }
-    .count {
-        color: skyblue
+    .count {        
+        color: skyblue;  
+        font-size: 15px;  
+        align-items: center;                 
+
+    }
+`;
+
+export const StarComponent = styled.div`
+    position: relative;
+    font-size: 20px;
+    line-height: 1em;
+    letter-spacing: 0.1em;
+    color: #ccc;
+    margin: 0;
+    padding: 0;
+    &:before {
+        content: "★★★★★";
+        position: absolute;
+        color: #eeb816;
+        width: calc(
+            ${(props) => props.rate}em + 0.1 *
+                (${(props) => props.rate}em - 0.5em)
+        );
+        overflow: hidden;
+        white-space: nowrap;
     }
 `;

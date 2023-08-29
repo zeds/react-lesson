@@ -10,7 +10,8 @@ import {
     SellerContainer,
     AvatarContainer,
     Avatar,
-    MamaBox
+    MamaBox,
+    StarComponent
 } from "./DetailStyle";
 
 import heart from "../assets/icons/heart.svg";
@@ -40,12 +41,12 @@ function Detail() {
                     <div className="price">¥5,200(税込)送料込み</div>
                     <IconContainer>
                         <div>
-                            <img src={heart} alt="heart" />
-                            <img src={comment} alt="comment" />
+                            <img className="heart" src={heart} alt="heart" />
+                            <img className="comment" src={comment} alt="comment" />
                         </div>
 
                         <div>
-                            <img src={dot} alt="dot" />
+                            <img className="dot" src={dot} alt="dot" />
                         </div>
                     </IconContainer>
                     <div className="button_buy">
@@ -153,7 +154,10 @@ function Detail() {
                             <MamaBox>
                                 <span className="mama">mama</span>
                                 <ul className="star">
-                                    <li> 
+                                    <StarComponent rate="2.5">
+                                        <div>★★★★★</div>
+                                    </StarComponent>
+                                    {/* <li> 
                                         <img src={star} alt="" />
                                     </li>
                                     <li>
@@ -167,7 +171,7 @@ function Detail() {
                                     </li>
                                     <li>
                                         <img src={star} alt="" />
-                                    </li>
+                                    </li> */}
                                     <li>
                                         <span className="count">319</span>
                                     </li>
