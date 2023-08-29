@@ -4,16 +4,15 @@ import { styled } from "styled-components";
 // 参考:
 // https://yws.tokyo/css-star/
 
-const StarComponent = styled.div`
-   position: relative;
+const StarComponent = styled.article`
+   /* position: relative; */
    display: flex;
-   font-size: ${(props) => props.font_size}rem;
-   line-height: 0.5em;
-   letter-spacing: 0.1em;
-   color: #cec6c6;
-   margin: 5px;
+   font-size: ${(props) => props.fontSize}rem;
+   line-height: 1em;
+   letter-spacing: 0.2em;
+   color: #ccc;
+   margin: 0;
    padding: 0;
-   text-align: center;
    &:before {
       content: "★★★★★";
       position: absolute;
@@ -22,18 +21,31 @@ const StarComponent = styled.div`
          ${(props) => props.rate}em + 0.1 * (${(props) => props.rate}em - 0.5em)
       );
       overflow: hidden;
-      /* white-space: nowrap; */
+      white-space: nowrap;
+   }
+   p {
+      display: inline-block;
+      font-size: 0.8em;
+      color: #0173cc;
+      font-weight: 500;
+      letter-spacing: 0.001em;
    }
 `;
 
 const Star = (props) => {
+   // 星が何個？  　　rate
+   // 評価がいくつ？  text=8562
+   // fontSize="1.5"
+   console.log(props.rate);
    console.log(props.text);
+   console.log(props.fontSize);
    return (
       <>
-            <StarComponent rate="3" font_size="2.5">
-               <span>★★★★★</span>
-            </StarComponent>
-       </>
+         <StarComponent rate={props.rate} fontSize={props.fontSize}>
+            <span>★★★★★</span>
+            <p>{props.text}</p>
+         </StarComponent>
+      </>
    );
 };
 

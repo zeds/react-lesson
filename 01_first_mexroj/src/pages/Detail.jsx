@@ -6,7 +6,7 @@ import {
     RightBox,
     IconContainer,
     AuthorContainer,
-    Users,
+    UserContainer,
     Delivery,
     Comment,
 } from "./DetailStyle";
@@ -146,22 +146,25 @@ function Detail() {
                             <img src= {arrow} alt="arrow" />
                         </div>
                     </AuthorContainer>
-                    <Users>
-                        <div class="出品者">出品者</div>
+                        <div className="user">出品者</div>
+                    <UserContainer>
                         <div class="box">
                             <img className="avatar" src="https://static.mercdn.net/thumb/members/689095029.jpg?1643998812" alt="avatar" />
-                            <div className="UserName">メフロジュ</div>
-                            <div className="StarComponent">
-                                <Star/>
-                                <span>47879</span>
+                            <div>
+                                <p>メフロジュ</p>
+                                <div className="StarComponent">
+                                    <Star rate="3" text="8617" fontSize="1.5"></Star>
+                                </div>
+                                <div className="check">
+                                    <img   src= {checkicon} alt="check"/>
+                                    <span>本人確認済</span>
+                                </div>
                             </div>
-                            <div className="check">
-                                <img   src= {checkicon} alt="check"/>
-                                <span>本人確認済</span>
+                            <div>
+                                <img className="arrow"  src={arrow} alt="" />
                             </div>
-                            <img className="arrow"  src={arrow} alt="" />
-                        </div>
-                    </Users>
+                         </div>
+                    </UserContainer>
                     <Delivery>
                         <div>
                             <img src={truck} alt="truck" />
