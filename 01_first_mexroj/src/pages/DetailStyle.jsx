@@ -128,58 +128,61 @@ export const AuthorContainer = styled.div`
         cursor: pointer;
         background: #999494;
     }
+    .user{
+    padding-top: 14px;
+    padding-bottom: 10px;
+    font-weight: 700;
+    font-size: 20px;
+    color: #666666;
+    }
 `;
 
-export const Users = styled.div`
+export const UserContainer = styled.div`
     position: relative;
-
-    .出品者{
-        padding-top: 14px;
-        padding-bottom: 10px;
-        font-weight: 700;
-        font-size: 20px;
-        color: #666666;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+    border-top: 1px #e5e5e5 solid;
+    border-bottom: 1px #e5e5e5 solid;
+    &:hover{
+        cursor: pointer;
+        background: #e5e5e5;
     }
+
     .box{
-        position: relative;
-        padding: 10px;
-        border-radius: 5px;
-        border-top: 1px #e5e5e5 solid;
-        border-bottom: 1px #e5e5e5 solid;
-        &:hover{
-            cursor: pointer;
-            background: #e5e5e5;
-        }
+        display: flex;
+
+        align-items: center;
+        font-size: 15px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        gap: 15px;
+
         .avatar{
-            position: absolute;
-            margin-top: 10px;
             width: 50px;
             height: 50px;
             border-radius: 50%;
          }
+         div{
+            flex-direction: column;
+         }
         .UserName{
             font-size: 20px;
+            letter-spacing: 0.05em;
             font-weight: bold;
-            margin-left: 70px;
         }
-        .StarComponent{
-            display: flex;
-            margin-left: 70px;
-        }
-        .StarComponent :nth-child(2){
-            color: #0073cc;
-            font-size: 1em;
-            letter-spacing: 0.1rem;
-            text-align: center;
-            background-color: #666666;
-         }
         .check{
-            font-size: 16px;
-            margin-left: 70px;
-            background-color: #cb397d;
-         }
-         .check:nth-child(1){
-            /* padding-top: 5px; */
+            display: flex;
+            background-color: skyblue;
+            img{
+                left: 0;
+                background-color: red;
+                width: 16px;
+                height: 16px;
+            }
+            span{
+                background-color: pink;
+            }
          }
         .arrow{
             position: absolute;
