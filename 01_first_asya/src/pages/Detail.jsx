@@ -153,7 +153,7 @@ function Detail() {
                             </Avatar>
                             <MamaBox>
                                 <span className="mama">mama</span>
-                                <ul className="star">
+                                <div className="star">
                                     <StarComponent rate="2.5">
                                         <div>★★★★★</div>
                                     </StarComponent>
@@ -172,15 +172,13 @@ function Detail() {
                                     <li>
                                         <img src={star} alt="" />
                                     </li> */}
-                                    <li>
-                                        <span className="count">319</span>
-                                    </li>
-                                </ul>
-                                <div className="checkmarktext">
-                                    <div className="checkmark">
-                                        <img src={check_mark} alt="" />
-                                    </div>
-                                    <span class="checktext">本人確認済</span>
+                                    
+                                    <span className="count">319</span>
+                                    
+                                </div>
+                                <div className="checkmarktext">                                    
+                                    <img src={check_mark} alt="" />                                    
+                                    <span>本人確認済</span>
                                 </div>
                             </MamaBox>
                         </AvatarContainer>
