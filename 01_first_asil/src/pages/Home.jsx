@@ -13,7 +13,7 @@ import styled from "styled-components";
 const TabContainer = styled.div`
     width: 100%;
     height: 44px;
-    padding: 0 36px;
+    /* padding: 0 36px; */
     @media (max-width: 800px) {
         padding: 0 5px;
     }
@@ -136,18 +136,6 @@ function Home() {
                         </p>
                     </div>
                 </Link>
-                {/* <div className="nekoBox">
-                    <div>
-                        <img
-                            src="https://static.mercdn.net/c!/w=240/thumb/photos/m29967384635_1.jpg?1692502880"
-                            alt=""
-                        />
-                        <span>1,100</span>
-                    </div>
-                    <p>
-                        お値下げ❢スーパードンキーコングの綺麗なソフト❢
-                    </p>
-                </div> */}
                 <div className="nekoBox">
                     <div>
                         <img
