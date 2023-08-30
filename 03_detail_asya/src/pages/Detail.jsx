@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import {
     NekoContainer,
-    LeftBox,
+    LeftBox,    
     RightBox,
     IconContainer,
     AuthorContainer,
@@ -11,7 +11,7 @@ import {
     AvatarContainer,
     Avatar,
     MamaBox,
-    StarComponent
+    StarComponent,    
 } from "./DetailStyle";
 
 import heart from "../assets/icons/heart.svg";
@@ -22,16 +22,54 @@ import lock from "../assets/icons/lock.svg";
 import arrow from "../assets/icons/arrow.svg";
 import star from "../assets/icons/star.svg";
 import check_mark from "../assets/icons/check_mark.svg";
+import "react-image-gallery/styles/css/image-gallery.css";
+import ImageGallery from "react-image-gallery";
+
+const images = [
+    {
+       original:
+          "https://static.mercdn.net/item/detail/orig/photos/m43871960855_1.jpg",
+       thumbnail:
+          "https://static.mercdn.net/item/detail/orig/photos/m43871960855_1.jpg",
+    },
+    {
+       original:
+          "https://static.mercdn.net/item/detail/orig/photos/m43871960855_2.jpg",
+       thumbnail:
+          "https://static.mercdn.net/item/detail/orig/photos/m43871960855_2.jpg",
+    },
+    {
+       original:
+          "https://static.mercdn.net/item/detail/orig/photos/m43871960855_3.jpg",
+       thumbnail:
+          "https://static.mercdn.net/item/detail/orig/photos/m43871960855_3.jpg",
+    },
+    {
+       original:
+          "https://static.mercdn.net/item/detail/orig/photos/m43871960855_4.jpg",
+       thumbnail:
+          "https://static.mercdn.net/item/detail/orig/photos/m43871960855_4.jpg",
+    },
+ ];
+ 
+ const Container = styled.div`
+    width: 100%;
+    height: 100vh;
+    background: red;
+ `;
+ 
 
 function Detail() {
     return (
         <>
             <NekoContainer>
                 <LeftBox>
-                    <img
-                        src="https://static.mercdn.net/item/detail/orig/photos/m43871960855_1.jpg?1690880161"
-                        alt="aaa"
-                    />
+                <ImageGallery 
+                    items={images} 
+                    thumbnailPosition= "left"
+                    showPlayButton={false}
+                    showFullscreenButton={false}   
+                />;
                 </LeftBox>
                 <RightBox>
                     <div className="title">
