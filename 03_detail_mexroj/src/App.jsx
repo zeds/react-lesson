@@ -18,16 +18,16 @@ function App() {
     return (
         <>
         <GlobalStyle />
-        <BrowserRouter>
-        <Container>
-            <Navbar />
-            <Routes>
-                <Route path="/" element={<Home />}></Route>
-                <Route path="/item" element={<Detail />}></Route>
-                <Route path="/styled" element={<Styled />}></Route>
-            </Routes>
-            </Container>
-        </BrowserRouter>
+            <BrowserRouter>
+                 <Container>
+                    <Navbar />
+                    <Routes>
+                        <Route path="/" element={<Home />}></Route>
+                        <Route path="/item" element={<Detail />}></Route>
+                        <Route path="/styled" element={<Styled />}></Route>
+                    </Routes>
+                </Container>
+            </BrowserRouter>
         </>
     );
 }
