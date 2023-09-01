@@ -10,6 +10,8 @@ import camera from "../assets/camera.svg";
 import person from "../assets/person.svg";
 import styled from "styled-components";
 
+
+
 const TabContainer = styled.div`
     width: 100%;
     height: 44px;
@@ -110,6 +112,8 @@ const NekoContainer = styled.div`
 function Home() {
     const [count, setCount] = useState(0);
 
+
+
     return (
         <>
             <TabContainer>
@@ -126,7 +130,7 @@ function Home() {
                     <div className="nekoBox">
                         <div>
                             <img
-                                src="https://static.mercdn.net/c!/w=240/thumb/photos/m54429009865_1.jpg"
+                                src="https://static.mercdn.net/item/detail/orig/photos/m66662706872_1.jpg"
                                 alt=""
                             />
                             <span>3,800</span>
