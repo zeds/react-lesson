@@ -25,27 +25,39 @@ import ImageGallery from "react-image-gallery";
 const images = [
 	{
 		original:
-			"https://static.mercdn.net/item/detail/orig/photos/m43871960855_1.jpg",
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_1.jpg",
 		thumbnail:
-			"https://static.mercdn.net/item/detail/orig/photos/m43871960855_1.jpg",
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_1.jpg",
 	},
 	{
 		original:
-			"https://static.mercdn.net/item/detail/orig/photos/m43871960855_2.jpg",
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_2.jpg",
 		thumbnail:
-			"https://static.mercdn.net/item/detail/orig/photos/m43871960855_2.jpg",
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_2.jpg",
 	},
 	{
 		original:
-			"https://static.mercdn.net/item/detail/orig/photos/m43871960855_3.jpg",
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_3.jpg",
 		thumbnail:
-			"https://static.mercdn.net/item/detail/orig/photos/m43871960855_3.jpg",
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_3.jpg",
 	},
 	{
 		original:
-			"https://static.mercdn.net/item/detail/orig/photos/m43871960855_4.jpg",
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
 		thumbnail:
-			"https://static.mercdn.net/item/detail/orig/photos/m43871960855_4.jpg",
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
+	},
+	{
+		original:
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
+		thumbnail:
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
+	},
+	{
+		original:
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
+		thumbnail:
+			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
 	},
 ];
 
@@ -67,14 +79,22 @@ function Detail() {
 			).then((res) => res.json()),
 	});
 
-	let content;
 	if (isLoading) {
 		return <p>Loading...</p>;
-	} else {
-		console.log(JSON.stringify(data.data.attributes.title));
-		content = data.data.attributes;
 	}
 
+	let content = data.data.attributes;
+
+	for (let i = 0; i < 5; i++) {
+		images[i].original = `https://static.mercdn.net/item/detail/orig/photos/${
+			content.item_number
+		}_${i + 1}.jpg`;
+		images[
+			i
+		].thumbnail = `https://static.mercdn.net/item/detail/orig/photos/${
+			content.item_number
+		}_${i + 1}.jpg`;
+	}
 	return (
 		<>
 			<NekoContainer>
@@ -91,7 +111,9 @@ function Detail() {
 					{/* <div className="title">{content}</div> */}
 					{content.title}
 					<div className="brand">120cm / ツモリチサト</div>
-					<div className="price">¥5,200(税込)送料込み</div>
+					<div className="price">
+						¥{Number(content.price).toLocaleString()}(税込)送料込み
+					</div>
 					<IconContainer>
 						<div>
 							<img src={heart} alt="heart" />
@@ -113,35 +135,7 @@ function Detail() {
 					</div>
 					<div className="desc">
 						<h2>商品の説明</h2>
-						<p>
-							即購入歓迎
-							<br />
-							メルカリ便にて発送致します。
-							<br />
-							値下げ交渉ご遠慮下さい。
-							<br />
-							よろしくお願い致します。
-							<br />
-							<br />
-							「ポケモン不思議のダンジョン 赤の救助隊」
-							<br />
-							定価: ￥ 4571
-							<br />
-							ポケモンダンジョン
-							<br />
-							#ゲーム #RPG #ゲームボーイアドバンス #Other
-							<br />
-							GAMEBOY ADVANCE
-							<br />
-							ポケットモンスター
-							<br />
-							GBA
-							<br />
-							赤<br />
-							<br />
-							12分前
-							<br />
-						</p>
+						<p>{content.description}</p>
 					</div>
 
 					<hr />
