@@ -11,13 +11,7 @@ import person from "../assets/person.svg";
 import styled from "styled-components";
 import ImageNotFound from "../assets/ImageNotFound.png";
 
-import {
-	useQuery,
-	useMutation,
-	useQueryClient,
-	QueryClient,
-	QueryClientProvider,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const TabContainer = styled.div`
 	width: 100%;
@@ -136,36 +130,45 @@ function Home() {
 			),
 	});
 
-	let content;
 	if (isLoading) {
-		content = <p>Loading...</p>;
-	} else {
-		content = data.data.map((item) => {
-			// 三項演算子
-			let existImage = item.attributes.images.data
-				? `https://lusty.asia:1443${item.attributes.images.data[0].attributes.url}`
-				: ImageNotFound;
-			console.log(existImage);
+		return <p>Loading...</p>;
+	}
 
+	if (error) {
+		return <p>Error</p>;
+	}
+
+	const content = data.data.map((item) => {
+		// 三項演算子
+		let show = item.attributes.images.data ? true : false;
+		console.log(item.id);
+
+		// /item?id=8
+		if (show == true) {
+			return (
+				<a href={`/item?id=${item.id}`}>
+					<div className="nekoBox" key={item.id}>
+						<div>
+							<img
+								src={`https://lusty.asia:1443${item.attributes.images?.data[0].attributes.url}`}
+								alt=""
+							/>
+							<span>{item.attributes.price}</span>
+						</div>
+						<p>{item.attributes.description}</p>
+					</div>
+				</a>
+			);
+		} else {
 			return (
 				<div className="nekoBox" key={item.id}>
 					<div>
-						<img
-							// src={`https://lusty.asia:1443${item.attributes.images?.data[0].attributes.url}`}
-							src={existImage}
-							alt=""
-						/>
-						<span>{item.attributes.price}</span>
+						<img src={ImageNotFound} alt="" />
 					</div>
-					{/* <p>{JSON.stringify(item.attributes)}</p> */}
-
-					{/* <p>{JSON.stringify(item.attributes.images.data)}</p> */}
-					{/* <p>{item.attributes.images.data[0].attributes.name}</p> */}
-					<p>{item.attributes.description}</p>
 				</div>
 			);
-		});
-	}
+		}
+	});
 
 	return (
 		<>
