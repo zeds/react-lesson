@@ -22,44 +22,7 @@ import lock from "../assets/icons/lock.svg";
 import Star from "./Star";
 import ImageGallery from "react-image-gallery";
 
-const images = [
-	{
-		original:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_1.jpg",
-		thumbnail:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_1.jpg",
-	},
-	{
-		original:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_2.jpg",
-		thumbnail:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_2.jpg",
-	},
-	{
-		original:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_3.jpg",
-		thumbnail:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_3.jpg",
-	},
-	{
-		original:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
-		thumbnail:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
-	},
-	{
-		original:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
-		thumbnail:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
-	},
-	{
-		original:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
-		thumbnail:
-			"https://static.mercdn.net/item/detail/orig/photos/m73541929897_4.jpg",
-	},
-];
+const images = [];
 
 const Container = styled.div`
 	width: 100%;
@@ -70,6 +33,17 @@ const Container = styled.div`
 function Detail() {
 	const location = useLocation();
 	const [itemId, setItemId] = useState(location.search.split("=")[1]);
+
+	const array = [];
+	const prof = { name: "tom", age: 18 };
+	array.push(prof);
+	array[5] = 99;
+	console.log(array);
+
+	const fruits = [];
+	fruits.push("バナナ", "りんご", "もも");
+	console.log(fruits.length); // 3
+	console.log(fruits);
 
 	const { isLoading, error, data } = useQuery({
 		queryKey: ["Products"],
@@ -85,15 +59,32 @@ function Detail() {
 
 	let content = data.data.attributes;
 
-	for (let i = 0; i < 5; i++) {
-		images[i].original = `https://static.mercdn.net/item/detail/orig/photos/${
+	for (let i = 0; i < 20; i++) {
+		const url = `https://static.mercdn.net/item/detail/orig/photos/${
 			content.item_number
 		}_${i + 1}.jpg`;
-		images[
-			i
-		].thumbnail = `https://static.mercdn.net/item/detail/orig/photos/${
-			content.item_number
-		}_${i + 1}.jpg`;
+
+		console.log(url);
+
+		const img = new Image();
+		img.src = url;
+
+		img.onload = function () {
+			console.log(i);
+			let obj = {
+				original: `https://static.mercdn.net/item/detail/orig/photos/${
+					content.item_number
+				}_${i + 1}.jpg`,
+				thumbnail: `https://static.mercdn.net/item/detail/orig/photos/${
+					content.item_number
+				}_${i + 1}.jpg`,
+			};
+			images.push(obj);
+		};
+
+		img.onerror = function () {
+			console.log("存在しません");
+		};
 	}
 	return (
 		<>
