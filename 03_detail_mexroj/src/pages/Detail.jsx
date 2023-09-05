@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import "react-image-gallery/styles/css/image-gallery.css";
 import styled from "styled-components";
+import { useParams, useLocation } from "react-router-dom";
+
+import { useQuery } from "@tanstack/react-query";
+
 import {
-    NekoContainer,
-    LeftBox,
-    RightBox,
-    IconContainer,
-    AuthorContainer,
-    UserContainer,
-    Delivery,
-    Comment,
+	NekoContainer,
+	LeftBox,
+	RightBox,
+	IconContainer,
+	AuthorContainer,
 } from "./DetailStyle";
 
 import heart from "../assets/icons/heart.svg";
@@ -17,210 +19,173 @@ import dot from "../assets/icons/dot.svg";
 import link from "../assets/icons/link.svg";
 import arrow from "../assets/icons/arrow.svg";
 import lock from "../assets/icons/lock.svg";
-import checkicon from "../assets/icons/check.svg";
-import Star from "./Star"
-// import star from "../assets/icons/star.svg";
-// import star2 from "../assets/icons/star2.svg";
-import truck from "../assets/icons/truck.svg";
-import "react-image-gallery/styles/css/image-gallery.css";
-import ImageGallery from 'react-image-gallery';
+import Star from "./Star";
+import ImageGallery from "react-image-gallery";
 
+const images = [];
 
-
-const images = [
-    {
-      original: "https://static.mercdn.net/item/detail/orig/photos/m66662706872_1.jpg",
-      thumbnail: "https://static.mercdn.net/item/detail/orig/photos/m66662706872_1.jpg",
-    },
-    {
-      original: "https://static.mercdn.net/item/detail/orig/photos/m66662706872_2.jpg",
-      thumbnail: "https://static.mercdn.net/item/detail/orig/photos/m66662706872_2.jpg",
-    },
-    {
-      original: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_3.jpg",
-      thumbnail: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_3.jpg",
-    },
-    {
-      original: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_4.jpg",
-      thumbnail: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_4.jpg",
-    },
-    {
-      original: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_5.jpg",
-      thumbnail: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_5.jpg",
-    },
-  ];
-
-
-
+const Container = styled.div`
+	width: 100%;
+	height: 100vh;
+	background: red;
+`;
 
 function Detail() {
-    return (
-        <>
-            <NekoContainer>
-                <LeftBox>
-                <ImageGallery
-                items={images} thumbnailPosition='left'
-                showPlayButton={false}
-                showFullscreenButton={false}
+	const location = useLocation();
+	const [itemId, setItemId] = useState(location.search.split("=")[1]);
 
-                    />;
-                </LeftBox>
-                <RightBox>
-                    <div className="title">
-                        新品　ツモリチサト　120センチ　浴衣
-                    </div>
-                    <div className="brand">120cm / ツモリチサト</div>
-                    <div className="price">¥5,200(税込)送料込み</div>
-                    <IconContainer>
-                        <div>
-                            <img src={heart} alt="heart" />
-                            <img src={comment} alt="comment" />
-                        </div>
+	const array = [];
+	const prof = { name: "tom", age: 18 };
+	array.push(prof);
+	array[5] = 99;
+	console.log(array);
 
-                        <div>
-                            <img src={dot} alt="dot" />
-                        </div>
-                    </IconContainer>
-                    <div className="button_buy">
-                        Buy this item!
-                        <img src={link} alt="link" />
-                    </div>
-                    <div className="thanks">
-                        Thanks to our partnership with Buyee, we ship to over
-                        100 countries worldwide! For international purchases,
-                        your transaction will be with Buyee.
-                    </div>
-                    <div className="desc">
-                        <h2>商品の説明</h2>
-                        <p>
-                            即購入歓迎
-                            <br />
-                            メルカリ便にて発送致します。
-                            <br />
-                            値下げ交渉ご遠慮下さい。
-                            <br />
-                            よろしくお願い致します。
-                            <br />
-                            <br />
-                            「ポケモン不思議のダンジョン 赤の救助隊」
-                            <br />
-                            定価: ￥ 4571
-                            <br />
-                            ポケモンダンジョン
-                            <br />
-                            #ゲーム #RPG #ゲームボーイアドバンス #Other
-                            <br />
-                            GAMEBOY ADVANCE
-                            <br />
-                            ポケットモンスター
-                            <br />
-                            GBA
-                            <br />
-                            赤<br />
-                            <br />
-                            12分前
-                            <br />
-                        </p>
-                    </div>
+	const fruits = [];
+	fruits.push("バナナ", "りんご", "もも");
+	console.log(fruits.length); // 3
+	console.log(fruits);
 
-                    <hr />
-                    <div className="info">
-                        <h2>商品の情報</h2>
-                        <div>
-                            <p>カテゴリー</p>
+	const { isLoading, error, data } = useQuery({
+		queryKey: ["Products"],
+		queryFn: () =>
+			fetch(
+				`https://lusty.asia:1443/api/products/${itemId}?populate=*`
+			).then((res) => res.json()),
+	});
 
-                            <ul>
-                                <li>本・音楽・ゲーム</li>
-                                <li>テレビゲーム</li>
-                                <li>その他</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <p>商品の状態</p>
-                            <span>目立った傷や汚れなし</span>
-                        </div>
+	if (isLoading) {
+		return <p>Loading...</p>;
+	}
 
-                        <div>
-                            <p>配送料の負担</p>
-                            <span>送料込み(出品者負担)</span>
-                        </div>
+	let content = data.data.attributes;
 
-                        <div>
-                            <p>配送の方法</p>
-                            <span>未定</span>
-                        </div>
+	for (let i = 0; i < 20; i++) {
+		const url = `https://static.mercdn.net/item/detail/orig/photos/${
+			content.item_number
+		}_${i + 1}.jpg`;
 
-                        <div>
-                            <p>発送元の地域</p>
-                            <span>未定</span>
-                        </div>
+		console.log(url);
 
-                        <div>
-                            <p>発送までの日数</p>
-                            <span>目立った傷や汚れなし</span>
-                        </div>
-                    </div>
+		const img = new Image();
+		img.src = url;
 
-                    <hr/>
+		img.onload = function () {
+			console.log(i);
+			let obj = {
+				original: `https://static.mercdn.net/item/detail/orig/photos/${
+					content.item_number
+				}_${i + 1}.jpg`,
+				thumbnail: `https://static.mercdn.net/item/detail/orig/photos/${
+					content.item_number
+				}_${i + 1}.jpg`,
+			};
+			images.push(obj);
+		};
 
-                    <AuthorContainer>
-                        <div>
-                            <img src= {lock} alt="lock" />
-                            <span>メルカリ安心への取り組み</span>
-                        </div>
-                        <div>
-                            <p>
-                                お金は事務局に支払われ、評価後に振り込まれます
-                            </p>
-                        </div>
-                        <div className="arrow">
-                            <img src= {arrow} alt="arrow" />
-                        </div>
-                    </AuthorContainer>
-                        <div className="user">出品者</div>
-                    <UserContainer>
-                        <div class="box">
-                            <img className="avatar" src="https://static.mercdn.net/thumb/members/689095029.jpg?1643998812" alt="avatar" />
-                            <div>
-                                <p>メフロジュ</p>
-                                <div className="StarComponent">
-                                    <Star rate="3" text="8617" fontSize="1.5"></Star>
-                                </div>
-                                <div className="check">
-                                    <img   src= {checkicon} alt="check"/>
-                                    <span>本人確認済</span>
-                                </div>
-                            </div>
-                            <div>
-                                <img className="arrow"  src={arrow} alt="" />
-                            </div>
-                         </div>
-                    </UserContainer>
-                    <Delivery>
-                        <div>
-                            <img src={truck} alt="truck" />
-                            <span>スピード発送</span>
-                        </div>
-                        <div>
-                            <p>
-                                この出品者は平均24時間以内に発送しています
-                            </p>
-                        </div>
-                        <div className="arrow">
-                            <img src= {arrow} alt="arrow" />
-                        </div>
-                    </Delivery>
+		img.onerror = function () {
+			console.log("存在しません");
+		};
+	}
+	return (
+		<>
+			<NekoContainer>
+				<LeftBox>
+					<ImageGallery
+						items={images}
+						thumbnailPosition="left"
+						showPlayButton={false}
+						showFullscreenButton={false}
+					/>
+				</LeftBox>
+				<RightBox>
+					{/* <div className="title">新品　ツモリチサト　120センチ　浴衣</div> */}
+					{/* <div className="title">{content}</div> */}
+					{content.title}
+					<div className="brand">120cm / ツモリチサト</div>
+					<div className="price">
+						¥{Number(content.price).toLocaleString()}(税込)送料込み
+					</div>
+					<IconContainer>
+						<div>
+							<img src={heart} alt="heart" />
+							<img src={comment} alt="comment" />
+						</div>
 
-                    <Comment>
-                        <div className="comment">
-                            <h2>コメント (0) </h2>
-                            <button>ログインしてコメントする</button>
-                        </div>
-                    </Comment>
-                </RightBox>
-            </NekoContainer>
-        </>
-    );
+						<div>
+							<img src={dot} alt="dot" />
+						</div>
+					</IconContainer>
+					<div className="button_buy">
+						Buy this item!
+						<img src={link} alt="link" />
+					</div>
+					<div className="thanks">
+						Thanks to our partnership with Buyee, we ship to over 100
+						countries worldwide! For international purchases, your
+						transaction will be with Buyee.
+					</div>
+					<div className="desc">
+						<h2>商品の説明</h2>
+						<p>{content.description}</p>
+					</div>
+
+					<hr />
+					<div className="info">
+						<h2>商品の情報</h2>
+						<div>
+							<p>カテゴリー</p>
+
+							<ul>
+								<li>本・音楽・ゲーム</li>
+								<li>テレビゲーム</li>
+								<li>その他</li>
+							</ul>
+						</div>
+						<div>
+							<p>商品の状態</p>
+							<span>目立った傷や汚れなし</span>
+						</div>
+
+						<div>
+							<p>配送料の負担</p>
+							<span>送料込み(出品者負担)</span>
+						</div>
+
+						<div>
+							<p>配送の方法</p>
+							<span>未定</span>
+						</div>
+
+						<div>
+							<p>発送元の地域</p>
+							<span>未定</span>
+						</div>
+
+						<div>
+							<p>発送までの日数</p>
+							<span>目立った傷や汚れなし</span>
+						</div>
+					</div>
+
+					<hr />
+
+					<AuthorContainer>
+						<div>
+							<img src={lock} alt="lock" />
+							<span>メルカリ安心への取り組み</span>
+						</div>
+						<div>
+							<p>お金は事務局に支払われ、評価後に振り込まれます</p>
+						</div>
+						<div className="arrow">
+							<img src={arrow} alt="arrow" />
+						</div>
+					</AuthorContainer>
+					<Star text="あいうえお"></Star>
+				</RightBox>
+			</NekoContainer>
+		</>
+	);
 }
 
 export default Detail;
