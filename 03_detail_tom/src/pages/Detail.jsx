@@ -34,17 +34,6 @@ function Detail() {
 	const location = useLocation();
 	const [itemId, setItemId] = useState(location.search.split("=")[1]);
 
-	const array = [];
-	const prof = { name: "tom", age: 18 };
-	array.push(prof);
-	array[5] = 99;
-	console.log(array);
-
-	const fruits = [];
-	fruits.push("バナナ", "りんご", "もも");
-	console.log(fruits.length); // 3
-	console.log(fruits);
-
 	const { isLoading, error, data } = useQuery({
 		queryKey: ["Products"],
 		queryFn: () =>
@@ -59,18 +48,38 @@ function Detail() {
 
 	let content = data.data.attributes;
 
+	const checkImage = async (url) => {
+		const img = new Image();
+		img.src = url;
+
+		let status = false;
+
+		img.onload = await function () {
+			// console.log("ロードできた");
+			status = true;
+		};
+
+		img.onerror = await function () {
+			// console.log("ロードできへん");
+		};
+
+		return status;
+	};
+
 	for (let i = 0; i < 20; i++) {
 		const url = `https://static.mercdn.net/item/detail/orig/photos/${
 			content.item_number
 		}_${i + 1}.jpg`;
 
-		console.log(url);
+		const ret = checkImage(url);
+		if (ret == false) {
+			console.log("えらーーー");
+		}
 
 		const img = new Image();
 		img.src = url;
 
 		img.onload = function () {
-			console.log(i);
 			let obj = {
 				original: `https://static.mercdn.net/item/detail/orig/photos/${
 					content.item_number
@@ -92,9 +101,11 @@ function Detail() {
 				<LeftBox>
 					<ImageGallery
 						items={images}
-						thumbnailPosition="left"
+						// thumbnailPosition="left"
 						showPlayButton={false}
 						showFullscreenButton={false}
+						// disableThumbnailScroll={true}
+						// disableThumbnailSwipe={false}
 					/>
 				</LeftBox>
 				<RightBox>
