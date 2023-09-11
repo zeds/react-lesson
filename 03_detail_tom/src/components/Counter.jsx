@@ -21,32 +21,17 @@ const Container = styled.div`
 	}
 `;
 
-const Counter = () => {
-	const [user, setUser] = useState([1, 2, 3]);
+const Counter = (e) => {
+	const [moji, setMoji] = useState("あいうえお");
 
-	const updateUser = () => {
-		const addImmutable = [...user, { name: "tom", age: 18 }];
-		setUser(addImmutable);
-	};
-	const showUser = () => {
-		user[0].name = "Nancy";
-		setUser([...user]);
-		console.log(user);
-	};
+	useEffect(() => {
+		setMoji("かきくけこ");
+	}, []);
 
 	return (
-		<div>
-			<h1>
-				{user.map((item, index) => (
-					<div key={index}>
-						{item.name}:{item.age}
-					</div>
-				))}
-			</h1>
-
-			<button onClick={updateUser}>Click me</button>
-			<button onClick={showUser}>Show me</button>
-		</div>
+		<Container>
+			<h1>{moji}</h1>
+		</Container>
 	);
 };
 

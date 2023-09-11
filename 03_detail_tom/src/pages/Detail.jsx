@@ -22,8 +22,6 @@ import lock from "../assets/icons/lock.svg";
 import Star from "./Star";
 import ImageGallery from "react-image-gallery";
 
-const images = [];
-
 const Container = styled.div`
 	width: 100%;
 	height: 100vh;
@@ -33,13 +31,27 @@ const Container = styled.div`
 function Detail() {
 	const location = useLocation();
 	const [itemId, setItemId] = useState(location.search.split("=")[1]);
+	const [images, setImages] = useState([
+		{
+			original: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+			thumbnail: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+		},
+		{
+			original: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+			thumbnail: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+		},
+		{
+			original: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+			thumbnail: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+		},
+	]);
 
 	const { isLoading, error, data } = useQuery({
 		queryKey: ["Products"],
 		queryFn: () =>
-			fetch(
-				`https://lusty.asia:1443/api/products/${itemId}?populate=*`
-			).then((res) => res.json()),
+			fetch(`https://lusty.asia:1443/api/products/${itemId}`).then((res) =>
+				res.json()
+			),
 	});
 
 	if (isLoading) {
@@ -48,53 +60,34 @@ function Detail() {
 
 	let content = data.data.attributes;
 
-	const checkImage = async (url) => {
-		const img = new Image();
-		img.src = url;
+	console.log(content);
 
-		let status = false;
+	// item_numberより、画像を取得する
 
-		img.onload = await function () {
-			// console.log("ロードできた");
-			status = true;
-		};
+	// for (let i = 0; i < 20; i++) {
+	// 	const url = `https://static.mercdn.net/item/detail/orig/photos/${
+	// 		content.item_number
+	// 	}_${i + 1}.jpg`;
 
-		img.onerror = await function () {
-			// console.log("ロードできへん");
-		};
+	// 	const img = new Image();
+	// 	img.src = url;
 
-		return status;
-	};
+	// 	img.onload = function () {
+	// 		let obj = {
+	// 			original: `https://static.mercdn.net/item/detail/orig/photos/${
+	// 				content.item_number
+	// 			}_${i + 1}.jpg`,
+	// 			thumbnail: `https://static.mercdn.net/item/detail/orig/photos/${
+	// 				content.item_number
+	// 			}_${i + 1}.jpg`,
+	// 		};
+	// 		images.push(obj);
+	// 	};
 
-	for (let i = 0; i < 20; i++) {
-		const url = `https://static.mercdn.net/item/detail/orig/photos/${
-			content.item_number
-		}_${i + 1}.jpg`;
-
-		const ret = checkImage(url);
-		if (ret == false) {
-			console.log("えらーーー");
-		}
-
-		const img = new Image();
-		img.src = url;
-
-		img.onload = function () {
-			let obj = {
-				original: `https://static.mercdn.net/item/detail/orig/photos/${
-					content.item_number
-				}_${i + 1}.jpg`,
-				thumbnail: `https://static.mercdn.net/item/detail/orig/photos/${
-					content.item_number
-				}_${i + 1}.jpg`,
-			};
-			images.push(obj);
-		};
-
-		img.onerror = function () {
-			console.log("存在しません");
-		};
-	}
+	// 	img.onerror = function () {
+	// 		console.log("存在しません");
+	// 	};
+	// }
 	return (
 		<>
 			<NekoContainer>
