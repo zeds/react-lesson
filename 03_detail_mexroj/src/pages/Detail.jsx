@@ -22,8 +22,6 @@ import lock from "../assets/icons/lock.svg";
 import Star from "./Star";
 import ImageGallery from "react-image-gallery";
 
-const images = [];
-
 const Container = styled.div`
 	width: 100%;
 	height: 100vh;
@@ -33,24 +31,27 @@ const Container = styled.div`
 function Detail() {
 	const location = useLocation();
 	const [itemId, setItemId] = useState(location.search.split("=")[1]);
-
-	const array = [];
-	const prof = { name: "tom", age: 18 };
-	array.push(prof);
-	array[5] = 99;
-	console.log(array);
-
-	const fruits = [];
-	fruits.push("バナナ", "りんご", "もも");
-	console.log(fruits.length); // 3
-	console.log(fruits);
+	const [images, setImages] = useState([
+		{
+			original: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+			thumbnail: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+		},
+		{
+			original: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+			thumbnail: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+		},
+		{
+			original: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+			thumbnail: `https://static.mercdn.net/item/detail/orig/photos/m23109025492_1.jpg`,
+		},
+	]);
 
 	const { isLoading, error, data } = useQuery({
 		queryKey: ["Products"],
 		queryFn: () =>
-			fetch(
-				`https://lusty.asia:1443/api/products/${itemId}?populate=*`
-			).then((res) => res.json()),
+			fetch(`https://lusty.asia:1443/api/products/${itemId}`).then((res) =>
+				res.json()
+			),
 	});
 
 	if (isLoading) {
@@ -59,48 +60,51 @@ function Detail() {
 
 	let content = data.data.attributes;
 
-	for (let i = 0; i < 20; i++) {
-		const url = `https://static.mercdn.net/item/detail/orig/photos/${
-			content.item_number
-		}_${i + 1}.jpg`;
+	console.log(content);
 
-		console.log(url);
+	// item_numberより、画像を取得する
 
-		const img = new Image();
-		img.src = url;
+	// for (let i = 0; i < 20; i++) {
+	// 	const url = `https://static.mercdn.net/item/detail/orig/photos/${
+	// 		content.item_number
+	// 	}_${i + 1}.jpg`;
 
-		img.onload = function () {
-			console.log(i);
-			let obj = {
-				original: `https://static.mercdn.net/item/detail/orig/photos/${
-					content.item_number
-				}_${i + 1}.jpg`,
-				thumbnail: `https://static.mercdn.net/item/detail/orig/photos/${
-					content.item_number
-				}_${i + 1}.jpg`,
-			};
-			images.push(obj);
-		};
+	// 	const img = new Image();
+	// 	img.src = url;
 
-		img.onerror = function () {
-			console.log("存在しません");
-		};
-	}
+	// 	img.onload = function () {
+	// 		let obj = {
+	// 			original: `https://static.mercdn.net/item/detail/orig/photos/${
+	// 				content.item_number
+	// 			}_${i + 1}.jpg`,
+	// 			thumbnail: `https://static.mercdn.net/item/detail/orig/photos/${
+	// 				content.item_number
+	// 			}_${i + 1}.jpg`,
+	// 		};
+	// 		images.push(obj);
+	// 	};
+
+	// 	img.onerror = function () {
+	// 		console.log("存在しません");
+	// 	};
+	// }
 	return (
 		<>
 			<NekoContainer>
 				<LeftBox>
 					<ImageGallery
 						items={images}
-						thumbnailPosition="left"
+						// thumbnailPosition="left"
 						showPlayButton={false}
 						showFullscreenButton={false}
+						// disableThumbnailScroll={true}
+						// disableThumbnailSwipe={false}
 					/>
 				</LeftBox>
 				<RightBox>
-					{/* <div className="title">新品　ツモリチサト　120センチ　浴衣</div> */}
-					{/* <div className="title">{content}</div> */}
-					{content.title}
+					{/*  <div className="title">新品　ツモリチサト　120センチ　浴衣</div>  */}
+					{/* <div className="title">{content}</div>
+					{content.title} */}
 					<div className="brand">120cm / ツモリチサト</div>
 					<div className="price">
 						¥{Number(content.price).toLocaleString()}(税込)送料込み

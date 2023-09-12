@@ -24,15 +24,14 @@ import Star from "./Star"
 import truck from "../assets/icons/truck.svg";
 
 
+
+
+
 function Detail() {
     return (
         <>
             <NekoContainer>
                 <LeftBox>
-                    <img
-                        src="https://static.mercdn.net/item/detail/orig/photos/m43871960855_1.jpg?1690880161"
-                        alt="aaa"
-                    />
                 </LeftBox>
                 <RightBox>
                     <div className="title">

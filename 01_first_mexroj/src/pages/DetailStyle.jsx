@@ -172,11 +172,14 @@ export const UserContainer = styled.div`
             font-weight: bold;
         }
         .check{
-            display: flex;
+            /* display: flex; */
+            float: left;
+            /* align-items: center; */
             background-color: skyblue;
             img{
                 left: 0;
                 background-color: red;
+                /* align-items: center; */
                 width: 16px;
                 height: 16px;
             }
