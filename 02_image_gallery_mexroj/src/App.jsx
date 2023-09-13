@@ -8,16 +8,24 @@ import ImageGallery from 'react-image-gallery';
 
 const images = [
   {
-    original: "https://picsum.photos/id/1018/1000/600/",
-    thumbnail: "https://picsum.photos/id/1018/250/150/",
+    original: "https://static.mercdn.net/item/detail/orig/photos/m66662706872_1.jpg",
+    thumbnail: "https://static.mercdn.net/item/detail/orig/photos/m66662706872_1.jpg",
   },
   {
-    original: "https://picsum.photos/id/1015/1000/600/",
-    thumbnail: "https://picsum.photos/id/1015/250/150/",
+    original: "https://static.mercdn.net/item/detail/orig/photos/m66662706872_2.jpg",
+    thumbnail: "https://static.mercdn.net/item/detail/orig/photos/m66662706872_2.jpg",
   },
   {
-    original: "https://picsum.photos/id/1019/1000/600/",
-    thumbnail: "https://picsum.photos/id/1019/250/150/",
+    original: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_3.jpg",
+    thumbnail: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_3.jpg",
+  },
+  {
+    original: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_4.jpg",
+    thumbnail: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_4.jpg",
+  },
+  {
+    original: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_5.jpg",
+    thumbnail: "	https://static.mercdn.net/item/detail/orig/photos/m66662706872_5.jpg",
   },
 ];
 
@@ -28,7 +36,7 @@ function App() {
 
   return (
     <>
-      return <ImageGallery items={images} />;
+      return <ImageGallery items={images} thumbnailPosition='left' />;
     </>
   )
 }
