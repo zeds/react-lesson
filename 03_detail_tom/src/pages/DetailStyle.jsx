@@ -21,7 +21,7 @@ export const LeftBox = styled.div`
 `;
 
 export const RightBox = styled.div`
-	height: 1000px;
+	height: 100%;
 	border: 2px solid black;
 	padding: 10px;
 	font-size: 1.5rem;

@@ -22,15 +22,14 @@ const Container = styled.div`
 `;
 
 const Counter = (e) => {
+	// moji: 変数、 setMoji: 関数
+	// あいうえおを変数(moji)に格納している
 	const [moji, setMoji] = useState("あいうえお");
-
-	useEffect(() => {
-		setMoji("かきくけこ");
-	}, []);
 
 	return (
 		<Container>
 			<h1>{moji}</h1>
+			<button onClick={() => setMoji("かきくけこ")}>変更</button>
 		</Container>
 	);
 };
