@@ -1,0 +1,22 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+html {
+	font-size: 62.5%;
+	/* 1rem = 16px 始め
+  1rem = 10px */
+
+	@media (max-width: 800px) {
+		font-size: 30%;
+	}
+}
+
+body {
+	background: lightgray;
+	width: 100%;
+	height: 100vh;
+	padding: 20px;
+}
