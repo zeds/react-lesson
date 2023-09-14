@@ -10,19 +10,23 @@ const Container = styled.div`
 	background: red;
 	margin: 0 auto;
 	font-size: 14px;
-	gap: 10px;
 	img {
 		width: 46px;
 		height: 46px;
 		border-radius: 50%;
 	}
 	div {
+		display: flex;
+
 		div {
 			width: 100%;
+			flex-direction: column;
+			gap: 10px;
 			span {
 				font-weight: bold;
 			}
 			.comment {
+
 				padding: 10px;
 				border-radius: 8px;
 				background: #f5f5f5;
@@ -46,10 +50,10 @@ const Counter = (e) => {
 			date: "10日前",
 		},
 		{
-			img: neko1,
-			name: "かーすけ",
-			text: "変更しておきましたのでよろしくお願い致します。m( )m",
-			date: "10日前",
+			img: neko2,
+			name: "Mehroj",
+			text: "ありがとうございます",
+			date: "3日前",
 		},
 	]);
 
@@ -57,15 +61,15 @@ const Counter = (e) => {
 		<Container>
 			{comment.map((item) => (
 				<div>
-					{item.name}
-					{/* <img src={comment.img} alt="nako" />
+					{/* {item.name} */}
+					<img src={item.img} alt="" />
 					<div>
-						<span>{comment.name}</span>
-						<div className="comment">
-							<p>{comment.text}</p>
-							<p>{comment.date}</p>
+							<span>{item.name}</span>
+							<div className="comment">
+								<p>{item.text}</p>
+								<p>{item.date}</p>
 						</div>
-					</div> */}
+					</div>
 				</div>
 			))}
 		</Container>

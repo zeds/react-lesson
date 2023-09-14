@@ -21,6 +21,7 @@ import arrow from "../assets/icons/arrow.svg";
 import lock from "../assets/icons/lock.svg";
 import Star from "./Star";
 import ImageGallery from "react-image-gallery";
+import Comment from "../components/Comment";
 
 const Container = styled.div`
 	width: 100%;
@@ -186,6 +187,7 @@ function Detail() {
 						</div>
 					</AuthorContainer>
 					<Star text="あいうえお"></Star>
+					<Comment />
 				</RightBox>
 			</NekoContainer>
 		</>
