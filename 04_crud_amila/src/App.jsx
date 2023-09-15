@@ -1,6 +1,12 @@
 import "./App.css";
 import { styled } from "styled-components";
 import { useQuery } from "@tanstack/react-query";
+import trash from "./assets/trash.svg";
+import edit from "./assets/trash.svg"
+
+
+
+
 
 const Container = styled.div`
 	max-width: 1024px;
@@ -47,6 +53,8 @@ function App() {
 	if (postsQuery.isLoading) {
 		return <h1>Loading...</h1>;
 	}
+
+  
   const clickEdit=()=> {
     console.log("Edit")
   }
@@ -63,9 +71,11 @@ function App() {
         <div>{item.attributes.comment}</div>
         </div>
         <div className="operation">
-   <button onClick={() =>clickEdit()}>edit</button>
-   <button onClick={() =>clickDelete() }>delete</button>
-   
+   <button onClick={() =>clickEdit()} > <img src={edit} alt="" /></button>
+   <button onClick={() =>clickDelete() }>   <img src={trash} alt="" />
+</button>
+ 
+
         </div>
         </Card>
 			))}
