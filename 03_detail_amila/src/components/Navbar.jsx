@@ -88,9 +88,9 @@ function Navbar() {
             
             <Header>
                 <div className="logo_container">
-                    <Link to="/">
+                    <a href="/" >
                         <img className="logo" src={logo} alt="" />
-                    </Link>
+                    </a>
                     <input type="text" placeholder="なにをお探しですか？" />
                     <img className="search_icon" src={search} alt="" />
                 </div>
