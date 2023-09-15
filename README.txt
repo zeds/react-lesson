@@ -68,6 +68,27 @@ npm i @tanstack/react-query-devtools
 Kyle
 https://www.youtube.com/watch?v=lVLz_ASqAio&t=56s
 
+react-hook-form
+プログラミングチュートリアル
+https://www.youtube.com/watch?v=f1fysEKNwQA&t=1228s
+
+※入力した値をuseStateで格納する場合は、タイプする毎にレンダリングされてしまう
+useStateのかわりに、useRefを使いましょう。
+React. useRef will allow you to write forms without re-render the component for each user input optimizing the application at the expense of real-time controls, enabling/disabling the form submit button based on the user input and previews.
+
+✅React forms — useState vs useRef
+https://levelup.gitconnected.com/react-forms-usestate-vs-useref-5cb584cc19fd\
+
+
+✅投稿したら、viewを更新する
+https://zenn.dev/masatakaitoh/articles/3c2f8602d2bb9d
+
+
+✅optimistic update
+https://qiita.com/suzuki0430/items/1812e600797bba661cef
+
+
+
 
 
 
