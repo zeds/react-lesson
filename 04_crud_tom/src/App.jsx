@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { styled } from "styled-components";
 import "./App.css";
 import axios from "axios";
-import { styled } from "styled-components";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import edit from "./assets/edit.svg";
 import trush from "./assets/trush.svg";
+import Modal from "./components/Modal";
 
 const Container = styled.div`
 	max-width: 1024px;
@@ -33,16 +34,26 @@ const Card = styled.div`
 		}
 		button:hover {
 			cursor: pointer;
-			opacity: 0.5;
+			background: skyblue;
 		}
 	}
 `;
 
 function App() {
+	const [show, setShow] = useState(false);
+
 	const queryClient = useQueryClient();
 	const refName = useRef();
 	const refComment = useRef();
 
+	// CRUDのDelete
+	const mutationDelete = useMutation((commentId) => {
+		fetch(`https://lusty.asia:1443/api/mercari-comments/${commentId}`, {
+			method: "DELETE",
+		}).then((res) => res.json());
+	});
+
+	// CRUDのCreate
 	const mutationCreate = useMutation({
 		mutationFn: (newComment) => {
 			return axios.post(
@@ -55,14 +66,15 @@ function App() {
 		},
 	});
 
+	// CRUDのRead
 	const postsQuery = useQuery(
 		["comments"],
 		() =>
-			fetch("https://lusty.asia:1443/api/mercari-comments").then((res) =>
-				res.json()
-			),
+			fetch(
+				"https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc"
+			).then((res) => res.json()),
 		{
-			refetchInterval: 2000,
+			// refetchInterval: 1000,
 		}
 	);
 
@@ -70,14 +82,28 @@ function App() {
 		return <h1>Loading...</h1>;
 	}
 
+	// Open Modal
 	const clickEdit = () => {
-		console.log("Edit");
+		// スクロールできないようにする
+		document.body.style.overflow = "hidden";
+		setShow(true);
 	};
-	const clickDelete = () => {
-		console.log("Delete");
+
+	// Close Modal
+	const closeModal = () => {
+		// スクロールできるようにする
+		document.body.style.overflow = "auto";
+		setShow(false);
+	};
+
+	// 削除
+	const clickDelete = (id) => {
+		console.log(id);
+		mutationDelete.mutate(id);
 	};
 
 	const onSubmit = (e) => {
+		// 画面のリロードを防ぐため
 		e.preventDefault();
 		console.log(refName.current.value);
 		console.log(refComment.current.value);
@@ -90,30 +116,36 @@ function App() {
 	};
 
 	return (
-		<Container>
-			<form onSubmit={onSubmit}>
-				名前：<input ref={refName} type="text"></input>
-				コメント：<input ref={refComment} type="text"></input>
-				<button type="submit">投稿</button>
-			</form>
+		<>
+			<Modal close={closeModal} open={show} />
 
-			{postsQuery.data.data.map((item, index) => (
-				<Card key={index}>
-					<div>
-						<div>{item.attributes.name}</div>
-						<div>{item.attributes.comment}</div>
-					</div>
-					<div className="operation">
-						<button onClick={() => clickEdit()}>
-							<img src={edit} alt="" />
-						</button>
-						<button onClick={() => clickDelete()}>
-							<img src={trush} alt="" />
-						</button>
-					</div>
-				</Card>
-			))}
-		</Container>
+			<Container>
+				<form onSubmit={onSubmit}>
+					名前：<input ref={refName} type="text"></input>
+					コメント：<input ref={refComment} type="text"></input>
+					<button type="submit">投稿</button>
+				</form>
+
+				{postsQuery.data.data.map((item, index) => (
+					<Card key={index}>
+						<div>
+							<div>{item.id}</div>
+							<div>{item.attributes.name}</div>
+							<div>{item.attributes.comment}</div>
+						</div>
+
+						<div className="operation">
+							<button onClick={() => clickEdit()}>
+								<img src={edit} alt="" />
+							</button>
+							<button onClick={() => clickDelete(item.id)}>
+								<img src={trush} alt="" />
+							</button>
+						</div>
+					</Card>
+				))}
+			</Container>
+		</>
 	);
 }
 
