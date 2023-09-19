@@ -93,6 +93,13 @@ function App() {
 	const closeModal = () => {
 		// スクロールできるようにする
 		document.body.style.overflow = "auto";
+		// Modalを表示しないようにする
+		setShow(false);
+	};
+
+	// Modalで、投稿ボタンが押された
+	const postModal = (data) => {
+		// alert(JSON.stringify(data));
 		setShow(false);
 	};
 
@@ -117,7 +124,7 @@ function App() {
 
 	return (
 		<>
-			<Modal close={closeModal} open={show} />
+			<Modal post={postModal} close={closeModal} open={show} />
 
 			<Container>
 				<form onSubmit={onSubmit}>
