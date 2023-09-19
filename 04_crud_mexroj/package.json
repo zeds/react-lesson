@@ -1,5 +1,5 @@
 {
-  "name": "04_crud_amila",
+  "name": "04_crud_mexroj",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,13 +13,11 @@
     "@tanstack/react-query": "^4.35.3",
     "@tanstack/react-query-devtools": "^4.35.3",
     "@types/styled-components": "^5.1.27",
-    "axios": "^1.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "styled-components": "^6.0.8"
   },
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "^4.34.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react-swc": "^3.3.2",
