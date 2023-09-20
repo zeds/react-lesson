@@ -84,16 +84,11 @@ function App() {
 
 	// Open Modal
 	const clickEdit = () => {
-		// スクロールできないようにする
-		document.body.style.overflow = "hidden";
 		setShow(true);
 	};
 
 	// Close Modal
 	const closeModal = () => {
-		// スクロールできるようにする
-		document.body.style.overflow = "auto";
-		// Modalを表示しないようにする
 		setShow(false);
 	};
 
@@ -103,7 +98,7 @@ function App() {
 		setShow(false);
 	};
 
-	// 削除
+	// 削除ボタンが押された
 	const clickDelete = (id) => {
 		console.log(id);
 		mutationDelete.mutate(id);
@@ -124,7 +119,7 @@ function App() {
 
 	return (
 		<>
-			<Modal post={postModal} close={closeModal} open={show} />
+			{show && <Modal post={postModal} close={closeModal} />}
 
 			<Container>
 				<form onSubmit={onSubmit}>

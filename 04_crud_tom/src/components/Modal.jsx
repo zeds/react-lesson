@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { styled } from "styled-components";
 
 const ModalContainer = styled.div`
@@ -76,14 +76,23 @@ const ModalFrame = styled.div`
 `;
 
 const Modal = (props) => {
-	if (!props.open) return null;
-
 	const refName = useRef();
 	const refComment = useRef();
 	const [errorName, setErrorName] = useState("");
 	const [errorComment, setErrorComment] = useState("");
 
-	//閉じる
+	useEffect(() => {
+		// スクロールできないようにする
+		console.log("stopping scroll");
+		document.body.style.overflow = "hidden";
+		return () => {
+			// componentWillUnmountの時に呼ばれる
+			console.log("start scrolling");
+			document.body.style.overflow = "auto";
+		};
+	}, []);
+
+	//閉じるボタンが押された
 	const clickClose = (e) => {
 		e.stopPropagation();
 		props.close();
