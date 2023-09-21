@@ -76,6 +76,7 @@ const ModalFrame = styled.div`
 `;
 
 const Modal = (props) => {
+	console.log(JSON.stringify(props));
 	const [name, setName] = useState(props.data.name);
 	const [comment, setComment] = useState(props.data.comment);
 
@@ -152,9 +153,19 @@ const Modal = (props) => {
 				<button className="close" onClick={clickClose}>
 					❌
 				</button>
-				コメント投稿
+
+				{props.data.type == "edit" ? (
+					<div>コメント編集</div>
+				) : (
+					<div>新規登録</div>
+				)}
 				<p className="name">
-					名前<input onChange={changeName} value={name}></input>
+					名前
+					<input
+						onChange={changeName}
+						value={name}
+						autoFocus={true}
+					></input>
 				</p>
 				<div className="error">{errorName}</div>
 				<p>
@@ -167,7 +178,11 @@ const Modal = (props) => {
 						キャンセル
 					</button>
 					<button className="post" onClick={() => clickPost()}>
-						投稿
+						{props.data.type == "edit" ? (
+							<div>更新</div>
+						) : (
+							<div>新規登録</div>
+						)}
 					</button>
 				</div>
 			</ModalFrame>

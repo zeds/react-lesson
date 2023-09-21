@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import edit from "./assets/edit.svg";
 import trush from "./assets/trush.svg";
 import Modal from "./components/Modal";
+import ModalConfirm from "./components/ModalConfirm";
 
 const Container = styled.div`
 	max-width: 1024px;
@@ -13,6 +14,25 @@ const Container = styled.div`
 	font-size: 2rem;
 	margin: 20px auto;
 	padding: 10px;
+`;
+
+const Header = styled.div`
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	padding: 10px;
+	font-weight: bold;
+	button {
+		width: 100px;
+		background: #5483eb;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		padding: 4px 0;
+		&:hover {
+			opacity: 0.5;
+		}
+	}
 `;
 
 const Card = styled.div`
@@ -41,6 +61,7 @@ const Card = styled.div`
 
 function App() {
 	const [show, setShow] = useState(false);
+	const [showConfirm, setShowConfirm] = useState(false);
 
 	const queryClient = useQueryClient();
 	const refName = useRef();
@@ -119,60 +140,88 @@ function App() {
 		return <h1>Loading...</h1>;
 	}
 
+	// 🐶 新規登録ボタン
+	const clickNew = () => {
+		setModalData({
+			id: 0,
+			name: "",
+			comment: "",
+			type: "new",
+		});
+		setShow(true);
+	};
 	// 🐶 Editボタン
 	const clickEdit = (item) => {
 		setModalData({
 			id: item.id,
 			name: item.attributes.name,
 			comment: item.attributes.comment,
+			type: "edit", // "new"
 		});
 		setShow(true);
 	};
 
 	// 🐶 deleteボタン
-	const clickDelete = (id) => {
-		console.log(id);
-		mutationDelete.mutate(id);
+	const clickDelete = (item) => {
+		setModalData({
+			id: item.id,
+			name: item.attributes.name,
+			comment: item.attributes.comment,
+			type: "edit", // "new"
+		});
+		setShowConfirm(true);
+	};
+
+	// 🦑 Modalで、確認(削除)ボタンが押された時
+	const deleteComment = (data) => {
+		setShowConfirm(false);
+		mutationDelete.mutate(data.id);
 	};
 
 	// 🐙 Close Modal
 	const closeModal = () => {
 		setShow(false);
+		setShowConfirm(false);
 	};
 
-	// 🐙 Modalで、投稿ボタンが押された
+	// 🐙 Modalで、新規登録/更新 ボタンが押された
 	const postModal = (data) => {
 		setShow(false);
-		console.log("data=" + JSON.stringify(data));
-		mutationUpdate.mutate(data);
-	};
+		// console.log("data=" + JSON.stringify(data));
+		console.log(modalData.type);
+		// mutationUpdate.mutate(data);
+		if (modalData.type == "new") {
+			mutationCreate.mutate({
+				data: {
+					name: data.name,
+					comment: data.comment,
+				},
+			});
+		}
 
-	// 🐶 投稿
-	const onSubmit = (e) => {
-		// 画面のリロードを防ぐため
-		e.preventDefault();
-		console.log(refName.current.value);
-		console.log(refComment.current.value);
-		mutationCreate.mutate({
-			data: {
-				name: refName.current.value,
-				comment: refComment.current.value,
-			},
-		});
+		if (modalData.type == "edit") {
+			mutationUpdate.mutate(data);
+		}
 	};
 
 	return (
 		<>
+			{showConfirm && (
+				<ModalConfirm
+					post={deleteComment}
+					close={closeModal}
+					data={modalData}
+				/>
+			)}
 			{show && (
 				<Modal post={postModal} close={closeModal} data={modalData} />
 			)}
 
 			<Container>
-				<form onSubmit={onSubmit}>
-					名前：<input ref={refName} type="text"></input>
-					コメント：<input ref={refComment} type="text"></input>
-					<button type="submit">投稿</button>
-				</form>
+				<Header>
+					<div>コメント CRUD</div>
+					<button onClick={() => clickNew()}>新規登録</button>
+				</Header>
 
 				{postsQuery.data.data.map((item, index) => (
 					<Card key={index}>
@@ -186,7 +235,7 @@ function App() {
 							<button onClick={() => clickEdit(item)}>
 								<img src={edit} alt="" />
 							</button>
-							<button onClick={() => clickDelete(item.id)}>
+							<button onClick={() => clickDelete(item)}>
 								<img src={trush} alt="" />
 							</button>
 						</div>
