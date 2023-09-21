@@ -84,8 +84,14 @@ https://levelup.gitconnected.com/react-forms-usestate-vs-useref-5cb584cc19fd\
 https://zenn.dev/masatakaitoh/articles/3c2f8602d2bb9d
 
 
+✅tanstack query
+基本的には、GETのときにuseQueryを、PUT・POST・DELETEのときにuseMutationを使います。
+https://zenn.dev/t_keshi/articles/react-query-prescription
+
 ✅optimistic update
 https://qiita.com/suzuki0430/items/1812e600797bba661cef
+https://reffect.co.jp/react/tanstack-query/#%E3%82%B5%E3%83%BC%E3%83%90%E5%81%B4%E3%81%A7%E3%81%AE%E6%9B%B4%E6%96%B0%E5%87%A6%E7%90%86
+
 
 
 

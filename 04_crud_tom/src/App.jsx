@@ -11,7 +11,7 @@ const Container = styled.div`
 	max-width: 1024px;
 	background: white;
 	font-size: 2rem;
-	margin: 0 auto;
+	margin: 20px auto;
 	padding: 10px;
 `;
 
@@ -45,15 +45,44 @@ function App() {
 	const queryClient = useQueryClient();
 	const refName = useRef();
 	const refComment = useRef();
-
-	// CRUDのDelete
-	const mutationDelete = useMutation((commentId) => {
-		fetch(`https://lusty.asia:1443/api/mercari-comments/${commentId}`, {
-			method: "DELETE",
-		}).then((res) => res.json());
+	const [modalData, setModalData] = useState({
+		id: 0,
+		name: "hohoge",
+		comment: "fugafuga",
 	});
 
-	// CRUDのCreate
+	// APIからCommentsを取得する関数
+	const getComments = async () => {
+		const res = await fetch(
+			"https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc"
+		);
+		return res.json();
+	};
+
+	// 😺CRUDのRead
+	const postsQuery = useQuery({
+		queryKey: ["comments"],
+		queryFn: getComments,
+		refetchOnWindowFocus: true,
+		// refetchInterval: 1000,
+		// staleTime: 1000 * 60 * 5,
+		// cacheTime: Infinity,
+	});
+
+	// 😺CRUDのDelete
+	const mutationDelete = useMutation({
+		mutationFn: (commentId) => {
+			return axios.delete(
+				`https://lusty.asia:1443/api/mercari-comments/${commentId}`
+			);
+		},
+		onSuccess: () => {
+			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+			queryClient.invalidateQueries({ queryKey: ["comments"] });
+		},
+	});
+
+	// 😺CRUDのCreate
 	const mutationCreate = useMutation({
 		mutationFn: (newComment) => {
 			return axios.post(
@@ -62,48 +91,63 @@ function App() {
 			);
 		},
 		onSuccess: () => {
+			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
 	});
 
-	// CRUDのRead
-	const postsQuery = useQuery(
-		["comments"],
-		() =>
-			fetch(
-				"https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc"
-			).then((res) => res.json()),
-		{
-			// refetchInterval: 1000,
-		}
-	);
+	// 😺CRUDのUpdate
+	const mutationUpdate = useMutation({
+		mutationFn: (data) => {
+			return axios.put(
+				`https://lusty.asia:1443/api/mercari-comments/${data.id}`,
+				{
+					data: {
+						name: data.name,
+						comment: data.comment,
+					},
+				}
+			);
+		},
+		onSuccess: () => {
+			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+			queryClient.invalidateQueries({ queryKey: ["comments"] });
+		},
+	});
 
 	if (postsQuery.isLoading) {
 		return <h1>Loading...</h1>;
 	}
 
-	// Open Modal
-	const clickEdit = () => {
+	// 🐶 Editボタン
+	const clickEdit = (item) => {
+		setModalData({
+			id: item.id,
+			name: item.attributes.name,
+			comment: item.attributes.comment,
+		});
 		setShow(true);
 	};
 
-	// Close Modal
-	const closeModal = () => {
-		setShow(false);
-	};
-
-	// Modalで、投稿ボタンが押された
-	const postModal = (data) => {
-		// alert(JSON.stringify(data));
-		setShow(false);
-	};
-
-	// 削除ボタンが押された
+	// 🐶 deleteボタン
 	const clickDelete = (id) => {
 		console.log(id);
 		mutationDelete.mutate(id);
 	};
 
+	// 🐙 Close Modal
+	const closeModal = () => {
+		setShow(false);
+	};
+
+	// 🐙 Modalで、投稿ボタンが押された
+	const postModal = (data) => {
+		setShow(false);
+		console.log("data=" + JSON.stringify(data));
+		mutationUpdate.mutate(data);
+	};
+
+	// 🐶 投稿
 	const onSubmit = (e) => {
 		// 画面のリロードを防ぐため
 		e.preventDefault();
@@ -119,7 +163,9 @@ function App() {
 
 	return (
 		<>
-			{show && <Modal post={postModal} close={closeModal} />}
+			{show && (
+				<Modal post={postModal} close={closeModal} data={modalData} />
+			)}
 
 			<Container>
 				<form onSubmit={onSubmit}>
@@ -137,7 +183,7 @@ function App() {
 						</div>
 
 						<div className="operation">
-							<button onClick={() => clickEdit()}>
+							<button onClick={() => clickEdit(item)}>
 								<img src={edit} alt="" />
 							</button>
 							<button onClick={() => clickDelete(item.id)}>
