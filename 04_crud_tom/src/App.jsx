@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { styled } from "styled-components";
 import "./App.css";
 import axios from "axios";
@@ -64,8 +64,6 @@ function App() {
 	const [showConfirm, setShowConfirm] = useState(false);
 
 	const queryClient = useQueryClient();
-	const refName = useRef();
-	const refComment = useRef();
 	const [modalData, setModalData] = useState({
 		id: 0,
 		name: "hohoge",
