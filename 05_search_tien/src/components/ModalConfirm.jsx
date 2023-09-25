@@ -13,25 +13,13 @@ const ModalContainer = styled.div`
 
 const ModalFrame = styled.div`
 	width: 500px;
-	height: 320px;
+	height: 230px;
 	background: white;
 	position: relative;
 	font-size: 20px;
 	padding: 10px;
 	border-radius: 4px;
 	background: #f4fbfe;
-
-	.contents {
-		display: flex;
-		gap: 10px;
-		img {
-			width: 100px;
-			object-fit: contain;
-		}
-		.update {
-			/* background: red; */
-		}
-	}
 
 	.error {
 		color: red;
@@ -87,13 +75,9 @@ const ModalFrame = styled.div`
 	}
 `;
 
-const Modal = (props) => {
-	console.log(JSON.stringify(props));
+const ModalConfirm = (props) => {
 	const [name, setName] = useState(props.data.name);
 	const [comment, setComment] = useState(props.data.comment);
-
-	const [errorName, setErrorName] = useState("");
-	const [errorComment, setErrorComment] = useState("");
 
 	useEffect(() => {
 		// スクロールできないようにする
@@ -108,6 +92,7 @@ const Modal = (props) => {
 
 	//閉じるボタンが押された
 	const clickClose = (e) => {
+		console.log("clickClose");
 		e.stopPropagation();
 		props.close();
 	};
@@ -125,39 +110,14 @@ const Modal = (props) => {
 	};
 
 	const clickPost = () => {
-		//validation
-		if (name.length == 0) {
-			setErrorName("名前を入れてください");
-			return;
-		}
-
-		//名前エラーをクリア
-		setErrorName("");
-
-		if (comment.length == 0) {
-			setErrorComment("コメントを入力してください");
-			return;
-		}
-
 		let obj = {
 			id: props.data.id,
-			name: name,
-			comment: comment,
 		};
 		props.post(obj);
-		// alert(refName.current.value + ":" + refComment.current.value);
 	};
 
-	//キャンセルボタン
 	const clickCancel = () => {
 		props.close();
-	};
-
-	const changeName = (e) => {
-		setName(e.target.value);
-	};
-	const changeComment = (e) => {
-		setComment(e.target.value);
 	};
 
 	return (
@@ -166,41 +126,17 @@ const Modal = (props) => {
 				<button className="close" onClick={clickClose}>
 					❌
 				</button>
-
-				{props.data.type == "edit" ? (
-					<div>コメント編集</div>
-				) : (
-					<div>新規登録</div>
-				)}
-				<div className="contents">
-					<img src={props.data.image} alt="" />
-					<div className="update">
-						<p className="name">
-							名前
-							<input
-								onChange={changeName}
-								value={name}
-								autoFocus={true}
-							></input>
-						</p>
-						<div className="error">{errorName}</div>
-						<p>
-							コメント
-							<input onChange={changeComment} value={comment}></input>
-						</p>
-						<p className="error">{errorComment}</p>
-					</div>
-				</div>
+				確認
+				<div>このデータを削除してよろしいですか？</div>
+				<hr />
+				<div>{name}</div>
+				<div>{comment}</div>
 				<div className="buttonBlock">
 					<button className="cancel" onClick={() => clickCancel()}>
 						キャンセル
 					</button>
 					<button className="post" onClick={() => clickPost()}>
-						{props.data.type == "edit" ? (
-							<div>更新</div>
-						) : (
-							<div>新規登録</div>
-						)}
+						確認
 					</button>
 				</div>
 			</ModalFrame>
@@ -208,4 +144,4 @@ const Modal = (props) => {
 	);
 };
 
-export default Modal;
+export default ModalConfirm;
