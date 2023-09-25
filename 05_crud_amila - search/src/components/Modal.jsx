@@ -21,6 +21,11 @@ const ModalFrame = styled.div`
 	border-radius: 4px;
 	background: #f4fbfe;
 
+	img {
+		width: 100px;
+		display: flex;
+	}
+
 	.error {
 		color: red;
 		font-size: 14px;
@@ -159,6 +164,8 @@ const Modal = (props) => {
 				) : (
 					<div>新規登録</div>
 				)}
+				<div className="contents">
+				<img src={props.data.image} alt="" />
 				<p className="name">
 					名前
 					<input
@@ -173,6 +180,7 @@ const Modal = (props) => {
 					<input onChange={changeComment} value={comment}></input>
 				</p>
 				<p className="error">{errorComment}</p>
+				</div>
 				<div className="buttonBlock">
 					<button className="cancel" onClick={() => clickCancel()}>
 						キャンセル
