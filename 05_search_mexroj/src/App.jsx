@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { styled } from "styled-components";
 import "./App.css";
 import axios from "axios";
@@ -7,6 +7,7 @@ import edit from "./assets/edit.svg";
 import trush from "./assets/trush.svg";
 import Modal from "./components/Modal";
 import ModalConfirm from "./components/ModalConfirm";
+import Search from "./assets/search.svg";
 
 const Container = styled.div`
 	max-width: 1024px;
@@ -18,12 +19,41 @@ const Container = styled.div`
 
 const Header = styled.div`
 	width: 100%;
+	height: 64px;
 	display: flex;
 	justify-content: space-between;
-	padding: 10px;
+	align-items: center;
 	font-weight: bold;
+	font-size: 18px;
+	gap: 10px;
+	.logo {
+		display: flex;
+		width: 100%;
+		height: 100%;
+		align-items: center;
+		max-width: 800px;
+		background: green;
+		padding: 5px;
+		position: relative;
+		p {
+			width: 200px;
+		}
+		input {
+			width: 100%;
+			height: 100%;
+			padding: 5px;
+			font-size: 25px;
+		}
+		button {
+			position: absolute;
+			width: 40px;
+			right: 10px;
+			background: none;
+		}
+	}
 	button {
 		width: 100px;
+		height: 40px;
 		background: #5483eb;
 		color: white;
 		border: none;
@@ -32,6 +62,9 @@ const Header = styled.div`
 		&:hover {
 			opacity: 0.5;
 		}
+	}
+	@media (max-width: 800px) {
+		font-size: 15px;
 	}
 `;
 
@@ -59,36 +92,47 @@ const Card = styled.div`
 	}
 `;
 
+// APIからCommentsを取得する関数
+// const getComments = async (searchText) => {
+// 	const res = await fetch(
+// 		`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc${searchText}`
+// 	);
+// 	console.log(searchText);
+// 	return res.json();
+// };
+
 function App() {
 	const [show, setShow] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
+	// const [search, setSearch] = useState("&filters[comment][$contains]=安く");
+	const [searchText, setSearchText] = useState("");
+	const refSearch = useRef();
 
 	const queryClient = useQueryClient();
-	const refName = useRef();
-	const refComment = useRef();
 	const [modalData, setModalData] = useState({
 		id: 0,
 		name: "hohoge",
 		comment: "fugafuga",
 	});
 
-	// APIからCommentsを取得する関数
-	const getComments = async () => {
+	useEffect(() => {
+		console.log("useEffect");
+	}, []);
+
+	const getComments = async (text) => {
 		const res = await fetch(
-			"https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc"
+			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc${text}`
 		);
+		console.log(text);
 		return res.json();
 	};
 
+	// `https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&filters[comment][$contains]=安く`
+
 	// 😺CRUDのRead
-	const postsQuery = useQuery({
-		queryKey: ["comments"],
-		queryFn: getComments,
-		refetchOnWindowFocus: true,
-		// refetchInterval: 1000,
-		// staleTime: 1000 * 60 * 5,
-		// cacheTime: Infinity,
-	});
+	const postsQuery = useQuery(["comments", searchText], () =>
+		getComments(searchText)
+	);
 
 	// 😺CRUDのDelete
 	const mutationDelete = useMutation({
@@ -136,9 +180,8 @@ function App() {
 		},
 	});
 
-	if (postsQuery.isLoading) {
-		return <h1>Loading...</h1>;
-	}
+	if (postsQuery.isLoading) return <h1>Loading....</h1>;
+	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;
 
 	// 🐶 新規登録ボタン
 	const clickNew = () => {
@@ -204,6 +247,18 @@ function App() {
 		}
 	};
 
+	const clickSearch = () => {
+		//stateを変更することで、そのstateをwatchしているuseQueryが再度実行されます。
+		setSearchText(`&filters[comment][$contains]=${refSearch.current.value}`);
+		console.log(refSearch.current.value);
+	};
+
+	// 検索キーワード入力時に、Enterキーが押された
+	const handleKeyDown = (e) => {
+		if (e.nativeEvent.isComposing || e.key !== "Enter") return;
+		clickSearch();
+	};
+
 	return (
 		<>
 			{showConfirm && (
@@ -219,7 +274,17 @@ function App() {
 
 			<Container>
 				<Header>
-					<div>コメント CRUD</div>
+					<div className="logo">
+						<p>コメント CRUD</p>
+						<input
+							ref={refSearch}
+							onKeyDown={handleKeyDown}
+							autoFocus={true}
+						></input>
+						<button onClick={() => clickSearch()}>
+							<img src={Search} alt="" />
+						</button>
+					</div>
 					<button onClick={() => clickNew()}>新規登録</button>
 				</Header>
 
