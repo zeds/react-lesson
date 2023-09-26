@@ -32,7 +32,6 @@ const Header = styled.div`
 		height: 100%;
 		align-items: center;
 		max-width: 800px;
-		background: green;
 		padding: 5px;
 		position: relative;
 		p {
@@ -175,6 +174,7 @@ function App() {
 					data: {
 						name: data.name,
 						comment: data.comment,
+						image_url: data.image_url,
 					},
 				}
 			);
@@ -254,7 +254,28 @@ function App() {
 		}
 
 		if (modalData.type == "edit") {
-			mutationUpdate.mutate(data);
+			data.image_url = "";
+
+			// mediaに画像をアップロードする。
+			console.log("Fileあり？", data.file);
+			if (data.file) {
+				console.log("あり");
+				const formData = new FormData();
+				formData.append("files", data.file);
+				axios
+					.post("https://lusty.asia:1443/api/upload", formData)
+					.then((response) => {
+						console.log("res=", response.data[0].url);
+						data.image_url = response.data[0].url;
+						mutationUpdate.mutate(data);
+					})
+					.catch((error) => {
+						console.log("error movie:", error);
+					});
+			} else {
+				console.log("なし");
+				mutationUpdate.mutate(data);
+			}
 		}
 	};
 

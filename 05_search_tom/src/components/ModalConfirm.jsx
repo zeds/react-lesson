@@ -75,6 +75,14 @@ const ModalFrame = styled.div`
 	}
 `;
 
+{
+	/* <ModalConfirm
+post={deleteComment}
+close={closeModal}
+data={modalData}
+/> */
+}
+
 const ModalConfirm = (props) => {
 	const [name, setName] = useState(props.data.name);
 	const [comment, setComment] = useState(props.data.comment);
