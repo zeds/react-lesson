@@ -201,9 +201,10 @@ function App() {
 	// 🐶 Editボタン
 	const clickEdit = (item) => {
 		let imageUrl = null;
-		if (item.attributes.images.data) {
-			imageUrl = `https://lusty.asia:1443/${item.attributes.images.data[0].attributes.url}`;
-		}
+		imageUrl = `https://lusty.asia:1443/${item.attributes.image_url}`;
+		// if (item.attributes.images.data) {
+		// 	imageUrl = `https://lusty.asia:1443/${item.attributes.images.data[0].attributes.url}`;
+		// }
 
 		setModalData({
 			id: item.id,
@@ -328,11 +329,11 @@ function App() {
 							<div>{item.attributes.name}</div>
 							<div>{item.attributes.comment}</div>
 							<div className="image">
-								{item.attributes.images.data ? (
+								{item.attributes.image_url ? (
 									<img
 										src={
 											`https://lusty.asia:1443/` +
-											item.attributes.images.data[0].attributes.url
+											item.attributes.image_url
 										}
 										alt=""
 									/>
