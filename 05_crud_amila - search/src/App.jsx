@@ -77,6 +77,14 @@ const Card = styled.div`
 	justify-content: space-between;
 	align-items: center;
 
+
+	.image {
+		img {
+			width: 100px;
+
+		}
+
+	}
 	.operation {
 		display: flex;
 		gap: 10px;
@@ -121,7 +129,7 @@ function App() {
 
 	const getComments = async (text) => {
 		const res = await fetch(
-			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc${text}`
+			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}`
 		);
 		console.log(text);
 		return res.json();
@@ -194,15 +202,23 @@ function App() {
 		setShow(true);
 	};
 	// 🐶 Editボタン
-	const clickEdit = (item) => {
-		setModalData({
-			id: item.id,
-			name: item.attributes.name,
-			comment: item.attributes.comment,
-			type: "edit", // "new"
-		});
-		setShow(true);
-	};
+		// 🐶 Editボタン
+		const clickEdit = (item) => {
+			let imageUrl = null;
+			if (item.attributes.images.data) {
+				imageUrl = `https://lusty.asia:1443/${item.attributes.images.data[0].attributes.url}`;
+			}
+	
+			setModalData({
+				id: item.id,
+				name: item.attributes.name,
+				comment: item.attributes.comment,
+				image: imageUrl,
+				type: "edit", // "new"
+			});
+			setShow(true);
+		};
+	
 
 	// 🐶 deleteボタン
 	const clickDelete = (item) => {
@@ -294,6 +310,22 @@ function App() {
 							<div>{item.id}</div>
 							<div>{item.attributes.name}</div>
 							<div>{item.attributes.comment}</div>
+							{console.log(item.attributes.images.data)}
+							<div className="image">
+								{item.attributes.images.data ? (
+									<img
+										src={
+											`https://lusty.asia:1443/` +
+											item.attributes.images.data[0].attributes.url
+										}
+										alt=""
+									/>
+								) : (
+									<div>なし</div>
+								)}
+							</div>
+
+
 						</div>
 
 						<div className="operation">
