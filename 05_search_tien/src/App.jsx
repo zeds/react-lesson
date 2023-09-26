@@ -77,6 +77,11 @@ const Card = styled.div`
 	justify-content: space-between;
 	align-items: center;
 
+	.image {
+		img {
+			width: 100px;
+		}
+	}
 	.operation {
 		display: flex;
 		gap: 10px;
@@ -121,18 +126,16 @@ function App() {
 
 	const getComments = async (text) => {
 		const res = await fetch(
-			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc${text}`
+			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}`
 		);
 		console.log(text);
 		return res.json();
 	};
 
-	// `https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&filters[comment][$contains]=安く`
-
 	// 😺CRUDのRead
 	const postsQuery = useQuery(["comments", searchText], () =>
 		getComments(searchText)
-	);
+		);
 
 	// 😺CRUDのDelete
 	const mutationDelete = useMutation({
@@ -170,6 +173,7 @@ function App() {
 					data: {
 						name: data.name,
 						comment: data.comment,
+						image_url: data.image_url,
 					},
 				}
 			);
@@ -184,7 +188,7 @@ function App() {
 	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;
 
 	// 🐶 新規登録ボタン
-	const clickNew = () => {
+	const clickNew = () => {	
 		setModalData({
 			id: 0,
 			name: "",
@@ -195,10 +199,18 @@ function App() {
 	};
 	// 🐶 Editボタン
 	const clickEdit = (item) => {
+		console.log(item)
+		let imageUrl = null;
+		imageUrl = `https://lusty.asia:1443/${item.attributes.image_url}`;
+		// if (item.attributes.images.data) {
+		// 	imageUrl = `https://lusty.asia:1443/${item.attributes.images.data[0].attributes.url}`;
+		// }
+
 		setModalData({
 			id: item.id,
 			name: item.attributes.name,
 			comment: item.attributes.comment,
+			image: imageUrl,
 			type: "edit", // "new"
 		});
 		setShow(true);
@@ -206,11 +218,15 @@ function App() {
 
 	// 🐶 deleteボタン
 	const clickDelete = (item) => {
+		let imageUrl = null;
+		imageUrl = `https://lusty.asia:1443/${item.attributes.image_url}`;
+
 		setModalData({
 			id: item.id,
 			name: item.attributes.name,
 			comment: item.attributes.comment,
 			type: "edit", // "new"
+			image: imageUrl,
 		});
 		setShowConfirm(true);
 	};
@@ -231,19 +247,67 @@ function App() {
 	const postModal = (data) => {
 		setShow(false);
 		// console.log("data=" + JSON.stringify(data));
-		console.log(modalData.type);
+		// console.log(modalData.type);
 		// mutationUpdate.mutate(data);
 		if (modalData.type == "new") {
-			mutationCreate.mutate({
-				data: {
-					name: data.name,
-					comment: data.comment,
-				},
-			});
+
+			data.image_url = "";
+			if (data.file) {
+				console.log("あり");
+				const formData = new FormData();
+				formData.append("files", data.file);
+				axios
+					.post("https://lusty.asia:1443/api/upload", formData)
+					.then((response) => {
+						console.log("res=", response.data[0].url);
+						data.image_url = response.data[0].url;
+						mutationCreate.mutate({
+							data: {
+								name: data.name,
+								comment: data.comment,
+								image_url:data.image_url,
+							},
+						});
+					})
+					.catch((error) => {
+						console.log("error movie:", error);
+					});
+			} else {
+				console.log("なし");
+				mutationUpdate.mutate(data);
+			}
+			// mutationCreate.mutate({
+				// data: {
+				// 	name: data.name,
+				// 	comment: data.comment,
+				// 	image_url:data.image_url,
+				// },
+			// });
 		}
 
 		if (modalData.type == "edit") {
-			mutationUpdate.mutate(data);
+			data.image_url = "";
+
+			// mediaに画像をアップロードする。
+			console.log("Fileあり？", data.file);
+			if (data.file) {
+				console.log("あり");
+				const formData = new FormData();
+				formData.append("files", data.file);
+				axios
+					.post("https://lusty.asia:1443/api/upload", formData)
+					.then((response) => {
+						console.log("res=", response.data[0].url);
+						data.image_url = response.data[0].url;
+						mutationUpdate.mutate(data);
+					})
+					.catch((error) => {
+						console.log("error movie:", error);
+					});
+			} else {
+				console.log("なし");
+				mutationUpdate.mutate(data);
+			}
 		}
 	};
 
@@ -255,6 +319,7 @@ function App() {
 
 	// 検索キーワード入力時に、Enterキーが押された
 	const handleKeyDown = (e) => {
+		// console.log("key=", e.key);
 		if (e.nativeEvent.isComposing || e.key !== "Enter") return;
 		clickSearch();
 	};
@@ -294,6 +359,19 @@ function App() {
 							<div>{item.id}</div>
 							<div>{item.attributes.name}</div>
 							<div>{item.attributes.comment}</div>
+							<div className="image">
+								{item.attributes.image_url ? (
+									<img
+										src={
+											`https://lusty.asia:1443/` +
+											item.attributes.image_url
+										}
+										alt=""
+									/>
+								) : (
+									<div>なし</div>
+								)}
+							</div>
 						</div>
 
 						<div className="operation">
