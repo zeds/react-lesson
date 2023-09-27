@@ -108,7 +108,7 @@ function App() {
 	return (
 		<>
 			<Container>
-				Editor.js
+				Editor.js2
 				<div id="editorjs" />
 			</Container>
 		</>
