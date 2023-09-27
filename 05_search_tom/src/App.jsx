@@ -1,4 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+import {
+	CircleSpinnerOverlay,
+	DotLoader,
+	FerrisWheelSpinner,
+} from "react-spinner-overlay";
 import { styled } from "styled-components";
 import "./App.css";
 import axios from "axios";
@@ -9,12 +14,23 @@ import Modal from "./components/Modal";
 import ModalConfirm from "./components/ModalConfirm";
 import Search from "./assets/search.svg";
 
+const SpinnerContainer = styled.div`
+	position: absolute;
+	background: rgba(0, 0, 0, 0.5);
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* padding-top: 50%;
+	padding-left: 50%; */
+`;
+
 const Container = styled.div`
 	max-width: 1024px;
 	background: white;
 	font-size: 2rem;
 	margin: 20px auto;
-	padding: 10px;
 `;
 
 const Header = styled.div`
@@ -97,6 +113,7 @@ const Card = styled.div`
 `;
 
 function App() {
+	const [loading, setLoading] = useState(true);
 	const [show, setShow] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
 	// const [search, setSearch] = useState("&filters[comment][$contains]=安く");
@@ -119,6 +136,7 @@ function App() {
 			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}`
 		);
 		// エラーは、	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;で拾ってくれる
+		setLoading(false);
 		return res.data.data;
 	};
 
@@ -132,6 +150,7 @@ function App() {
 	// 😺CRUDのDelete
 	const mutationDelete = useMutation({
 		mutationFn: (commentId) => {
+			setLoading(true);
 			return axios.delete(
 				`https://lusty.asia:1443/api/mercari-comments/${commentId}`
 			);
@@ -175,9 +194,6 @@ function App() {
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
 	});
-
-	if (postsQuery.isLoading) return <h1>Loading....</h1>;
-	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;
 
 	// 🐶 新規登録ボタン
 	const clickNew = () => {
@@ -312,8 +328,28 @@ function App() {
 		clickSearch();
 	};
 
+	if (postsQuery.isLoading) {
+		return (
+			<SpinnerContainer>
+				<DotLoader loading={loading} size={50} />
+			</SpinnerContainer>
+		);
+	}
+
+	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;
+	if (postsQuery.isSuccess) {
+		console.log("success");
+		// setLoading(false);
+	}
+
 	return (
 		<>
+			{loading ? (
+				<SpinnerContainer>
+					<DotLoader loading={loading} size={50} />
+				</SpinnerContainer>
+			) : null}
+
 			{showConfirm && (
 				<ModalConfirm
 					post={deleteComment}

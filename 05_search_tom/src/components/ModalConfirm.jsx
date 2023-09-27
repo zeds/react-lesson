@@ -13,7 +13,6 @@ const ModalContainer = styled.div`
 
 const ModalFrame = styled.div`
 	width: 500px;
-	height: 230px;
 	background: white;
 	position: relative;
 	font-size: 20px;
