@@ -8,6 +8,21 @@ import trush from "./assets/trush.svg";
 import Modal from "./components/Modal";
 import ModalConfirm from "./components/ModalConfirm";
 import Search from "./assets/search.svg";
+import {
+	// CircleSpinnerOverlay,
+	DotLoader,
+	// FerrisWheelSpinner,
+} from "react-spinner-overlay";
+
+const SpinnerContainer = styled.div`
+	position: absolute;
+	background: rgba(0, 0, 0, 0.5);
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
 
 const Container = styled.div`
 	max-width: 1024px;
@@ -97,16 +112,8 @@ const Card = styled.div`
 	}
 `;
 
-// APIからCommentsを取得する関数
-// const getComments = async (searchText) => {
-// 	const res = await fetch(
-// 		`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc${searchText}`
-// 	);
-// 	console.log(searchText);
-// 	return res.json();
-// };
-
 function App() {
+	const [loading, setLoading] = useState(true);
 	const [show, setShow] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
 	// const [search, setSearch] = useState("&filters[comment][$contains]=安く");
@@ -121,14 +128,25 @@ function App() {
 	});
 
 	useEffect(() => {
-		console.log("useEffect");
-	}, []);
+		if (loading) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "auto";
+		}
+	}, [loading]);
 
+	useEffect(() => {
+		setLoading(false)
+		// console.log("来ました")
+	});
+	
 	const getComments = async (text) => {
 		const res = await fetch(
 			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}`
-		);
-		console.log(text);
+			
+			);
+		console.log("来ました")
+			setLoading(false)
 		return res.json();
 	};
 
@@ -140,6 +158,7 @@ function App() {
 	// 😺CRUDのDelete
 	const mutationDelete = useMutation({
 		mutationFn: (commentId) => {
+			setLoading(true);
 			return axios.delete(
 				`https://lusty.asia:1443/api/mercari-comments/${commentId}`
 			);
@@ -147,6 +166,7 @@ function App() {
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
+			setLoading(false)
 		},
 	});
 
@@ -161,6 +181,7 @@ function App() {
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
+			setLoading(false)
 		},
 	});
 
@@ -181,10 +202,11 @@ function App() {
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
+			setLoading(false)
 		},
 	});
 
-	if (postsQuery.isLoading) return <h1>Loading....</h1>;
+	// if (postsQuery.isLoading) return ();
 	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;
 
 	// 🐶 新規登録ボタン
@@ -234,6 +256,7 @@ function App() {
 	// 🦑 Modalで、確認(削除)ボタンが押された時
 	const deleteComment = (data) => {
 		setShowConfirm(false);
+		setLoading(true)
 		mutationDelete.mutate(data.id);
 	};
 
@@ -246,6 +269,7 @@ function App() {
 	// 🐙 Modalで、新規登録/更新 ボタンが押された
 	const postModal = (data) => {
 		setShow(false);
+		setLoading(true)
 		// console.log("data=" + JSON.stringify(data));
 		// console.log(modalData.type);
 		// mutationUpdate.mutate(data);
@@ -268,29 +292,26 @@ function App() {
 								image_url:data.image_url,
 							},
 						});
+						setLoading(false)
 					})
 					.catch((error) => {
 						console.log("error movie:", error);
 					});
 			} else {
 				console.log("なし");
-				mutationUpdate.mutate(data);
+				mutationCreate.mutate({data: {
+					name: data.name,
+					comment: data.comment,
+				},});
 			}
-			// mutationCreate.mutate({
-				// data: {
-				// 	name: data.name,
-				// 	comment: data.comment,
-				// 	image_url:data.image_url,
-				// },
-			// });
 		}
 
 		if (modalData.type == "edit") {
-			data.image_url = "";
-
+			
 			// mediaに画像をアップロードする。
 			console.log("Fileあり？", data.file);
 			if (data.file) {
+				data.image_url = ""   ;
 				console.log("あり");
 				const formData = new FormData();
 				formData.append("files", data.file);
@@ -300,6 +321,7 @@ function App() {
 						console.log("res=", response.data[0].url);
 						data.image_url = response.data[0].url;
 						mutationUpdate.mutate(data);
+						setLoading(false)
 					})
 					.catch((error) => {
 						console.log("error movie:", error);
@@ -312,20 +334,38 @@ function App() {
 	};
 
 	const clickSearch = () => {
+		setLoading(true)
 		//stateを変更することで、そのstateをwatchしているuseQueryが再度実行されます。
 		setSearchText(`&filters[comment][$contains]=${refSearch.current.value}`);
 		console.log(refSearch.current.value);
+
 	};
+	
 
 	// 検索キーワード入力時に、Enterキーが押された
 	const handleKeyDown = (e) => {
 		// console.log("key=", e.key);
 		if (e.nativeEvent.isComposing || e.key !== "Enter") return;
+		setLoading(true)
 		clickSearch();
 	};
+	if (postsQuery.isLoading) {
+		return (
+			<SpinnerContainer>
+				<DotLoader loading={loading} size={50} />
+			</SpinnerContainer>
+		);
+	}
+
 
 	return (
 		<>
+			{loading ? (
+				<SpinnerContainer>
+					<DotLoader loading={loading} size={50} />
+				</SpinnerContainer>
+			) : null}
+
 			{showConfirm && (
 				<ModalConfirm
 					post={deleteComment}
@@ -334,7 +374,7 @@ function App() {
 				/>
 			)}
 			{show && (
-				<Modal post={postModal} close={closeModal} data={modalData} />
+				<Modal setModal={setLoading} post={postModal} close={closeModal} data={modalData} />
 			)}
 
 			<Container>
