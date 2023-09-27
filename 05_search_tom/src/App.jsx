@@ -237,12 +237,39 @@ function App() {
 		console.log(modalData.type);
 		// mutationUpdate.mutate(data);
 		if (modalData.type == "new") {
-			mutationCreate.mutate({
-				data: {
-					name: data.name,
-					comment: data.comment,
-				},
-			});
+			data.image_url = "";
+
+			// mediaに画像をアップロードする。
+			console.log("Fileあり？", data.file);
+			if (data.file) {
+				console.log("あり");
+				const formData = new FormData();
+				formData.append("files", data.file);
+				axios
+					.post("https://lusty.asia:1443/api/upload", formData)
+					.then((response) => {
+						// "url": "/uploads/chuando_2_82c7831383.webp",
+						console.log("res=", response.data[0].url);
+						mutationCreate.mutate({
+							data: {
+								name: data.name,
+								comment: data.comment,
+								image_url: response.data[0].url,
+							},
+						});
+					})
+					.catch((error) => {
+						console.log("error movie:", error);
+					});
+			} else {
+				console.log("なし");
+				mutationCreate.mutate({
+					data: {
+						name: data.name,
+						comment: data.comment,
+					},
+				});
+			}
 		}
 
 		if (modalData.type == "edit") {
@@ -257,6 +284,7 @@ function App() {
 				axios
 					.post("https://lusty.asia:1443/api/upload", formData)
 					.then((response) => {
+						// "url": "/uploads/chuando_2_82c7831383.webp",
 						console.log("res=", response.data[0].url);
 						data.image_url = response.data[0].url;
 						mutationUpdate.mutate(data);
@@ -329,7 +357,7 @@ function App() {
 										alt=""
 									/>
 								) : (
-									<div>なし</div>
+									<div>画像なし</div>
 								)}
 							</div>
 						</div>

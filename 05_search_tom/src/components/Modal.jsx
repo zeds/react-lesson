@@ -126,6 +126,7 @@ const Modal = (props) => {
 		e.stopPropagation();
 	};
 
+	// 🐙 新規登録/更新ボタン
 	const clickPost = () => {
 		//validation
 		if (name.length == 0) {
