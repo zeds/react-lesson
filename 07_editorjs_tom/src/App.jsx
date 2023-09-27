@@ -108,6 +108,7 @@ function App() {
 	return (
 		<>
 			<Container>
+				Editor.js
 				<div id="editorjs" />
 			</Container>
 		</>

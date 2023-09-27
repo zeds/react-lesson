@@ -96,15 +96,6 @@ const Card = styled.div`
 	}
 `;
 
-// APIからCommentsを取得する関数
-// const getComments = async (searchText) => {
-// 	const res = await fetch(
-// 		`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc${searchText}`
-// 	);
-// 	console.log(searchText);
-// 	return res.json();
-// };
-
 function App() {
 	const [show, setShow] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
@@ -124,11 +115,11 @@ function App() {
 	}, []);
 
 	const getComments = async (text) => {
-		const res = await fetch(
+		const res = await axios.get(
 			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}`
 		);
-		console.log(text);
-		return res.json();
+		// エラーは、	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;で拾ってくれる
+		return res.data.data;
 	};
 
 	// `https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&filters[comment][$contains]=安く`
@@ -322,7 +313,7 @@ function App() {
 					<button onClick={() => clickNew()}>新規登録</button>
 				</Header>
 
-				{postsQuery.data.data.map((item, index) => (
+				{postsQuery.data.map((item, index) => (
 					<Card key={index}>
 						<div>
 							<div>{item.id}</div>
