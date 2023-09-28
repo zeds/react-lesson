@@ -167,6 +167,17 @@ npm i @types/styled-components
 https://www.youtube.com/watch?v=5XmYCd9K5-8&t=171s
 
 ✅動いてる
+sayfullayevmexroj27@gmail.com
+
+
+😺[09_pagination_tom]
+npm create vite@latest .
+JavaScript + SWC
+
+https://www.npmjs.com/package/react-paginate
+
+
+npm i react-paginate
 
 
 
