@@ -111,8 +111,35 @@ const Card = styled.div`
 		}
 	}
 `;
-
+const PageContainer = styled.div`
+	margin: 5px 0;	
+	width: 500px;
+	height: 40px;
+	background: pink;
+	display: flex;
+	gap: 5px;
+	align-items: center;
+	button {
+		width: 30px;
+		height: 30px;
+	}
+`;
+const Indicates = styled.button`
+	select {
+		border: none;
+		display: flex;
+		width: 120px;
+		height: 40px;
+		padding: 13px 11px 13px 21px;
+		color: #75787e;
+		font-size: 1.2rem;
+	}
+`;
 function App() {
+	const [pagesize, setPagesize] = useState();
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(2);
+
 	const [loading, setLoading] = useState(true);
 	const [show, setShow] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
@@ -138,22 +165,34 @@ function App() {
 	useEffect(() => {
 		setLoading(false)
 		// console.log("来ました")
+		console.log(postsQuery.data)
 	});
-	
-	const getComments = async (text) => {
-		const res = await fetch(
-			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}`
-			
-			);
-		console.log("来ました")
-			setLoading(false)
-		return res.json();
+	const getComments = async (text, page, pageSize) => {
+		const res = await axios.get(
+			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+		);
+		// エラーは、	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;で拾ってくれる
+		setLoading(false);
+		// console.log(data);
+		return res.data.data;
 	};
 
+	// const getComments = async (text) => {
+	// 	const res = await fetch(
+	// 		`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}`
+
+	// 	);
+	// 	// console.log("来ました")
+	// 	setLoading(false)
+	// 	return res.json();
+	// };
+
 	// 😺CRUDのRead
-	const postsQuery = useQuery(["comments", searchText], () =>
-		getComments(searchText)
-		);
+	const postsQuery = useQuery(["comments", searchText, page, pageSize], () =>
+		getComments(searchText, page, pageSize)
+		// console.log(data)
+
+	);
 
 	// 😺CRUDのDelete
 	const mutationDelete = useMutation({
@@ -210,7 +249,7 @@ function App() {
 	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;
 
 	// 🐶 新規登録ボタン
-	const clickNew = () => {	
+	const clickNew = () => {
 		setModalData({
 			id: 0,
 			name: "",
@@ -289,7 +328,7 @@ function App() {
 							data: {
 								name: data.name,
 								comment: data.comment,
-								image_url:data.image_url,
+								image_url: data.image_url,
 							},
 						});
 						setLoading(false)
@@ -299,19 +338,21 @@ function App() {
 					});
 			} else {
 				console.log("なし");
-				mutationCreate.mutate({data: {
-					name: data.name,
-					comment: data.comment,
-				},});
+				mutationCreate.mutate({
+					data: {
+						name: data.name,
+						comment: data.comment,
+					},
+				});
 			}
 		}
 
 		if (modalData.type == "edit") {
-			
+
 			// mediaに画像をアップロードする。
 			console.log("Fileあり？", data.file);
 			if (data.file) {
-				data.image_url = ""   ;
+				data.image_url = "";
 				console.log("あり");
 				const formData = new FormData();
 				formData.append("files", data.file);
@@ -333,6 +374,7 @@ function App() {
 		}
 	};
 
+
 	const clickSearch = () => {
 		setLoading(true)
 		//stateを変更することで、そのstateをwatchしているuseQueryが再度実行されます。
@@ -340,7 +382,13 @@ function App() {
 		console.log(refSearch.current.value);
 
 	};
-	
+	const clickPage = (pageNum) => {
+		//stateを変更することで、そのstateをwatchしているuseQueryが再度実行されます。
+		setSearchText(`&pagination[page]=${pageNum}&pagination[pageSize]=${pageSize}`);
+		// setSearchText(`&pagination[page]=${pageNum}&pagination[pageSize]=3`);
+		// console.log(refSearch.current.value);
+	};
+
 
 	// 検索キーワード入力時に、Enterキーが押された
 	const handleKeyDown = (e) => {
@@ -356,7 +404,12 @@ function App() {
 			</SpinnerContainer>
 		);
 	}
-
+	//thay đổi số lượng page
+	const handleChangePageSize = (e) => {
+		setPagesize(e.target.value);
+		handleChangePage(1);
+		sessionStorage.setItem("pageSize", e.target.value);
+	};
 
 	return (
 		<>
@@ -393,7 +446,28 @@ function App() {
 					<button onClick={() => clickNew()}>新規登録</button>
 				</Header>
 
-				{postsQuery.data.data.map((item, index) => (
+				<PageContainer>
+					<button onClick={() => clickPage(1)}>1</button>
+					<button onClick={() => clickPage(2)}>2</button>
+					<button onClick={() => clickPage(3)}>3</button>
+					<button onClick={() => clickPage(4)}>4</button>
+					<button onClick={() => clickPage(5)}>5</button>
+					<button onClick={() => clickPage(6)}>6</button>
+					<button onClick={() => clickPage(7)}>7</button>
+					<button onClick={() => clickPage(8)}>8</button>
+				</PageContainer>
+				<Indicates>
+					<select
+						value={pagesize ? pageSize : 20}
+						onChange={handleChangePageSize}
+					>
+						<option value="2">20件a</option>
+						<option value="5">50件</option>
+						<option value="10">100件</option>
+					</select>
+				</Indicates>
+
+				{postsQuery?.data?.map((item, index) => (
 					<Card key={index}>
 						<div>
 							<div>{item.id}</div>
