@@ -13,6 +13,7 @@ import trush from "./assets/trush.svg";
 import Modal from "./components/Modal";
 import ModalConfirm from "./components/ModalConfirm";
 import Search from "./assets/search.svg";
+import BlankImage from "./assets/blank-image.png";
 
 const SpinnerContainer = styled.div`
 	position: absolute;
@@ -92,9 +93,14 @@ const Card = styled.div`
 	justify-content: space-between;
 	align-items: center;
 
-	.image {
+	.leftBlock {
+		display: flex;
+		align-items: center;
+		gap: 10px;
 		img {
 			width: 100px;
+			height: 100px;
+			object-fit: contain;
 		}
 	}
 	.operation {
@@ -112,7 +118,24 @@ const Card = styled.div`
 	}
 `;
 
+const PageContainer = styled.div`
+	width: 500px;
+	height: 40px;
+	background: pink;
+	display: flex;
+	gap: 5px;
+	align-items: center;
+	button {
+		width: 30px;
+		height: 30px;
+	}
+`;
+
 function App() {
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(3);
+	const [pageCounts, setPageCounts] = useState([]);
+
 	const [loading, setLoading] = useState(true);
 	const [show, setShow] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
@@ -133,17 +156,24 @@ function App() {
 
 	const getComments = async (text) => {
 		const res = await axios.get(
-			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}`
+			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
 		);
 		// エラーは、	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;で拾ってくれる
 		setLoading(false);
+		console.log("data.meta=", res.data.meta);
+		let tmpArray = [];
+		for (let i = 0; i < res.data.meta.pagination.pageCount; i++) {
+			tmpArray.push(i + 1);
+		}
+		setPageCounts(tmpArray);
+
 		return res.data.data;
 	};
 
 	// `https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&filters[comment][$contains]=安く`
 
 	// 😺CRUDのRead
-	const postsQuery = useQuery(["comments", searchText], () =>
+	const postsQuery = useQuery(["comments", searchText, page], () =>
 		getComments(searchText)
 	);
 
@@ -320,6 +350,11 @@ function App() {
 		setSearchText(`&filters[comment][$contains]=${refSearch.current.value}`);
 		console.log(refSearch.current.value);
 	};
+	const clickPage = (pageNum) => {
+		setPage(pageNum);
+		// setSearchText(`&pagination[page]=${pageNum}&pagination[pageSize]=3`);
+		console.log(refSearch.current.value);
+	};
 
 	// 検索キーワード入力時に、Enterキーが押された
 	const handleKeyDown = (e) => {
@@ -376,14 +411,18 @@ function App() {
 					</div>
 					<button onClick={() => clickNew()}>新規登録</button>
 				</Header>
+				<PageContainer>
+					{pageCounts.map((item, index) => (
+						<button onClick={() => clickPage(index + 1)}>
+							{index + 1}
+						</button>
+					))}
+				</PageContainer>
 
 				{postsQuery.data.map((item, index) => (
 					<Card key={index}>
-						<div>
-							<div>{item.id}</div>
-							<div>{item.attributes.name}</div>
-							<div>{item.attributes.comment}</div>
-							<div className="image">
+						<div className="leftBlock">
+							<div className="left">
 								{item.attributes.image_url ? (
 									<img
 										src={
@@ -393,8 +432,15 @@ function App() {
 										alt=""
 									/>
 								) : (
-									<div>画像なし</div>
+									<div>
+										<img src={BlankImage} alt="" />
+									</div>
 								)}
+							</div>
+							<div className="right">
+								{/* <div>{item.id}</div> */}
+								<div>{item.attributes.name}</div>
+								<div>{item.attributes.comment}</div>
 							</div>
 						</div>
 
