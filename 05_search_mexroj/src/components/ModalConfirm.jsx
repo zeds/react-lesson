@@ -13,7 +13,6 @@ const ModalContainer = styled.div`
 
 const ModalFrame = styled.div`
 	width: 500px;
-	height: 230px;
 	background: white;
 	position: relative;
 	font-size: 20px;
@@ -74,6 +73,14 @@ const ModalFrame = styled.div`
 		}
 	}
 `;
+
+{
+	/* <ModalConfirm
+post={deleteComment}
+close={closeModal}
+data={modalData}
+/> */
+}
 
 const ModalConfirm = (props) => {
 	const [name, setName] = useState(props.data.name);
