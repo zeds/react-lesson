@@ -1,0 +1,46 @@
+{
+	"time": 1654313680224,
+	"blocks": [
+		{
+			"id": "gy0oTOBqL2",
+			"type": "header",
+			"data": {
+				"text": "Editor.js",
+				"level": 2
+			}
+		},
+		{
+			"id": "AOOa_CMrPW",
+			"type": "list",
+			"data": {
+				"style": "unordered",
+				"items": [
+					"It is a block-styled editor",
+					"It returns clean data output in JSON",
+					"Designed to be extendable and pluggable with a simple API"
+				]
+			}
+		},
+		{
+			"id": "6crsAbriK8",
+			"type": "header",
+			"data": {
+				"text": "What does it mean clean data output",
+				"level": 3
+			}
+		},
+		{
+			"id": "GBhduZdsZW",
+			"type": "image",
+			"data": {
+				"file": {
+					"url": "https://codex.so/public/app/img/external/codex2x.png"
+				},
+				"caption": "",
+				"withBorder": false,
+				"stretched": false,
+				"withBackground": false
+			}
+		}
+	]
+}

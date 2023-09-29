@@ -25,6 +25,7 @@ function App() {
 		 * Id of Element that should contain Editor instance
 		 */
 		holder: "editorjs",
+		minHeight: 0,
 		tools: {
 			header: Header,
 			list: List,
@@ -79,37 +80,12 @@ function App() {
 		},
 	});
 
-	// const editor = new EditorJs({
-	// 	holder: "editorjs",
-	// 	minHeight: 100,
-	// 	tools: {
-	// 		code: CodeTool,
-	// 		header: Header,
-	// 	},
-	// 	data: {
-	// 		blocks: [
-	// 			{
-	// 				type: "header",
-	// 				data: {
-	// 					text: "目次",
-	// 					level: 2,
-	// 				},
-	// 			},
-	// 		],
-	// 	},
-	// 	onReady: () => {
-	// 		console.log("Editorjs started");
-	// 	},
-	// 	onChange: (event) => {
-	// 		console.log("event", event);
-	// 	},
-	// });
-
 	return (
 		<>
 			<Container>
 				Editor.js
 				<div id="editorjs" />
+				<button>save</button>
 			</Container>
 		</>
 	);
