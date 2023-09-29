@@ -2,5 +2,7 @@
 .ce-toolbar__content {
 	max-width: 800px;
 	margin: 0 50px;
+	padding: 0 10px;
+	line-height: 10px;
 	background: green;
 }

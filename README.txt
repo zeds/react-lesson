@@ -168,6 +168,15 @@ https://www.youtube.com/watch?v=5XmYCd9K5-8&t=171s
 
 ✅動いてる
 
+ 😺[08_editorjs_setup_tom]
+ https://medium.com/how-to-react/how-to-add-wysiwyg-editor-in-react-js-using-editor-js-cff90e2f3b75
+ https://codesandbox.io/s/github/Mediumtutorial/wysiwyg-editor-js-react/tree/main/?from-embed=&file=/src/App.js
+ 
+ npm create vite@latest .
+JavaScript + SWC
+
+  
+
 
 
 

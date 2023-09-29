@@ -8,6 +8,21 @@ import trush from "./assets/trush.svg";
 import Modal from "./components/Modal";
 import ModalConfirm from "./components/ModalConfirm";
 import Search from "./assets/search.svg";
+import {
+	// CircleSpinnerOverlay,
+	DotLoader,
+	// FerrisWheelSpinner,
+} from "react-spinner-overlay";
+
+const SpinnerContainer = styled.div`
+	position: absolute;
+	background: rgba(0, 0, 0, 0.5);
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
 
 const Container = styled.div`
 	max-width: 1024px;
@@ -77,6 +92,11 @@ const Card = styled.div`
 	justify-content: space-between;
 	align-items: center;
 
+	.image {
+		img {
+			width: 100px;
+		}
+	}
 	.operation {
 		display: flex;
 		gap: 10px;
@@ -92,16 +112,8 @@ const Card = styled.div`
 	}
 `;
 
-// APIからCommentsを取得する関数
-// const getComments = async (searchText) => {
-// 	const res = await fetch(
-// 		`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc${searchText}`
-// 	);
-// 	console.log(searchText);
-// 	return res.json();
-// };
-
 function App() {
+	const [loading, setLoading] = useState(true);
 	const [show, setShow] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
 	// const [search, setSearch] = useState("&filters[comment][$contains]=安く");
@@ -116,27 +128,37 @@ function App() {
 	});
 
 	useEffect(() => {
-		console.log("useEffect");
-	}, []);
+		if (loading) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "auto";
+		}
+	}, [loading]);
 
+	useEffect(() => {
+		setLoading(false)
+		// console.log("来ました")
+	});
+	
 	const getComments = async (text) => {
 		const res = await fetch(
-			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc${text}`
-		);
-		console.log(text);
+			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}`
+			
+			);
+		console.log("来ました")
+			setLoading(false)
 		return res.json();
 	};
-
-	// `https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&filters[comment][$contains]=安く`
 
 	// 😺CRUDのRead
 	const postsQuery = useQuery(["comments", searchText], () =>
 		getComments(searchText)
-	);
+		);
 
 	// 😺CRUDのDelete
 	const mutationDelete = useMutation({
 		mutationFn: (commentId) => {
+			setLoading(true);
 			return axios.delete(
 				`https://lusty.asia:1443/api/mercari-comments/${commentId}`
 			);
@@ -144,6 +166,7 @@ function App() {
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
+			setLoading(false)
 		},
 	});
 
@@ -158,6 +181,7 @@ function App() {
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
+			setLoading(false)
 		},
 	});
 
@@ -170,6 +194,7 @@ function App() {
 					data: {
 						name: data.name,
 						comment: data.comment,
+						image_url: data.image_url,
 					},
 				}
 			);
@@ -177,14 +202,15 @@ function App() {
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
+			setLoading(false)
 		},
 	});
 
-	if (postsQuery.isLoading) return <h1>Loading....</h1>;
+	// if (postsQuery.isLoading) return ();
 	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;
 
 	// 🐶 新規登録ボタン
-	const clickNew = () => {
+	const clickNew = () => {	
 		setModalData({
 			id: 0,
 			name: "",
@@ -195,10 +221,18 @@ function App() {
 	};
 	// 🐶 Editボタン
 	const clickEdit = (item) => {
+		console.log(item)
+		let imageUrl = null;
+		imageUrl = `https://lusty.asia:1443/${item.attributes.image_url}`;
+		// if (item.attributes.images.data) {
+		// 	imageUrl = `https://lusty.asia:1443/${item.attributes.images.data[0].attributes.url}`;
+		// }
+
 		setModalData({
 			id: item.id,
 			name: item.attributes.name,
 			comment: item.attributes.comment,
+			image: imageUrl,
 			type: "edit", // "new"
 		});
 		setShow(true);
@@ -206,11 +240,15 @@ function App() {
 
 	// 🐶 deleteボタン
 	const clickDelete = (item) => {
+		let imageUrl = null;
+		imageUrl = `https://lusty.asia:1443/${item.attributes.image_url}`;
+
 		setModalData({
 			id: item.id,
 			name: item.attributes.name,
 			comment: item.attributes.comment,
 			type: "edit", // "new"
+			image: imageUrl,
 		});
 		setShowConfirm(true);
 	};
@@ -218,6 +256,7 @@ function App() {
 	// 🦑 Modalで、確認(削除)ボタンが押された時
 	const deleteComment = (data) => {
 		setShowConfirm(false);
+		setLoading(true)
 		mutationDelete.mutate(data.id);
 	};
 
@@ -230,37 +269,103 @@ function App() {
 	// 🐙 Modalで、新規登録/更新 ボタンが押された
 	const postModal = (data) => {
 		setShow(false);
+		setLoading(true)
 		// console.log("data=" + JSON.stringify(data));
-		console.log(modalData.type);
+		// console.log(modalData.type);
 		// mutationUpdate.mutate(data);
 		if (modalData.type == "new") {
-			mutationCreate.mutate({
-				data: {
+
+			data.image_url = "";
+			if (data.file) {
+				console.log("あり");
+				const formData = new FormData();
+				formData.append("files", data.file);
+				axios
+					.post("https://lusty.asia:1443/api/upload", formData)
+					.then((response) => {
+						console.log("res=", response.data[0].url);
+						data.image_url = response.data[0].url;
+						mutationCreate.mutate({
+							data: {
+								name: data.name,
+								comment: data.comment,
+								image_url:data.image_url,
+							},
+						});
+						setLoading(false)
+					})
+					.catch((error) => {
+						console.log("error movie:", error);
+					});
+			} else {
+				console.log("なし");
+				mutationCreate.mutate({data: {
 					name: data.name,
 					comment: data.comment,
-				},
-			});
+				},});
+			}
 		}
 
 		if (modalData.type == "edit") {
-			mutationUpdate.mutate(data);
+			
+			// mediaに画像をアップロードする。
+			console.log("Fileあり？", data.file);
+			if (data.file) {
+				data.image_url = ""   ;
+				console.log("あり");
+				const formData = new FormData();
+				formData.append("files", data.file);
+				axios
+					.post("https://lusty.asia:1443/api/upload", formData)
+					.then((response) => {
+						console.log("res=", response.data[0].url);
+						data.image_url = response.data[0].url;
+						mutationUpdate.mutate(data);
+						setLoading(false)
+					})
+					.catch((error) => {
+						console.log("error movie:", error);
+					});
+			} else {
+				console.log("なし");
+				mutationUpdate.mutate(data);
+			}
 		}
 	};
 
 	const clickSearch = () => {
+		setLoading(true)
 		//stateを変更することで、そのstateをwatchしているuseQueryが再度実行されます。
 		setSearchText(`&filters[comment][$contains]=${refSearch.current.value}`);
 		console.log(refSearch.current.value);
+
 	};
+	
 
 	// 検索キーワード入力時に、Enterキーが押された
 	const handleKeyDown = (e) => {
+		// console.log("key=", e.key);
 		if (e.nativeEvent.isComposing || e.key !== "Enter") return;
+		setLoading(true)
 		clickSearch();
 	};
+	if (postsQuery.isLoading) {
+		return (
+			<SpinnerContainer>
+				<DotLoader loading={loading} size={50} />
+			</SpinnerContainer>
+		);
+	}
+
 
 	return (
 		<>
+			{loading ? (
+				<SpinnerContainer>
+					<DotLoader loading={loading} size={50} />
+				</SpinnerContainer>
+			) : null}
+
 			{showConfirm && (
 				<ModalConfirm
 					post={deleteComment}
@@ -269,7 +374,7 @@ function App() {
 				/>
 			)}
 			{show && (
-				<Modal post={postModal} close={closeModal} data={modalData} />
+				<Modal setModal={setLoading} post={postModal} close={closeModal} data={modalData} />
 			)}
 
 			<Container>
@@ -294,6 +399,19 @@ function App() {
 							<div>{item.id}</div>
 							<div>{item.attributes.name}</div>
 							<div>{item.attributes.comment}</div>
+							<div className="image">
+								{item.attributes.image_url ? (
+									<img
+										src={
+											`https://lusty.asia:1443/` +
+											item.attributes.image_url
+										}
+										alt=""
+									/>
+								) : (
+									<div>なし</div>
+								)}
+							</div>
 						</div>
 
 						<div className="operation">

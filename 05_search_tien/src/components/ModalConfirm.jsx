@@ -13,7 +13,7 @@ const ModalContainer = styled.div`
 
 const ModalFrame = styled.div`
 	width: 500px;
-	height: 230px;
+	// height: 230px;
 	background: white;
 	position: relative;
 	font-size: 20px;
@@ -73,11 +73,18 @@ const ModalFrame = styled.div`
 			background: skyblue;
 		}
 	}
+	.image {
+		img {
+			width: 100px;
+		}
+	}
 `;
 
 const ModalConfirm = (props) => {
+	console.log(props)
 	const [name, setName] = useState(props.data.name);
 	const [comment, setComment] = useState(props.data.comment);
+	const [image, setImage] = useState(props.data.image);
 
 	useEffect(() => {
 		// スクロールできないようにする
@@ -129,6 +136,9 @@ const ModalConfirm = (props) => {
 				確認
 				<div>このデータを削除してよろしいですか？</div>
 				<hr />
+				<div className="image">
+					<img src={image} alt="" />
+				</div>
 				<div>{name}</div>
 				<div>{comment}</div>
 				<div className="buttonBlock">

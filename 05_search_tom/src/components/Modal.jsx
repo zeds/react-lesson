@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
+import axios from "axios";
 
 const ModalContainer = styled.div`
 	position: fixed;
@@ -13,7 +14,7 @@ const ModalContainer = styled.div`
 
 const ModalFrame = styled.div`
 	width: 500px;
-	height: 320px;
+	/* height: 320px; */
 	background: white;
 	position: relative;
 	font-size: 20px;
@@ -88,7 +89,8 @@ const ModalFrame = styled.div`
 `;
 
 const Modal = (props) => {
-	console.log(JSON.stringify(props));
+	const [image, setImage] = useState(props.data.image);
+	const [fileName, setFileName] = useState("");
 	const [name, setName] = useState(props.data.name);
 	const [comment, setComment] = useState(props.data.comment);
 
@@ -124,6 +126,7 @@ const Modal = (props) => {
 		e.stopPropagation();
 	};
 
+	// 🐙 新規登録/更新ボタン
 	const clickPost = () => {
 		//validation
 		if (name.length == 0) {
@@ -143,6 +146,7 @@ const Modal = (props) => {
 			id: props.data.id,
 			name: name,
 			comment: comment,
+			file: fileName,
 		};
 		props.post(obj);
 		// alert(refName.current.value + ":" + refComment.current.value);
@@ -160,6 +164,14 @@ const Modal = (props) => {
 		setComment(e.target.value);
 	};
 
+	//画像の変更
+	const clickImageButton = (e) => {
+		console.log("e=", e.target.files[0]);
+		let file = e.target.files[0];
+		setImage(window.URL.createObjectURL(file));
+		setFileName(file);
+	};
+
 	return (
 		<ModalContainer onClick={() => clickBackground()}>
 			<ModalFrame onClick={stopPropagation}>
@@ -173,7 +185,7 @@ const Modal = (props) => {
 					<div>新規登録</div>
 				)}
 				<div className="contents">
-					<img src={props.data.image} alt="" />
+					<img src={image} alt="" />
 					<div className="update">
 						<p className="name">
 							名前
@@ -191,6 +203,8 @@ const Modal = (props) => {
 						<p className="error">{errorComment}</p>
 					</div>
 				</div>
+				<input type="file" accept="image/*" onChange={clickImageButton} />
+
 				<div className="buttonBlock">
 					<button className="cancel" onClick={() => clickCancel()}>
 						キャンセル
