@@ -13,6 +13,7 @@ import {
 	DotLoader,
 	// FerrisWheelSpinner,
 } from "react-spinner-overlay";
+import BlankImage from "./assets/blank-image.png";
 
 const SpinnerContainer = styled.div`
 	position: absolute;
@@ -85,16 +86,19 @@ const Header = styled.div`
 
 const Card = styled.div`
 	display: flex;
-	width: 98%;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: flex-start;
+	width: 100%;
 	border: 1px solid black;
 	padding: 10px;
 	margin: 10px auto;
-	justify-content: space-between;
-	align-items: center;
+	/* align-items: center; */
 
 	.image {
 		img {
-			width: 100px;
+			width: 100%;
+			height: 150px;
 		}
 	}
 	.operation {
@@ -127,7 +131,6 @@ const PageContainer = styled.div`
 const Indicates = styled.button`
 	select {
 		border: none;
-		display: flex;
 		width: 120px;
 		height: 40px;
 		padding: 13px 11px 13px 21px;
@@ -135,15 +138,33 @@ const Indicates = styled.button`
 		font-size: 1.2rem;
 	}
 `;
+const Designed = styled.div`
+display: grid;
+grid-template-columns: 1fr 1fr 1fr 1fr;
+grid-template-rows: 1fr 1fr;
+`
+
+const Comment = styled.div`
+max-height: 92px;
+height: 60px;
+
+/* Cho phép văn bản xuống dòng khi vượt quá chiều cao tối đa */
+overflow: hidden; //scroll
+
+/* Cắt đoạn văn bản dư (nếu có) và thêm dấu ba chấm (...) */
+text-overflow: ellipsis;
+
+/* Để đảm bảo văn bản không bị cắt ngang, sử dụng white-space */
+white-space: normal;
+`;
 function App() {
-	const [pagesize, setPagesize] = useState();
 	const [page, setPage] = useState(1);
-	const [pageSize, setPageSize] = useState(2);
+	const [pageSize, setPageSize] = useState(sessionStorage.getItem('pageSize'));
+	const [pageCounts, setPageCounts] = useState([]);
 
 	const [loading, setLoading] = useState(true);
 	const [show, setShow] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
-	// const [search, setSearch] = useState("&filters[comment][$contains]=安く");
 	const [searchText, setSearchText] = useState("");
 	const refSearch = useRef();
 
@@ -164,32 +185,26 @@ function App() {
 
 	useEffect(() => {
 		setLoading(false)
-		// console.log("来ました")
-		console.log(postsQuery.data)
+		// console.log(pageCounts)
+		// console.log(postsQuery.data)
 	});
-	const getComments = async (text, page, pageSize) => {
+	const getComments = async (text) => {
 		const res = await axios.get(
 			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
 		);
-		// エラーは、	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;で拾ってくれる
 		setLoading(false);
-		// console.log(data);
+		console.log(res);
+		let tmpArray = [];
+		for (let i = 0; i < res.data.meta.pagination.pageCount; i++) {
+			tmpArray.push(i + 1)
+		}
+		setPageCounts(tmpArray)
 		return res.data.data;
 	};
 
-	// const getComments = async (text) => {
-	// 	const res = await fetch(
-	// 		`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}`
-
-	// 	);
-	// 	// console.log("来ました")
-	// 	setLoading(false)
-	// 	return res.json();
-	// };
-
 	// 😺CRUDのRead
 	const postsQuery = useQuery(["comments", searchText, page, pageSize], () =>
-		getComments(searchText, page, pageSize)
+		getComments(searchText)
 		// console.log(data)
 
 	);
@@ -263,9 +278,6 @@ function App() {
 		console.log(item)
 		let imageUrl = null;
 		imageUrl = `https://lusty.asia:1443/${item.attributes.image_url}`;
-		// if (item.attributes.images.data) {
-		// 	imageUrl = `https://lusty.asia:1443/${item.attributes.images.data[0].attributes.url}`;
-		// }
 
 		setModalData({
 			id: item.id,
@@ -381,12 +393,11 @@ function App() {
 		setSearchText(`&filters[comment][$contains]=${refSearch.current.value}`);
 		console.log(refSearch.current.value);
 
+
 	};
 	const clickPage = (pageNum) => {
-		//stateを変更することで、そのstateをwatchしているuseQueryが再度実行されます。
-		setSearchText(`&pagination[page]=${pageNum}&pagination[pageSize]=${pageSize}`);
-		// setSearchText(`&pagination[page]=${pageNum}&pagination[pageSize]=3`);
-		// console.log(refSearch.current.value);
+		setPage(pageNum)
+		// console.log();
 	};
 
 
@@ -406,11 +417,16 @@ function App() {
 	}
 	//thay đổi số lượng page
 	const handleChangePageSize = (e) => {
-		setPagesize(e.target.value);
-		handleChangePage(1);
+		setPageSize(e.target.value);
 		sessionStorage.setItem("pageSize", e.target.value);
+		// handleChangePage();
 	};
-
+	// const handleChangePage = () => {
+	// 	// setLoading(true)
+	// 	//stateを変更することで、そのstateをwatchしているuseQueryが再度実行されます。
+	// 	// setSearchText(`&filters[comment][$contains]=${refSearch.current.value}`);
+	// 	// getComments(searchText)
+	// }
 	return (
 		<>
 			{loading ? (
@@ -447,57 +463,52 @@ function App() {
 				</Header>
 
 				<PageContainer>
-					<button onClick={() => clickPage(1)}>1</button>
-					<button onClick={() => clickPage(2)}>2</button>
-					<button onClick={() => clickPage(3)}>3</button>
-					<button onClick={() => clickPage(4)}>4</button>
-					<button onClick={() => clickPage(5)}>5</button>
-					<button onClick={() => clickPage(6)}>6</button>
-					<button onClick={() => clickPage(7)}>7</button>
-					<button onClick={() => clickPage(8)}>8</button>
+					{pageCounts.map((item, index) => (
+						<button key={index} onClick={() => clickPage(index + 1)}>{index + 1}</button>))}
 				</PageContainer>
 				<Indicates>
+					表示数
 					<select
-						value={pagesize ? pageSize : 20}
-						onChange={handleChangePageSize}
-					>
-						<option value="2">20件a</option>
-						<option value="5">50件</option>
-						<option value="10">100件</option>
+						value={pageSize}
+						onChange={handleChangePageSize}>
+						<option value="2">2件</option>
+						<option value="5">5件</option>
+						<option value="10">10件</option>
 					</select>
 				</Indicates>
-
-				{postsQuery?.data?.map((item, index) => (
-					<Card key={index}>
-						<div>
-							<div>{item.id}</div>
-							<div>{item.attributes.name}</div>
-							<div>{item.attributes.comment}</div>
-							<div className="image">
-								{item.attributes.image_url ? (
-									<img
-										src={
-											`https://lusty.asia:1443/` +
-											item.attributes.image_url
-										}
-										alt=""
-									/>
-								) : (
-									<div>なし</div>
-								)}
+				<Designed>
+					{postsQuery?.data?.map((item, index) => (
+						<Card key={index}>
+							<div>
+								<div className="image">
+									{item.attributes.image_url ? (
+										<img
+											src={
+												`https://lusty.asia:1443/` +
+												item.attributes.image_url
+											}
+											alt=""
+										/>
+									) : (
+										<img src={BlankImage} alt="" />
+									)}
+								</div>
+								<div>{item.id}</div>
+								<div>{item.attributes.name}</div>
+								<Comment>{item.attributes.comment}</Comment>
 							</div>
-						</div>
 
-						<div className="operation">
-							<button onClick={() => clickEdit(item)}>
-								<img src={edit} alt="" />
-							</button>
-							<button onClick={() => clickDelete(item)}>
-								<img src={trush} alt="" />
-							</button>
-						</div>
-					</Card>
-				))}
+							<div className="operation">
+								<button onClick={() => clickEdit(item)}>
+									<img src={edit} alt="" />
+								</button>
+								<button onClick={() => clickDelete(item)}>
+									<img src={trush} alt="" />
+								</button>
+							</div>
+						</Card>
+					))}
+				</Designed>
 			</Container>
 		</>
 	);
