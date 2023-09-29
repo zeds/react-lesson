@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
+import axios from "axios";
 
 const ModalContainer = styled.div`
 	position: fixed;
@@ -12,14 +13,26 @@ const ModalContainer = styled.div`
 `;
 
 const ModalFrame = styled.div`
-	width: 300px;
-	height: 320px;
+	width: 500px;
+	/* height: 320px; */
 	background: white;
 	position: relative;
 	font-size: 20px;
 	padding: 10px;
 	border-radius: 4px;
 	background: #f4fbfe;
+
+	.contents {
+		display: flex;
+		gap: 10px;
+		img {
+			width: 100px;
+			object-fit: contain;
+		}
+		.update {
+			/* background: red; */
+		}
+	}
 
 	.error {
 		color: red;
@@ -76,18 +89,18 @@ const ModalFrame = styled.div`
 `;
 
 const Modal = (props) => {
-	console.log(JSON.stringify(props));
+	const [image, setImage] = useState(props.data.image);
+	const [fileName, setFileName] = useState("");
 	const [name, setName] = useState(props.data.name);
 	const [comment, setComment] = useState(props.data.comment);
 
 	const [errorName, setErrorName] = useState("");
 	const [errorComment, setErrorComment] = useState("");
 
-	useEffect(() => {		
+	useEffect(() => {
 		// スクロールできないようにする
 		console.log("stopping scroll");
 		document.body.style.overflow = "hidden";
-		alert("hogehoge");
 		return () => {
 			// componentWillUnmountの時に呼ばれる
 			console.log("start scrolling");
@@ -132,21 +145,30 @@ const Modal = (props) => {
 			id: props.data.id,
 			name: name,
 			comment: comment,
+			file: fileName,
 		};
 		props.post(obj);
 		// alert(refName.current.value + ":" + refComment.current.value);
 	};
 
+	//キャンセルボタン
 	const clickCancel = () => {
 		props.close();
 	};
 
-	// cancel button
 	const changeName = (e) => {
 		setName(e.target.value);
 	};
 	const changeComment = (e) => {
 		setComment(e.target.value);
+	};
+
+	//画像の変更
+	const clickImageButton = (e) => {
+		console.log("e=", e.target.files[0]);
+		let file = e.target.files[0];
+		setImage(window.URL.createObjectURL(file));
+		setFileName(file);
 	};
 
 	return (
@@ -161,20 +183,27 @@ const Modal = (props) => {
 				) : (
 					<div>新規登録</div>
 				)}
-				<p className="name">
-					名前
-					<input
-						onChange={changeName}
-						value={name}
-						autoFocus={true}
-					></input>
-				</p>
-				<div className="error">{errorName}</div>
-				<p>
-					コメント
-					<input onChange={changeComment} value={comment}></input>
-				</p>
-				<p className="error">{errorComment}</p>
+				<div className="contents">
+					<img src={image} alt="" />
+					<div className="update">
+						<p className="name">
+							名前
+							<input
+								onChange={changeName}
+								value={name}
+								autoFocus={true}
+							></input>
+						</p>
+						<div className="error">{errorName}</div>
+						<p>
+							コメント
+							<input onChange={changeComment} value={comment}></input>
+						</p>
+						<p className="error">{errorComment}</p>
+					</div>
+				</div>
+				<input type="file" accept="image/*" onChange={clickImageButton} />
+
 				<div className="buttonBlock">
 					<button className="cancel" onClick={() => clickCancel()}>
 						キャンセル
