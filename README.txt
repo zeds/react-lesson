@@ -175,6 +175,30 @@ https://www.youtube.com/watch?v=5XmYCd9K5-8&t=171s
  npm create vite@latest .
 JavaScript + SWC
 
+
+😺[09_search_editorjs_tom]
+cp -r 05_search_tom 09_search_editorjs_tom
+
+✍️03_detail_tomを参考に、ルーターを組み込みます
+
+
+https://reffect.co.jp/react/react-router-6/
+npm i react-router-dom
+
+新規登録、ログイン
+
+編集: editorjs
+
+いいね
+
+
+
+
+
+
+
+
+
   
 
 
