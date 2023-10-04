@@ -15,6 +15,8 @@ import ModalConfirm from "./components/ModalConfirm";
 import Search from "./assets/search.svg";
 import BlankImage from "./assets/blank-image.png";
 
+const STRAPI_URL = `${import.meta.env.VITE_STRAPI_URL}`;
+
 const SpinnerContainer = styled.div`
 	position: absolute;
 	background: rgba(0, 0, 0, 0.5);
@@ -163,6 +165,7 @@ function App() {
 
 	useEffect(() => {
 		console.log("useEffect");
+		console.log(STRAPI_URL);
 		let ps = localStorage.getItem("pageSize");
 		if (ps) {
 			setPageSize(ps);
@@ -171,7 +174,7 @@ function App() {
 
 	const getComments = async (text) => {
 		const res = await axios.get(
-			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
+			`${STRAPI_URL}/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
 		);
 		// エラーは、	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;で拾ってくれる
 		setLoading(false);
@@ -185,8 +188,6 @@ function App() {
 		return res.data.data;
 	};
 
-	// `https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&filters[comment][$contains]=安く`
-
 	// 😺CRUDのRead
 	const postsQuery = useQuery(["comments", searchText, page, pageSize], () =>
 		getComments(searchText)
@@ -196,9 +197,7 @@ function App() {
 	const mutationDelete = useMutation({
 		mutationFn: (commentId) => {
 			setLoading(true);
-			return axios.delete(
-				`https://lusty.asia:1443/api/mercari-comments/${commentId}`
-			);
+			return axios.delete(`${STRAPI_URL}/api/mercari-comments/${commentId}`);
 		},
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
@@ -209,10 +208,7 @@ function App() {
 	// 😺CRUDのCreate
 	const mutationCreate = useMutation({
 		mutationFn: (newComment) => {
-			return axios.post(
-				"https://lusty.asia:1443/api/mercari-comments",
-				newComment
-			);
+			return axios.post(`${STRAPI_URL}/api/mercari-comments`, newComment);
 		},
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
@@ -223,16 +219,13 @@ function App() {
 	// 😺CRUDのUpdate
 	const mutationUpdate = useMutation({
 		mutationFn: (data) => {
-			return axios.put(
-				`https://lusty.asia:1443/api/mercari-comments/${data.id}`,
-				{
-					data: {
-						name: data.name,
-						comment: data.comment,
-						image_url: data.image_url,
-					},
-				}
-			);
+			return axios.put(`${STRAPI_URL}/api/mercari-comments/${data.id}`, {
+				data: {
+					name: data.name,
+					comment: data.comment,
+					image_url: data.image_url,
+				},
+			});
 		},
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
@@ -253,10 +246,7 @@ function App() {
 	// 🐶 Editボタン
 	const clickEdit = (item) => {
 		let imageUrl = null;
-		imageUrl = `https://lusty.asia:1443/${item.attributes.image_url}`;
-		// if (item.attributes.images.data) {
-		// 	imageUrl = `https://lusty.asia:1443/${item.attributes.images.data[0].attributes.url}`;
-		// }
+		imageUrl = `${STRAPI_URL}${item.attributes.image_url}`;
 
 		setModalData({
 			id: item.id,
@@ -307,7 +297,7 @@ function App() {
 				const formData = new FormData();
 				formData.append("files", data.file);
 				axios
-					.post("https://lusty.asia:1443/api/upload", formData)
+					.post(`${STRAPI_URL}/api/upload`, formData)
 					.then((response) => {
 						// "url": "/uploads/chuando_2_82c7831383.webp",
 						console.log("res=", response.data[0].url);
@@ -343,7 +333,7 @@ function App() {
 				const formData = new FormData();
 				formData.append("files", data.file);
 				axios
-					.post("https://lusty.asia:1443/api/upload", formData)
+					.post(`${STRAPI_URL}/api/upload`, formData)
 					.then((response) => {
 						// "url": "/uploads/chuando_2_82c7831383.webp",
 						console.log("res=", response.data[0].url);
@@ -455,12 +445,12 @@ function App() {
 					<Card key={index}>
 						<div className="leftBlock">
 							<div className="left">
+								{console.log(
+									`${STRAPI_URL}${item.attributes.image_url}`
+								)}
 								{item.attributes.image_url ? (
 									<img
-										src={
-											`https://lusty.asia:1443/` +
-											item.attributes.image_url
-										}
+										src={`${STRAPI_URL}${item.attributes.image_url}`}
 										alt=""
 									/>
 								) : (

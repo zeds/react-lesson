@@ -169,11 +169,47 @@ https://www.youtube.com/watch?v=5XmYCd9K5-8&t=171s
 ✅動いてる
 
  😺[08_editorjs_setup_tom]
+ 
+ ✅react-editor-js
+ https://github.com/Jungwoo-An/react-editor-js#havent-received-data-from-server-when-use-link
+ 
  https://medium.com/how-to-react/how-to-add-wysiwyg-editor-in-react-js-using-editor-js-cff90e2f3b75
  https://codesandbox.io/s/github/Mediumtutorial/wysiwyg-editor-js-react/tree/main/?from-embed=&file=/src/App.js
  
  npm create vite@latest .
 JavaScript + SWC
+
+npm i @editorjs/paragraph
+npm i @editorjs/header
+npm i @editorjs/list
+npm i -D @editorjs/link
+npm i -D @editorjs/delimiter
+npm i -D @editorjs/checklist
+npm i -D @editorjs/code
+npm i editorjs-text-alignment-blocktune
+
+
+Toggle Edit Mode
+https://codesandbox.io/s/react-editorjs-example-ng6qzo
+EditorTextParser
+
+npm i editorjs-html
+npm i html-react-parser
+npm i @editorjs/list
+
+✅preview mode
+✅note.comでは、色つけられない？なんか意味があるのか？
+✅H1,H2 見出し
+✅Bold
+☑️取り消し線
+✅リスト
+☑️text-align
+☑️リンク
+☑️引用ブロック（右下に出典を入力）
+✅コード（JavaScriptのstyleに対応したい）
+☑️ゴミ箱
+
+
 
 
 😺[09_search_editorjs_tom]
@@ -190,6 +226,11 @@ npm i react-router-dom
 編集: editorjs
 
 いいね
+
+
+😺[10_nestjs_jwt]
+https://www.prisma.io/blog/nestjs-prisma-authentication-7D056s1s0k3l
+
 
 
 

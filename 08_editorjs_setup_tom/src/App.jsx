@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import Editor from "./Editor";
+import EditorTextParser from "./components/EditorTextParser";
 import jsonData from "./data.json";
 
 // Initial Data
@@ -23,24 +24,43 @@ function App() {
 
 	const [contents, setContents] = useState("あれ");
 
+	function toggleEditMode() {
+		if (isEditMode) {
+			setIsEditMode(false);
+			console.log("Edit mode is now disabled");
+		} else {
+			setIsEditMode(true);
+			console.log("Edit mode is now enabled");
+		}
+	}
+
 	return (
-		<div className="editor">
-			<Editor
-				data={data}
-				onChange={setData}
-				editorblock="editorjs-container"
-			/>
-			<button
-				className="savebtn"
-				onClick={() => {
-					setContents(JSON.stringify(data));
-				}}
-			>
-				Save
-			</button>
-			<textarea id="w3review" name="w3review" rows="4" cols="50">
-				{contents}
-			</textarea>{" "}
+		<div className="container">
+			<button onClick={toggleEditMode}>Toggle Edit Mode</button>
+			<div className="editor">
+				{isEditMode ? (
+					<Editor
+						data={data}
+						onChange={setData}
+						editorblock="editorjs-container"
+					/>
+				) : (
+					// <div>hoge</div>
+					<EditorTextParser data={data} />
+				)}
+				<button
+					className="savebtn"
+					onClick={() => {
+						console.log(JSON.stringify(data));
+						setContents(JSON.stringify(data));
+					}}
+				>
+					Save
+				</button>
+				<textarea id="w3review" name="w3review" rows="4" cols="50">
+					{contents}
+				</textarea>{" "}
+			</div>
 		</div>
 	);
 }
