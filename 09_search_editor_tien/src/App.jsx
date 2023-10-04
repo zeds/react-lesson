@@ -1,4 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+import {
+	CircleSpinnerOverlay,
+	DotLoader,
+	FerrisWheelSpinner,
+} from "react-spinner-overlay";
 import { styled } from "styled-components";
 import "./App.css";
 import axios from "axios";
@@ -8,11 +13,6 @@ import trush from "./assets/trush.svg";
 import Modal from "./components/Modal";
 import ModalConfirm from "./components/ModalConfirm";
 import Search from "./assets/search.svg";
-import {
-	// CircleSpinnerOverlay,
-	DotLoader,
-	// FerrisWheelSpinner,
-} from "react-spinner-overlay";
 import BlankImage from "./assets/blank-image.png";
 
 const SpinnerContainer = styled.div`
@@ -23,6 +23,8 @@ const SpinnerContainer = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	/* padding-top: 50%;
+	padding-left: 50%; */
 `;
 
 const Container = styled.div`
@@ -30,7 +32,6 @@ const Container = styled.div`
 	background: white;
 	font-size: 2rem;
 	margin: 20px auto;
-	padding: 10px;
 `;
 
 const Header = styled.div`
@@ -48,7 +49,6 @@ const Header = styled.div`
 		height: 100%;
 		align-items: center;
 		max-width: 800px;
-		background: green;
 		padding: 5px;
 		position: relative;
 		p {
@@ -86,32 +86,24 @@ const Header = styled.div`
 
 const Card = styled.div`
 	display: flex;
-	flex-direction: column;
+	width: 98%;
+	border: 1px solid black;
+	padding: 10px;
+	margin: 10px auto;
 	justify-content: space-between;
-	align-items: flex-start;
-	width: 100%;
-	/* border: 1px solid black; */
-	/* padding: 10px; */
-	margin: 10px 0;
-	/* align-items: center; */
-	height: 400px;
-	.top{
-		width: 100%;
-		height: 350px;
-		.image {
-			width: auto;
-			height: 75%;
-			img {
-				border: 1px solid black;
-				object-fit: cover;
-				border-radius: 10px;
-				width: 100%;
-				height: 100%;
-			}
+	align-items: center;
+
+	.leftBlock {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		img {
+			width: 100px;
+			height: 100px;
+			object-fit: contain;
 		}
 	}
 	.operation {
-
 		display: flex;
 		gap: 10px;
 		button {
@@ -125,66 +117,29 @@ const Card = styled.div`
 		}
 	}
 `;
+
 const PageContainer = styled.div`
-	margin: 5px 0;	
-	width: 50%;
+	width: 500px;
 	height: 40px;
 	background: pink;
 	display: flex;
 	gap: 5px;
 	align-items: center;
-	@media (max-width: 1000px) {
-		margin: 30px 0 10px;
-		width: 100%;
-		background-color: #f6f6f8;
-	}
 	button {
 		width: 30px;
 		height: 30px;
 	}
 `;
-const Indicates = styled.button`
-	select {
-		border: none;
-		width: 100px;
-		height: 40px;
-		padding: 13px 11px 13px 11px;
-		color: #75787e;
-		font-size: 1.2rem;
-		margin-left: 10px;
-	}
-`;
-const Designed = styled.div`
-display: grid;
-gap: 15px;
-grid-template-columns: 1fr 1fr 1fr 1fr;
-@media (max-width: 1000px) {
-	grid-template-columns: 1fr 1fr;
-	margin: 10px;
-}
-`
 
-const Comment = styled.div`
-font-size:13px;
-height: 40px;
-overflow: hidden; 
-/* overflow: scroll;  */
-/* Cắt đoạn văn bản dư (nếu có) và thêm dấu ba chấm (...) */
-text-overflow: ellipsis;
-/* Để đảm bảo văn bản không bị cắt ngang, sử dụng white-space */
-/* white-space: normal; */
-`;
 function App() {
-	const pageSizeFromStorage = sessionStorage.getItem('pageSize');
-	const initialPageSize = pageSizeFromStorage !== null ? pageSizeFromStorage : 4;
-	
 	const [page, setPage] = useState(1);
-	const [pageSize, setPageSize] = useState(initialPageSize);
+	const [pageSize, setPageSize] = useState(3);
 	const [pageCounts, setPageCounts] = useState([]);
 
 	const [loading, setLoading] = useState(true);
 	const [show, setShow] = useState(false);
 	const [showConfirm, setShowConfirm] = useState(false);
+	// const [search, setSearch] = useState("&filters[comment][$contains]=安く");
 	const [searchText, setSearchText] = useState("");
 	const refSearch = useRef();
 
@@ -196,44 +151,30 @@ function App() {
 	});
 
 	useEffect(() => {
-		if (loading) {
-			document.body.style.overflow = "hidden";
-		} else {
-			document.body.style.overflow = "auto";
-		}
-	}, [loading]);
-
-	useEffect(() => {
-		setLoading(false)
-		// console.log(pageCounts)
-		// console.log(postsQuery.data)
-	});
-	useEffect(() => {
-		// console.log("useEffect()")
-		let ps = localStorage.getItem("pageSize");
-		if (ps) {
-			setPageSize(ps);
-		}
+		console.log("useEffect");
 	}, []);
+
 	const getComments = async (text) => {
 		const res = await axios.get(
 			`https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&populate=*${text}&pagination[page]=${page}&pagination[pageSize]=${pageSize}`
 		);
+		// エラーは、	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;で拾ってくれる
 		setLoading(false);
-		console.log(res);
+		console.log("data.meta=", res.data.meta);
 		let tmpArray = [];
 		for (let i = 0; i < res.data.meta.pagination.pageCount; i++) {
-			tmpArray.push(i + 1)
+			tmpArray.push(i + 1);
 		}
-		setPageCounts(tmpArray)
+		setPageCounts(tmpArray);
+
 		return res.data.data;
 	};
 
-	// 😺CRUDのRead
-	const postsQuery = useQuery(["comments", searchText, page, pageSize], () =>
-		getComments(searchText)
-		// console.log(data)
+	// `https://lusty.asia:1443/api/mercari-comments?sort[0]=updatedAt:desc&filters[comment][$contains]=安く`
 
+	// 😺CRUDのRead
+	const postsQuery = useQuery(["comments", searchText, page], () =>
+		getComments(searchText)
 	);
 
 	// 😺CRUDのDelete
@@ -247,7 +188,6 @@ function App() {
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
-			setLoading(false)
 		},
 	});
 
@@ -262,7 +202,6 @@ function App() {
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
-			setLoading(false)
 		},
 	});
 
@@ -283,12 +222,8 @@ function App() {
 		onSuccess: () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			queryClient.invalidateQueries({ queryKey: ["comments"] });
-			setLoading(false)
 		},
 	});
-
-	// if (postsQuery.isLoading) return ();
-	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;
 
 	// 🐶 新規登録ボタン
 	const clickNew = () => {
@@ -302,9 +237,11 @@ function App() {
 	};
 	// 🐶 Editボタン
 	const clickEdit = (item) => {
-		console.log(item)
 		let imageUrl = null;
 		imageUrl = `https://lusty.asia:1443/${item.attributes.image_url}`;
+		// if (item.attributes.images.data) {
+		// 	imageUrl = `https://lusty.asia:1443/${item.attributes.images.data[0].attributes.url}`;
+		// }
 
 		setModalData({
 			id: item.id,
@@ -318,15 +255,11 @@ function App() {
 
 	// 🐶 deleteボタン
 	const clickDelete = (item) => {
-		let imageUrl = null;
-		imageUrl = `https://lusty.asia:1443/${item.attributes.image_url}`;
-
 		setModalData({
 			id: item.id,
 			name: item.attributes.name,
 			comment: item.attributes.comment,
 			type: "edit", // "new"
-			image: imageUrl,
 		});
 		setShowConfirm(true);
 	};
@@ -334,7 +267,6 @@ function App() {
 	// 🦑 Modalで、確認(削除)ボタンが押された時
 	const deleteComment = (data) => {
 		setShowConfirm(false);
-		setLoading(true)
 		mutationDelete.mutate(data.id);
 	};
 
@@ -347,13 +279,14 @@ function App() {
 	// 🐙 Modalで、新規登録/更新 ボタンが押された
 	const postModal = (data) => {
 		setShow(false);
-		setLoading(true)
 		// console.log("data=" + JSON.stringify(data));
-		// console.log(modalData.type);
+		console.log(modalData.type);
 		// mutationUpdate.mutate(data);
 		if (modalData.type == "new") {
-
 			data.image_url = "";
+
+			// mediaに画像をアップロードする。
+			console.log("Fileあり？", data.file);
 			if (data.file) {
 				console.log("あり");
 				const formData = new FormData();
@@ -361,16 +294,15 @@ function App() {
 				axios
 					.post("https://lusty.asia:1443/api/upload", formData)
 					.then((response) => {
+						// "url": "/uploads/chuando_2_82c7831383.webp",
 						console.log("res=", response.data[0].url);
-						data.image_url = response.data[0].url;
 						mutationCreate.mutate({
 							data: {
 								name: data.name,
 								comment: data.comment,
-								image_url: data.image_url,
+								image_url: response.data[0].url,
 							},
 						});
-						setLoading(false)
 					})
 					.catch((error) => {
 						console.log("error movie:", error);
@@ -387,21 +319,21 @@ function App() {
 		}
 
 		if (modalData.type == "edit") {
+			data.image_url = "";
 
 			// mediaに画像をアップロードする。
 			console.log("Fileあり？", data.file);
 			if (data.file) {
-				data.image_url = "";
 				console.log("あり");
 				const formData = new FormData();
 				formData.append("files", data.file);
 				axios
 					.post("https://lusty.asia:1443/api/upload", formData)
 					.then((response) => {
+						// "url": "/uploads/chuando_2_82c7831383.webp",
 						console.log("res=", response.data[0].url);
 						data.image_url = response.data[0].url;
 						mutationUpdate.mutate(data);
-						setLoading(false)
 					})
 					.catch((error) => {
 						console.log("error movie:", error);
@@ -413,28 +345,24 @@ function App() {
 		}
 	};
 
-
 	const clickSearch = () => {
-		setLoading(true)
 		//stateを変更することで、そのstateをwatchしているuseQueryが再度実行されます。
 		setSearchText(`&filters[comment][$contains]=${refSearch.current.value}`);
 		console.log(refSearch.current.value);
-
-
 	};
 	const clickPage = (pageNum) => {
-		setPage(pageNum)
-		// console.log();
+		setPage(pageNum);
+		// setSearchText(`&pagination[page]=${pageNum}&pagination[pageSize]=3`);
+		console.log(refSearch.current.value);
 	};
-
 
 	// 検索キーワード入力時に、Enterキーが押された
 	const handleKeyDown = (e) => {
-		// console.log("key=", e.key);
+		console.log("key=", e.key);
 		if (e.nativeEvent.isComposing || e.key !== "Enter") return;
-		setLoading(true)
 		clickSearch();
 	};
+
 	if (postsQuery.isLoading) {
 		return (
 			<SpinnerContainer>
@@ -442,20 +370,13 @@ function App() {
 			</SpinnerContainer>
 		);
 	}
-	//thay đổi số lượng page
-	const handleChangePageSize = (e) => {
-		const val = e.target.value;
-		setPageSize(val ? val : 4);
-		sessionStorage.setItem("pageSize", val);
 
-		// handleChangePage();
-	};
-	// const handleChangePage = () => {
-	// 	// setLoading(true)
-	// 	//stateを変更することで、そのstateをwatchしているuseQueryが再度実行されます。
-	// 	// setSearchText(`&filters[comment][$contains]=${refSearch.current.value}`);
-	// 	// getComments(searchText)
-	// }
+	if (postsQuery.isError) return <h1>Error loading data!!!</h1>;
+	if (postsQuery.isSuccess) {
+		console.log("success");
+		// setLoading(false);
+	}
+
 	return (
 		<>
 			{loading ? (
@@ -472,7 +393,7 @@ function App() {
 				/>
 			)}
 			{show && (
-				<Modal setModal={setLoading} post={postModal} close={closeModal} data={modalData} />
+				<Modal post={postModal} close={closeModal} data={modalData} />
 			)}
 
 			<Container>
@@ -490,54 +411,49 @@ function App() {
 					</div>
 					<button onClick={() => clickNew()}>新規登録</button>
 				</Header>
-
 				<PageContainer>
 					{pageCounts.map((item, index) => (
-						<button key={index} onClick={() => clickPage(index + 1)}>{index + 1}</button>))}
-				</PageContainer>
-				<Indicates>
-					表示数
-					<select
-						value={pageSize ? pageSize : 4}
-						onChange={handleChangePageSize}>
-						<option value="4">4件</option>
-						<option value="8">8件</option>
-						<option value="12">12件</option>
-					</select>
-				</Indicates>
-				<Designed>
-					{postsQuery?.data?.map((item, index) => (
-						<Card key={index}>
-							<div className="top">
-								<div className="image">
-									{item.attributes.image_url ? (
-										<img
-											src={
-												`https://lusty.asia:1443/` +
-												item.attributes.image_url
-											}
-											alt=""
-										/>
-									) : (
-										<img src={BlankImage} alt="" />
-									)}
-								</div>
-								<div>{item.id}</div>
-								<div>{item.attributes.name}</div>
-								<Comment>{item.attributes.comment}</Comment>
-							</div>
-
-							<div className="operation">
-								<button onClick={() => clickEdit(item)}>
-									<img src={edit} alt="" />
-								</button>
-								<button onClick={() => clickDelete(item)}>
-									<img src={trush} alt="" />
-								</button>
-							</div>
-						</Card>
+						<button onClick={() => clickPage(index + 1)}>
+							{index + 1}
+						</button>
 					))}
-				</Designed>
+				</PageContainer>
+
+				{postsQuery.data.map((item, index) => (
+					<Card key={index}>
+						<div className="leftBlock">
+							<div className="left">
+								{item.attributes.image_url ? (
+									<img
+										src={
+											`https://lusty.asia:1443/` +
+											item.attributes.image_url
+										}
+										alt=""
+									/>
+								) : (
+									<div>
+										<img src={BlankImage} alt="" />
+									</div>
+								)}
+							</div>
+							<div className="right">
+								{/* <div>{item.id}</div> */}
+								<div>{item.attributes.name}</div>
+								<div>{item.attributes.comment}</div>
+							</div>
+						</div>
+
+						<div className="operation">
+							<button onClick={() => clickEdit(item)}>
+								<img src={edit} alt="" />
+							</button>
+							<button onClick={() => clickDelete(item)}>
+								<img src={trush} alt="" />
+							</button>
+						</div>
+					</Card>
+				))}
 			</Container>
 		</>
 	);
