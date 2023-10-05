@@ -232,13 +232,16 @@ npm i react-router-dom
 https://www.prisma.io/blog/nestjs-prisma-authentication-7D056s1s0k3l
 
 
+😺[12_navbar]
+参考動画：https://www.youtube.com/watch?v=17l6AOc8s10
 
-
-
-
-
-
-
+mkdir 12_navbar_tom
+cd 12_navbar_tom
+npm create vite@latest .
+JavaScript + SWC
+App.cssを削除
+npm i react-router-dom
+npm i styled-components
 
   
 
