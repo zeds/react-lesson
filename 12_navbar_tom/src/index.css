@@ -10,10 +10,6 @@ a {
 	color: white;
 }
 
-a:hover {
-	color: red;
-}
-
 html {
 	font-size: 62.5%;
 }
@@ -22,4 +18,5 @@ body {
 	width: 100%;
 	height: 100vh;
 	background: skyblue;
+	/* padding: 62px 0; */
 }
