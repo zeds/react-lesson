@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import ReCAPTCHA from "react-google-recaptcha";
+import { validation } from "../common/validation";
 
 const Form = styled.div`
 	width: 400px;
@@ -49,30 +50,6 @@ interface RegisterForm {
 	email: string;
 	password: string;
 }
-
-const validation = [
-	{
-		required: "名前は必須",
-		minLength: {
-			value: 3,
-			message: "3文字以上で入力してください",
-		},
-	},
-	{
-		required: "emailは必須",
-		pattern: {
-			value: /^[\w\-._]+@[\w\-._]+\.[A-Za-z]+/,
-			message: "入力形式がメールアドレスではありません。",
-		},
-	},
-	{
-		required: "passwordは必須",
-		minLength: {
-			value: 6,
-			message: "6文字以上で入力してください",
-		},
-	},
-];
 
 const Register = () => {
 	const {
@@ -134,7 +111,7 @@ const Register = () => {
 						<Button label="同意して登録する" />
 						<hr />
 						<Link className="link" to="/login">
-							ログイン
+							ログインはこちら
 						</Link>
 					</form>
 				</Wrapper>

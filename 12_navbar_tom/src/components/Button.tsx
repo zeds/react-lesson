@@ -19,12 +19,20 @@ const Frame = styled.div`
 `;
 interface InputInterface {
 	label: string;
+	color?: string; // ?: optional parameter
+	background?: string;
 }
 
-export function Button({ label }: InputInterface) {
+export function Button({
+	label,
+	color = "white",
+	background = "lightgray",
+}: InputInterface) {
 	return (
 		<Frame>
-			<button type="submit">{label}</button>
+			<button type="submit" style={{ color: color, background: background }}>
+				{label}
+			</button>
 		</Frame>
 	);
 }
