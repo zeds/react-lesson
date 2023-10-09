@@ -2,18 +2,22 @@ import { DISPLAY_MD, HEIGHT_NAV } from "../GlobalStyle";
 import { Link, NavLink } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import ImgBurger from "../assets/burger.svg";
+import ImgClose from "../assets/close.svg";
 
 const ShowBurger = styled.div`
 	display: none;
 	z-index: 1;
 	position: fixed;
 	right: 0;
-	width: 50px;
-	height: 50px;
-	font-size: 6rem;
-	font-weight: 800;
-	color: white;
-	align-items: center;
+	width: ${HEIGHT_NAV};
+	height: ${HEIGHT_NAV};
+	div {
+		img {
+			width: 100%;
+			height: 100%;
+		}
+	}
 	@media (max-width: ${DISPLAY_MD}) {
 		display: flex;
 		cursor: pointer;
@@ -32,10 +36,14 @@ const MenuBackground = styled.div`
 		z-index: 1;
 		position: absolute;
 		right: 0;
-		top: 10px;
-		width: 50px;
-		height: 50px;
-		font-size: 4rem;
+		width: ${HEIGHT_NAV};
+		height: ${HEIGHT_NAV};
+
+		img {
+			width: 100%;
+			height: 100%;
+		}
+
 		&:hover {
 			cursor: pointer;
 		}
@@ -203,13 +211,15 @@ const Navbar = () => {
 	return (
 		<>
 			<ShowBurger>
-				<span id="burger" onClick={() => clickBurger()}>
-					&#9776;
-				</span>
+				<div id="burger" onClick={() => clickBurger()}>
+					<img src={ImgBurger} alt="burger" />
+				</div>
 			</ShowBurger>
 			{menuOpen ? (
 				<MenuBackground onClick={() => clickClose()}>
-					<div onClick={() => clickClose()}>&#x2716;</div>
+					<div onClick={() => clickClose()}>
+						<img src={ImgClose} alt="close" />
+					</div>
 				</MenuBackground>
 			) : (
 				""
