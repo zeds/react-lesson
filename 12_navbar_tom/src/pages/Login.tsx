@@ -1,17 +1,13 @@
 import { Container } from "../GlobalStyle";
 import { Link } from "react-router-dom";
-import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import axios from "axios";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
-import ReCAPTCHA from "react-google-recaptcha";
 import { validation } from "../common/validation";
 
 const Form = styled.div`
-	width: 400px;
+	max-width: 400px;
 	margin: 0 auto;
 	margin-top: 40px;
 `;
@@ -21,8 +17,8 @@ const Header = styled.div`
 `;
 
 const Wrapper = styled.div`
-	width: 400px;
-	padding: 30px;
+	margin: 0 auto;
+	padding: 20px;
 	border: 1px solid lightgray;
 	border-radius: 4px;
 	background: white;

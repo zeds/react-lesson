@@ -257,6 +257,7 @@ export const Container = styled.div`
 	height: 100vh;
 	background: lightgray;
 	margin: 0 auto;
+	background: blue;
 `;
 
 export const FooterContainer = styled.div`
