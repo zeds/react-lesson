@@ -191,6 +191,11 @@ const Navbar = () => {
 	let content = (
 		<ul>
 			<li>
+				<NavLink to="/mypage" onClick={() => clickClose()}>
+					マイページ
+				</NavLink>
+			</li>
+			<li>
 				<NavLink to="/users" onClick={() => clickClose()}>
 					ユーザー一覧
 				</NavLink>

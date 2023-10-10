@@ -44,12 +44,7 @@ const Wrapper = styled.div`
 `;
 
 interface LoginForm {
-	email: string;
-	password: string;
-}
-//Strapiは、emailではなくて、identifierとしてemailを渡さないといけない。
-interface PostForm {
-	identifier: string;
+	identifier: string; // strapiはemailではなくidentifierを使っている
 	password: string;
 }
 
@@ -66,7 +61,7 @@ const Login = () => {
 	const navigate = useNavigate();
 
 	const postData = useMutation({
-		mutationFn: (newPost: PostForm) => {
+		mutationFn: (newPost: LoginForm) => {
 			return axios.post(`${STRAPI_URL}/api/auth/local`, newPost);
 		},
 		onSuccess: (data) => {
@@ -88,11 +83,7 @@ const Login = () => {
 	const onSubmit = (data: LoginForm) => {
 		console.log("ログイン成功");
 		console.log(data);
-		const obj: PostForm = {
-			identifier: data.email,
-			password: data.password,
-		};
-		postData.mutate(obj);
+		postData.mutate(data);
 	};
 
 	return (
@@ -105,7 +96,7 @@ const Login = () => {
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input
 							type="email"
-							name="email"
+							name="identifier"
 							label="メールアドレス"
 							placeholder="mail@example.com"
 							errors={errors}

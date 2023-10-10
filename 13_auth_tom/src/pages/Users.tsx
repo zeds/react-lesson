@@ -32,7 +32,9 @@ const Users = () => {
 			<Form>
 				<div>ユーザー名</div>
 				{data.map((item: any, index: number) => (
-					<div key={index}>{item.username}</div>
+					<div key={index}>
+						{item.username} {item.email}
+					</div>
 				))}
 			</Form>
 		</Container>

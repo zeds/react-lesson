@@ -1,4 +1,4 @@
-import { Container } from "../GlobalStyle";
+import { Container, STRAPI_URL } from "../GlobalStyle";
 import { Link } from "react-router-dom";
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
@@ -46,7 +46,7 @@ const Wrapper = styled.div`
 `;
 
 interface RegisterForm {
-	name: string;
+	username: string;
 	email: string;
 	password: string;
 }
@@ -57,13 +57,27 @@ const Register = () => {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<RegisterForm>({
-		mode: "onChange",
-	}); // "onBlur"
-	// "onBlur": fieldがfocusを失った時呼ばれる
-	// "onChange": submitが押された時呼ばれる
+		mode: "onChange", // onBluer: フォーカスを失った時に呼ばれる
+	});
+
+	const postData = useMutation({
+		mutationFn: (newPost: RegisterForm) => {
+			console.log("newPost=" + JSON.stringify(newPost));
+			return axios.post(`${STRAPI_URL}/api/auth/local/register`, newPost);
+		},
+		onSuccess: (data) => {
+			console.log(data.data);
+			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+			// queryClient.invalidateQueries({ queryKey: ["comments"] });
+		},
+		onError: (error, variables, context) => {
+			console.log("c=" + error.response.data.error.message);
+		},
+	});
 
 	const onSubmit = (data: RegisterForm) => {
-		console.log(data.name);
+		console.log(JSON.stringify(data));
+		postData.mutate(data);
 	};
 
 	return (
@@ -76,7 +90,7 @@ const Register = () => {
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input
 							type="text"
-							name="name"
+							name="username"
 							label="表示される名前"
 							placeholder="〇〇さん"
 							errors={errors}
@@ -104,10 +118,10 @@ const Register = () => {
 							validationSchema={validation[2]}
 							required
 						/>
-						<ReCAPTCHA
+						{/* <ReCAPTCHA
 							className="recaptcha"
 							sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-						/>
+						/> */}
 						<Button label="同意して登録する" />
 						<hr />
 						<Link className="link" to="/login">
