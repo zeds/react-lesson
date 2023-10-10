@@ -1,19 +1,23 @@
-import { DISPLAY_MD } from "../GlobalStyle";
+import { DISPLAY_MD, HEIGHT_NAV } from "../GlobalStyle";
 import { Link, NavLink } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import ImgBurger from "../assets/burger.svg";
+import ImgClose from "../assets/close.svg";
 
 const ShowBurger = styled.div`
 	display: none;
 	z-index: 1;
 	position: fixed;
 	right: 0;
-	width: 50px;
-	height: 50px;
-	font-size: 6rem;
-	font-weight: 800;
-	color: white;
-	align-items: center;
+	width: ${HEIGHT_NAV};
+	height: ${HEIGHT_NAV};
+	div {
+		img {
+			width: 100%;
+			height: 100%;
+		}
+	}
 	@media (max-width: ${DISPLAY_MD}) {
 		display: flex;
 		cursor: pointer;
@@ -32,10 +36,14 @@ const MenuBackground = styled.div`
 		z-index: 1;
 		position: absolute;
 		right: 0;
-		top: 10px;
-		width: 50px;
-		height: 50px;
-		font-size: 4rem;
+		width: ${HEIGHT_NAV};
+		height: ${HEIGHT_NAV};
+
+		img {
+			width: 100%;
+			height: 100%;
+		}
+
 		&:hover {
 			cursor: pointer;
 		}
@@ -47,7 +55,7 @@ const NavigationHeader = styled.header`
 	display: flex;
 	background: green;
 	width: 100%;
-	height: 62px;
+	height: ${HEIGHT_NAV};
 	padding: 0 15px;
 	justify-content: center;
 	align-items: center;
@@ -55,7 +63,7 @@ const NavigationHeader = styled.header`
 	.menu {
 		position: absolute;
 		display: block;
-		top: 62px;
+		top: ${HEIGHT_NAV};
 		width: 400px;
 		height: 100px;
 		animation-name: animationBox;
@@ -99,7 +107,7 @@ const NavigationHeader = styled.header`
 		animation-name: animationBoxClose;
 		animation-duration: 0.3s;
 		animation-fill-mode: forwards;
-		top: 62px;
+		top: ${HEIGHT_NAV};
 		ul {
 			display: flex;
 			background: green;
@@ -162,7 +170,7 @@ const Navbar = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	const clickBurger = () => {
-		let burger = document.querySelector("#burger");
+		let burger = document.querySelector<HTMLElement>("#burger")!;
 		burger.style.display = "none";
 
 		// スクロール出来ないようにする
@@ -173,7 +181,7 @@ const Navbar = () => {
 
 	const clickClose = () => {
 		setMenuOpen(false);
-		let burger = document.querySelector("#burger");
+		let burger = document.querySelector<HTMLElement>("#burger")!;
 		burger.style.display = "flex";
 
 		//スクロール出来るようにする
@@ -182,6 +190,11 @@ const Navbar = () => {
 
 	let content = (
 		<ul>
+			<li>
+				<NavLink to="/users" onClick={() => clickClose()}>
+					ユーザー一覧
+				</NavLink>
+			</li>
 			<li>
 				<NavLink to="/about" onClick={() => clickClose()}>
 					About
@@ -193,7 +206,7 @@ const Navbar = () => {
 				</NavLink>
 			</li>
 			<li>
-				<NavLink to="/register" onClick={() => clickClose(clickClose)}>
+				<NavLink to="/register" onClick={() => clickClose()}>
 					会員登録
 				</NavLink>
 			</li>
@@ -203,13 +216,15 @@ const Navbar = () => {
 	return (
 		<>
 			<ShowBurger>
-				<span id="burger" onClick={() => clickBurger()}>
-					&#9776;
-				</span>
+				<div id="burger" onClick={() => clickBurger()}>
+					<img src={ImgBurger} alt="burger" />
+				</div>
 			</ShowBurger>
 			{menuOpen ? (
 				<MenuBackground onClick={() => clickClose()}>
-					<div onClick={() => clickClose()}>&#x2716;</div>
+					<div onClick={() => clickClose()}>
+						<img src={ImgClose} alt="close" />
+					</div>
 				</MenuBackground>
 			) : (
 				""
