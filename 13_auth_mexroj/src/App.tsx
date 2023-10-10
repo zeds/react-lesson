@@ -1,20 +1,19 @@
 import { Route, Routes } from "react-router-dom";
-import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Users from "./pages/Users";
 
 function App() {
-	const [count, setCount] = useState(0);
-
 	return (
 		<>
 			<Navbar />
 			<Routes>
 				<Route path="/" element={<Home />} />
 				<Route path="/about" element={<About />} />
+				<Route path="/users" element={<Users />} />
 				<Route path="/login" element={<Login />} />
 				<Route path="/register" element={<Register />} />
 			</Routes>
