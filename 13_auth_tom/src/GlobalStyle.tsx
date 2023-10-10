@@ -1,8 +1,10 @@
 import styled, { createGlobalStyle } from "styled-components";
 
+export const STRAPI_URL = `${import.meta.env.VITE_STRAPI_URL}`;
+
 export const DISPLAY_MD = "599px";
-export const DISPLAY_CT = "896px";
 export const DISPLAY_LG = "1024px";
+export const DISPLAY_CT = "896px";
 export const HEIGHT_NAV = "62px";
 
 const GlobalStyle = createGlobalStyle`
