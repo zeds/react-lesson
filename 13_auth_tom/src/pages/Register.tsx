@@ -1,5 +1,5 @@
 import { Container, STRAPI_URL } from "../GlobalStyle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import axios from "axios";
@@ -52,6 +52,8 @@ interface RegisterForm {
 }
 
 const Register = () => {
+	const navigate = useNavigate();
+
 	const {
 		register,
 		handleSubmit,
@@ -67,6 +69,7 @@ const Register = () => {
 		},
 		onSuccess: (data) => {
 			console.log(data.data);
+			navigate("/");
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			// queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
