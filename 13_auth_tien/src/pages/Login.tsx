@@ -7,6 +7,8 @@ import { Button } from "../components/Button";
 import { validation } from "../common/validation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/silce/navbarSlice";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -54,6 +56,7 @@ interface PostForm {
 }
 
 const Login = () => {
+	const dispatch = useDispatch();
 	const {
 		register,
 		handleSubmit,
@@ -70,8 +73,9 @@ const Login = () => {
 			return axios.post(`${STRAPI_URL}/api/auth/local`, newPost);
 		},
 		onSuccess: (data) => {
-			console.log(data.data);
-			console.log(data.data.jwt);
+			// console.log(data.data);
+			// console.log(data.data.jwt);
+			dispatch(login(data.data.jwt));
 			// cookieに格納する
 			localStorage.setItem("token", data.data.jwt);
 

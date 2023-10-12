@@ -4,6 +4,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import ImgBurger from "../assets/burger.svg";
 import ImgClose from "../assets/close.svg";
+import { useSelector } from "react-redux";
 
 const ShowBurger = styled.div`
   display: none;
@@ -168,7 +169,8 @@ const NavigationHeader = styled.header`
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const token = localStorage.getItem("token");
+  const token = useSelector((store :any)=>store.navbar.token);
+  console.log(token);
   const clickBurger = () => {
     let burger = document.querySelector<HTMLElement>("#burger")!;
     burger.style.display = "none";
@@ -191,9 +193,9 @@ const Navbar = () => {
   let content = (
     <ul>
       <li>
-        <NavLink to="/my-page" onClick={() => clickClose()}>
+        {token ? <NavLink to="/my-page" onClick={() => clickClose()}>
           マイページ
-        </NavLink>
+        </NavLink> : ""}
       </li>
       <li>
         <NavLink to="/users" onClick={() => clickClose()}>
