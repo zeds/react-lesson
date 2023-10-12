@@ -1,0 +1,40 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+
+body {
+  width: 100%;
+  height: 100vh;
+  background: skyblue;
+}
+
+button {
+  width: 100px;
+  height: 50px;
+}
+
+.neko {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  top:200px;
+  left: 100px;
+  border: 2px solid blueviolet;
+}
+
+.house {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  top:200px;
+  left: 600px;
+  border: 2px solid blueviolet;
+}
+
+
+.house img {
+  width: 200px;
+  height: 200px;
+}
