@@ -1,14 +1,12 @@
 import { Container, STRAPI_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import axios from "axios";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
-import ReCAPTCHA from "react-google-recaptcha";
 import { validation } from "../common/validation";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -45,62 +43,66 @@ const Wrapper = styled.div`
 	}
 `;
 
-interface RegisterForm {
-	username: string;
+interface LoginForm {
 	email: string;
 	password: string;
 }
+//Strapiは、emailではなくて、identifierとしてemailを渡さないといけない。
+interface PostForm {
+	identifier: string;
+	password: string;
+}
 
-const Register = () => {
-	const navigate = useNavigate();
-
+const Login = () => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<RegisterForm>({
-		mode: "onChange", // onBluer: フォーカスを失った時に呼ばれる
-	});
+	} = useForm<LoginForm>({
+		mode: "onChange",
+	}); // "onBlur"
+	// "onBlur": fieldがfocusを失った時呼ばれる
+	// "onChange": submitが押された時呼ばれる
+	const navigate = useNavigate();
 
 	const postData = useMutation({
-		mutationFn: (newPost: RegisterForm) => {
-			console.log("newPost=" + JSON.stringify(newPost));
-			return axios.post(`${STRAPI_URL}/api/auth/local/register`, newPost);
+		mutationFn: (newPost: PostForm) => {
+			return axios.post(`${STRAPI_URL}/api/auth/local`, newPost);
 		},
 		onSuccess: (data) => {
 			console.log(data.data);
+			console.log(data.data.jwt);
+			// cookieに格納する
+			localStorage.setItem("token", data.data.jwt);
+
+			// rootを開く
+			console.log("rootを開く");
+
 			navigate("/");
+
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			// queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
-		onError: (error, variables, context) => {
-			console.log("c=" + error.response.data.error.message);
-		},
 	});
 
-	const onSubmit = (data: RegisterForm) => {
-		console.log(JSON.stringify(data));
-		postData.mutate(data);
+	const onSubmit = (data: LoginForm) => {
+		console.log("ログイン成功");
+		console.log(data);
+		const obj: PostForm = {
+			identifier: data.email,
+			password: data.password,
+		};
+		postData.mutate(obj);
 	};
 
 	return (
 		<Container>
 			<Form>
 				<Header>
-					<h2>会員登録</h2>
+					<h2>ログイン</h2>
 				</Header>
 				<Wrapper>
 					<form onSubmit={handleSubmit(onSubmit)}>
-						<Input
-							type="text"
-							name="username"
-							label="表示される名前"
-							placeholder="〇〇さん"
-							errors={errors}
-							register={register}
-							validationSchema={validation[0]}
-							required
-						/>
 						<Input
 							type="email"
 							name="email"
@@ -109,7 +111,7 @@ const Register = () => {
 							errors={errors}
 							register={register}
 							validationSchema={validation[1]}
-							required
+							required={false}
 						/>
 						<Input
 							type="password"
@@ -119,16 +121,12 @@ const Register = () => {
 							errors={errors}
 							register={register}
 							validationSchema={validation[2]}
-							required
+							required={false}
 						/>
-						{/* <ReCAPTCHA
-							className="recaptcha"
-							sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-						/> */}
-						<Button label="同意して登録する" />
+						<Button label="ログイン" />
 						<hr />
-						<Link className="link" to="/login">
-							ログインはこちら
+						<Link className="link" to="/register">
+							会員登録はこちら
 						</Link>
 					</form>
 				</Wrapper>
@@ -137,4 +135,4 @@ const Register = () => {
 	);
 };
 
-export default Register;
+export default Login;

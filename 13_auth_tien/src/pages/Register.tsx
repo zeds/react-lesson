@@ -1,9 +1,9 @@
 import { Container, STRAPI_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState, useRef } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
@@ -14,6 +14,12 @@ const Form = styled.div`
 	max-width: 400px;
 	margin: 0 auto;
 	margin-top: 40px;
+	.error {
+		font-size: 2rem;
+		color: red;
+		padding: 0 10px;
+		margin: 5px auto;
+	}
 `;
 
 const Header = styled.div`
@@ -46,40 +52,45 @@ const Wrapper = styled.div`
 `;
 
 interface RegisterForm {
-	username: string;
+	name: string;
 	email: string;
 	password: string;
 }
 
 const Register = () => {
-	const navigate = useNavigate();
-
+	const [errorMessenger, setErrorMessenger] = useState("");
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm<RegisterForm>({
-		mode: "onChange", // onBluer: フォーカスを失った時に呼ばれる
-	});
+		mode: "onChange",
+	}); // "onBlur"
+	// "onBlur": fieldがfocusを失った時呼ばれる
+	// "onChange": submitが押された時呼ばれる
+	const navagate = useNavigate();
 
 	const postData = useMutation({
 		mutationFn: (newPost: RegisterForm) => {
-			console.log("newPost=" + JSON.stringify(newPost));
+			// console.log("newwPost"+ JSON.stringify(newPost));
 			return axios.post(`${STRAPI_URL}/api/auth/local/register`, newPost);
 		},
 		onSuccess: (data) => {
+			setErrorMessenger("")
 			console.log(data.data);
-			navigate("/");
-			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
-			// queryClient.invalidateQueries({ queryKey: ["comments"] });
+			navagate("/");
 		},
-		onError: (error, variables, context) => {
-			console.log("c=" + error.response.data.error.message);
-		},
-	});
-
+		onError: (errors) => {
+			if(errors == "AxiosError: Request failed with status code 400"){
+				setErrorMessenger("このメールアドレスは以前に登録されていました。	")
+			}
+			// setErrorMessenger(errors.message);
+			console.log("Error: " + errors);
+			// console.log("Error: " + context);
+		  }
+	})
 	const onSubmit = (data: RegisterForm) => {
-		console.log(JSON.stringify(data));
+		// console.log(JSON.stringify(data));
 		postData.mutate(data);
 	};
 
@@ -89,6 +100,7 @@ const Register = () => {
 				<Header>
 					<h2>会員登録</h2>
 				</Header>
+				<p className="error">{errorMessenger}</p>
 				<Wrapper>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input
@@ -121,10 +133,10 @@ const Register = () => {
 							validationSchema={validation[2]}
 							required
 						/>
-						{/* <ReCAPTCHA
+						<ReCAPTCHA
 							className="recaptcha"
 							sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-						/> */}
+						/>
 						<Button label="同意して登録する" />
 						<hr />
 						<Link className="link" to="/login">
