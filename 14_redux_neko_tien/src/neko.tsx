@@ -4,30 +4,34 @@ import { useDispatch, useSelector } from "react-redux";
 import { lightChange } from "./redux/slices/lightSlice";
 
 const Neko = () => {
-    const dispatch = useDispatch();
-	// const [toggle, setToggle] = useState(true);
+  const dispatch = useDispatch();
+  const box = document.querySelector(".neko") as HTMLDivElement | null;
+  // const [toggle, setToggle] = useState(true);
 
-	const lightSwitch = useSelector((store: any) => store.light.lightOn) //lấy biến initialState
-	const test = useSelector((store: any) => store.light.test) //lấy biến initialState
-	const clickButton = () => {
-		// console.log(lightSwitch);
-		// console.log(test);
+  const lightSwitch = useSelector((store: any) => store.light.lightOn); //lấy biến initialState
+  // const test = useSelector((store: any) => store.light.test) //lấy biến initialState
+  if (box) {
+	if (lightSwitch) {
+	  box.style.background = "white";
+	} else {
+	  box.style.background = "black";
+	}
+  }
+  //neko
+  const location = useSelector((store : any) => store.location.location);
 
-		dispatch(lightChange(!lightSwitch));
-		const box = document.querySelector(".neko") as HTMLDivElement | null;
-		if (!lightSwitch) {
-			box.style.background = "black";
-		} else {
-			box.style.background = "red";
-		};
-	};
+  const clickButton = () => {
+    console.log(lightSwitch);
+    dispatch(lightChange(!lightSwitch));
+  };
+  sessionStorage.setItem
 
-	return (
-		<div className="neko">
-			<img src={imgNeko} alt="" />
-			<button onClick={() => clickButton()}>電気</button>
-		</div>
-	);
+  return (
+    <div className="neko">
+      <img className={location} src={imgNeko} alt="" />
+      <button onClick={() => clickButton()}>電気</button>
+    </div>
+  );
 };
 
 export default Neko;

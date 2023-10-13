@@ -1,17 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState123 = {
+const initialState = {
     lightOn: false,
-	test : "default",
+	// test : "default",
 };
 
 const lightSlice = createSlice({
 	name: "light",
-	initialState: initialState123,
+	initialState,
 	reducers: {
 		lightChange: (state, action) => {
 			state.lightOn = action.payload;
-			state.test = action.payload;
+			// state.test = action.payload;
 		},
 	},
 });
