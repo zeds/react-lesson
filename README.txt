@@ -244,6 +244,50 @@ npm i react-router-dom
 npm i styled-components
 
   
+  
+😺[14_redux_neko_tom]
+npm create vite@latest .
+JavaScript + SWC
+
+App.cssを削除
+index.cssを編集
+
+
+npm i @reduxjs/toolkit
+npm i react-redux
+
+
+
+
+
+
+
+
+
+
+https://blog.logrocket.com/persist-state-redux-persist-redux-toolkit-react/
+https://github.com/Tammibriggs/auth-app
+
+npm create vite@latest .
+JavaScript + SWC
+
+npm i @reduxjs/toolkit
+npm i react-redux
+npm i redux-persist
+
+
+src/redux/store.ts
+
+
+
+https://hackernoon.com/how-to-manage-state-in-nextjs-13-using-redux-toolkit
+
+
+
+
+
+
+
 
 
 
