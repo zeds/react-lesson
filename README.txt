@@ -243,47 +243,56 @@ App.cssを削除
 npm i react-router-dom
 npm i styled-components
 
+😺[13_auth_xx]
+npm create vite@latest .
+JavaScript + SWC
   
   
 😺[14_redux_neko_tom]
 npm create vite@latest .
-JavaScript + SWC
+TypeScript + SWC
 
 App.cssを削除
 index.cssを編集
 
-
 npm i @reduxjs/toolkit
-npm i react-redux
+npm i @types/react-redux
+npm i redux-persist
+
+src/redux/store.ts
+src/redux/slices/houseSlice.ts
+src/redux/slices/nekoSlice.ts
 
 
 
 
-
-
-
-
-
-
+参考記事
 https://blog.logrocket.com/persist-state-redux-persist-redux-toolkit-react/
 https://github.com/Tammibriggs/auth-app
 
-npm create vite@latest .
-JavaScript + SWC
-
-npm i @reduxjs/toolkit
-npm i react-redux
-npm i redux-persist
-
-
-src/redux/store.ts
-
-
-
 https://hackernoon.com/how-to-manage-state-in-nextjs-13-using-redux-toolkit
 
+whitelist blacklist purge
+https://qiita.com/yasuhiro-yamada/items/bd86d7c9f35ebb1c1e7c
 
+😺[15_auth_redux_tom]
+13_auth_xxをコピーしてください。
+cp -r 13_auth_tom 15_auth_redux_tom
 
+✍️react-auth-kitは使わない
+
+/src/redux/store.ts
+/src/redux/slices/authSlice.ts
+
+npm i @reduxjs/toolkit
+npm i redux-persist
+npm i react-redux
+
+loading
+https://www.npmjs.com/package/react-spinners
+npm i react-spinners
+
+https://contactmentor.com/how-to-add-loading-spinner-react-js/
 
 
 

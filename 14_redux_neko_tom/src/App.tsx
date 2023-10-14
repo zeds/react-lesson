@@ -1,10 +1,10 @@
-import { useState } from "react";
 import Neko from "./Neko";
 import House from "./House";
+import { useDispatch } from "react-redux";
+import { gohome } from "./redux/slices/nekoSlice";
 
 function App() {
-	const [count, setCount] = useState(0);
-
+	const dispatch = useDispatch();
 	return (
 		<>
 			<Neko />
