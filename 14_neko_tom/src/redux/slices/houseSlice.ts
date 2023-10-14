@@ -5,13 +5,14 @@ interface HouseState {
 	house_light: boolean;
 }
 
-const initialState = { house_light: true } as HouseState;
+const initialState = { house_light: false } as HouseState;
 
 const houseSlice = createSlice({
 	name: "house",
 	initialState,
 	reducers: {
 		onoff: (state, action) => {
+			console.log("state=", state.house_light);
 			state.house_light = action.payload.on;
 		},
 	},

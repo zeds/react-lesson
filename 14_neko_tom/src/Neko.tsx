@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import neko from "./assets/neko.png";
+import type { RootState } from "./redux/store";
 
 const Neko = () => {
-	const [light, setLight] = useState(false);
+	//家のスイッチ
+	const house = useSelector((state: RootState) => state.house);
+	const cn = house.house_light ? "neko" : "neko dark";
 
-	const cn = light ? "neko" : "neko dark";
 	const clickButton = () => {
-		setLight(!light);
+		// setLight(!light);
 	};
 
 	return (
