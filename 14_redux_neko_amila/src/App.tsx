@@ -1,21 +1,16 @@
-import { useState } from 'react'
-import './index.css'
-import House from "../src/House"
-import Neko from './Neko'
-
-
+import Neko from "./Neko";
+import House from "./House";
+import { useDispatch } from "react-redux";
+import { gohome } from "./redux/slices/nekoSlice"
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-     <div>
-      <House />
-      <Neko />
-     </div>
-    </>
-  )
+	const dispatch = useDispatch();
+	return (
+		<>
+			<Neko />
+			<House />
+		</>
+	);
 }
 
-export default App
+export default App;
