@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from "styled-components";
 
-export const STRAPI_URL = `${import.meta.env.VITE_STRAPI_URL}`;
+export const NESTJS_URL = `${import.meta.env.VITE_NESTJS_URL}`;
 
 export const DISPLAY_MD = "599px";
 export const DISPLAY_LG = "1024px";
@@ -22,6 +22,8 @@ const GlobalStyle = createGlobalStyle`
 		font-size: 62.5%;
 	}
 	body {
+		width: 100%;
+		height: 100vh;
 		font-family: 'Roboto', sans-serif;
 		background: #F3F6F7;
 	}

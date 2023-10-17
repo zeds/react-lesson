@@ -1,10 +1,12 @@
 import { useState, CSSProperties } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
-import { Container, STRAPI_URL } from "../GlobalStyle";
+import { Container, NESTJS_URL } from "../GlobalStyle";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
 import { BeatLoader } from "react-spinners";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../redux/store";
 
 const override: CSSProperties = {
 	display: "block",
@@ -24,16 +26,32 @@ const Users = () => {
 	let [loading, setLoading] = useState(true);
 	let [color, setColor] = useState("#000000");
 
+	const token = useSelector((state: RootState) => state.auth.jwt);
+	console.log("token=", token);
+
 	// 😺CRUDのRead
 	const { isLoading, isError, isSuccess, data, error } = useQuery({
 		queryKey: ["users"],
 		queryFn: async () => {
-			const response = await fetch(`${STRAPI_URL}/api/users`);
-			console.log(response);
-			if (!response.ok) {
+			console.log("url=", `${NESTJS_URL}/users`);
+			// const response = await fetch(`${NESTJS_URL}/users`, {
+			// 	headers: {
+			// 		Authorization: `Bearer ${token}`,
+			// 	},
+			// });
+			// fetchだとデータが取得できなかった。2023-10-15
+			const response = await axios.get(`${NESTJS_URL}/users`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			console.log("response=", response);
+
+			if (response.status === 200) {
+				return response.data;
+			} else {
 				throw new Error("指定したURLからデータを取得できませんでした");
 			}
-			return response.json();
 		},
 		retry: false,
 		// refetchOnWindowFocus: false
@@ -64,7 +82,7 @@ const Users = () => {
 			/>
 			<Form>
 				<div>ユーザー名</div>
-				{data.map((item: any, index: number) => (
+				{data.result.map((item: any, index: number) => (
 					<div key={index}>
 						{item.username} {item.email}
 					</div>
