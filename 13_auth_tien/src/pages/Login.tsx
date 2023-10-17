@@ -8,7 +8,8 @@ import { validation } from "../common/validation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/silce/navbarSlice";
+// import { login } from "../redux/silce/navbarSlice";
+import { login } from "../redux/slice/navbarSlice";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -77,7 +78,8 @@ const Login = () => {
 			// console.log(data.data.jwt);
 			dispatch(login(data.data.jwt));
 			// cookieに格納する
-			localStorage.setItem("token", data.data.jwt);
+			
+			// localStorage.setItem("token", data.data.jwt);
 
 			// rootを開く
 			console.log("rootを開く");
