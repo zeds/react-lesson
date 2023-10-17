@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Container, STRAPI_URL } from "../GlobalStyle";
+import { Container, NESTJS_URL } from "../GlobalStyle";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -8,11 +8,16 @@ import type { RootState } from "../redux/store";
 import { clear } from "../redux/slices/authSlice";
 
 const Mypage = () => {
-	const [isOnline, setIsOnline] = useState(false);
+	// const [isOnline, setIsOnline] = useState(false);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const isOnline = navigator.onLine;
+	const isOnline: boolean = navigator.onLine;
+	if (isOnline === true) {
+		console.log("オンラインです");
+	} else {
+		console.log("オフラインです");
+	}
 
 	const token = useSelector((state: RootState) => state.auth.jwt);
 	console.log("token=", token);
@@ -35,7 +40,7 @@ const Mypage = () => {
 
 		//tokenが期限切れの場合は、ここでログアウトする
 		try {
-			const res = await axios.get(`${STRAPI_URL}/api/users/me`, {
+			const res = await axios.get(`${NESTJS_URL}/api/users/me`, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
