@@ -99,14 +99,14 @@ const Mypage = () => {
     navigate("/login");
     dispatch(clear(token));
   };
-
+const imageUrl = data.avatar_url ? `${NESTJS_URL}${data.avatar_url}` : "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?cs=srgb&dl=pexels-italo-melo-2379005.jpg&fm=jpg"
   return (
     <Container>
       <h2>マイページ</h2>
         <Layout>
         <div style={{ background: "red", borderRadius: "10px", padding: "20px", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
         <img
-        src={data.avatar_url ? `${NESTJS_URL}${data.avatar_url}` : "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?cs=srgb&dl=pexels-italo-melo-2379005.jpg&fm=jpg"}
+        src={imageUrl}
         alt="" width={80} height={80} style={{ borderRadius: "50%", objectFit: "cover" }} />
         <button onClick={clickLogout}>ログアウト</button>
         </div>
