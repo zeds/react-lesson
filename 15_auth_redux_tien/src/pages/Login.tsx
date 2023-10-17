@@ -1,4 +1,7 @@
-import { Container, STRAPI_URL } from "../GlobalStyle";
+import { Container, NESTJS_URL, 
+	// STRAPI_URL
+ } from "../GlobalStyle";
+
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
@@ -8,8 +11,8 @@ import { validation } from "../common/validation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-// import { login } from "../redux/silce/navbarSlice";
-import { login } from "../redux/slice/navbarSlice";
+import { userLoginSuccess } from "../redux/slices/authSlice";
+// import { showMessage } from "../";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -47,17 +50,11 @@ const Wrapper = styled.div`
 `;
 
 interface LoginForm {
-	email: string;
-	password: string;
-}
-//Strapiは、emailではなくて、identifierとしてemailを渡さないといけない。
-interface PostForm {
-	identifier: string;
+	identifier: string; // strapiはemailではなくidentifierを使っている
 	password: string;
 }
 
 const Login = () => {
-	const dispatch = useDispatch();
 	const {
 		register,
 		handleSubmit,
@@ -68,18 +65,23 @@ const Login = () => {
 	// "onBlur": fieldがfocusを失った時呼ばれる
 	// "onChange": submitが押された時呼ばれる
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const postData = useMutation({
-		mutationFn: (newPost: PostForm) => {
-			return axios.post(`${STRAPI_URL}/api/auth/local`, newPost);
+		mutationFn: (newPost: LoginForm) => {
+			// console.log(newPost)
+			return axios.post(`${NESTJS_URL}/auth/login`, newPost);
+			// return axios.post(`${STRAPI_URL}/api/auth/local`, newPost);
 		},
 		onSuccess: (data) => {
-			// console.log(data.data);
-			// console.log(data.data.jwt);
-			dispatch(login(data.data.jwt));
+			console.log(data);
+			// console.log(dataresult.jwt);
 			// cookieに格納する
-			
 			// localStorage.setItem("token", data.data.jwt);
+
+			dispatch(userLoginSuccess(data.data.result.token));
+
+			// dispatch(showMessage(false));
 
 			// rootを開く
 			console.log("rootを開く");
@@ -94,11 +96,7 @@ const Login = () => {
 	const onSubmit = (data: LoginForm) => {
 		console.log("ログイン成功");
 		console.log(data);
-		const obj: PostForm = {
-			identifier: data.email,
-			password: data.password,
-		};
-		postData.mutate(obj);
+		postData.mutate(data);
 	};
 
 	return (

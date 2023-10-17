@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../redux/silce/navbarSlice";
+import { logout } from "../redux/slice/navbarSlice";
 // import { useEffect } from "react";
 
 

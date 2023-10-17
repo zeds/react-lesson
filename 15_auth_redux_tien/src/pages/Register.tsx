@@ -1,15 +1,14 @@
-import { Container, STRAPI_URL } from "../GlobalStyle";
+import { Container, NESTJS_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
+import ReCAPTCHA from "react-google-recaptcha";
 import { validation } from "../common/validation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-// import { login } from "../redux/silce/navbarSlice";
-import { login } from "../redux/slice/navbarSlice";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -46,69 +45,76 @@ const Wrapper = styled.div`
 	}
 `;
 
-interface LoginForm {
+interface RegisterForm {
+	username: string;
 	email: string;
 	password: string;
-}
-//Strapiは、emailではなくて、identifierとしてemailを渡さないといけない。
-interface PostForm {
-	identifier: string;
-	password: string;
+	name: string;
 }
 
-const Login = () => {
-	const dispatch = useDispatch();
+const Register = () => {
+	const navigate = useNavigate();
+
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<LoginForm>({
-		mode: "onChange",
-	}); // "onBlur"
-	// "onBlur": fieldがfocusを失った時呼ばれる
-	// "onChange": submitが押された時呼ばれる
-	const navigate = useNavigate();
+	} = useForm<RegisterForm>({
+		mode: "onChange", // onBluer: フォーカスを失った時に呼ばれる
+	});
 
 	const postData = useMutation({
-		mutationFn: (newPost: PostForm) => {
-			return axios.post(`${STRAPI_URL}/api/auth/local`, newPost);
+		mutationFn: (newPost: RegisterForm) => {
+			// console.log("newPost=" + JSON.stringify(newPost));
+			console.log("newPost=" + newPost);
+			// newPost.name="tiennn"
+			return axios.post(`${NESTJS_URL}/auth/register`, newPost);
+			// return axios.post(`${STRAPI_URL}/api/auth/local/register`, newPost);
 		},
 		onSuccess: (data) => {
-			// console.log(data.data);
-			// console.log(data.data.jwt);
-			dispatch(login(data.data.jwt));
-			// cookieに格納する
-			
-			// localStorage.setItem("token", data.data.jwt);
-
-			// rootを開く
-			console.log("rootを開く");
-
+			console.log(data.data);
 			navigate("/");
-
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			// queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
+		onError: (error, variables, context) => {
+			// console.log("c=" + error.response.data.error.message);
+		},
 	});
 
-	const onSubmit = (data: LoginForm) => {
-		console.log("ログイン成功");
-		console.log(data);
-		const obj: PostForm = {
-			identifier: data.email,
-			password: data.password,
-		};
-		postData.mutate(obj);
+	const onSubmit = (data: RegisterForm) => {
+		console.log(JSON.stringify(data));
+		postData.mutate(data);
 	};
 
 	return (
 		<Container>
 			<Form>
 				<Header>
-					<h2>ログイン</h2>
+					<h2>会員登録</h2>
 				</Header>
 				<Wrapper>
 					<form onSubmit={handleSubmit(onSubmit)}>
+						<Input
+							type="text"
+							name="username"
+							label="表示される名前"
+							placeholder="〇〇さん"
+							errors={errors}
+							register={register}
+							validationSchema={validation[0]}
+							required
+						/>
+						<Input
+							type="text"
+							name="name"
+							label="名前"
+							placeholder="〇〇さん"
+							errors={errors}
+							register={register}
+							validationSchema={validation[0]}
+							required
+						/>
 						<Input
 							type="email"
 							name="email"
@@ -117,7 +123,7 @@ const Login = () => {
 							errors={errors}
 							register={register}
 							validationSchema={validation[1]}
-							required={false}
+							required
 						/>
 						<Input
 							type="password"
@@ -127,12 +133,16 @@ const Login = () => {
 							errors={errors}
 							register={register}
 							validationSchema={validation[2]}
-							required={false}
+							required
 						/>
-						<Button label="ログイン" />
+						{/* <ReCAPTCHA
+							className="recaptcha"
+							sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+						/> */}
+						<Button label="同意して登録する" />
 						<hr />
-						<Link className="link" to="/register">
-							会員登録はこちら
+						<Link className="link" to="/login">
+							ログインはこちら
 						</Link>
 					</form>
 				</Wrapper>
@@ -141,4 +151,4 @@ const Login = () => {
 	);
 };
 
-export default Login;
+export default Register;
