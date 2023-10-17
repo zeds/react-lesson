@@ -65,8 +65,9 @@ const Register = () => {
 
 	const postData = useMutation({
 		mutationFn: (newPost: RegisterForm) => {
-			console.log("newPost=" + JSON.stringify(newPost));
-			newPost.name="tiennn"
+			// console.log("newPost=" + JSON.stringify(newPost));
+			console.log("newPost=" + newPost);
+			// newPost.name="tiennn"
 			return axios.post(`${NESTJS_URL}/auth/register`, newPost);
 			// return axios.post(`${STRAPI_URL}/api/auth/local/register`, newPost);
 		},
@@ -98,6 +99,16 @@ const Register = () => {
 							type="text"
 							name="username"
 							label="表示される名前"
+							placeholder="〇〇さん"
+							errors={errors}
+							register={register}
+							validationSchema={validation[0]}
+							required
+						/>
+						<Input
+							type="text"
+							name="name"
+							label="名前"
 							placeholder="〇〇さん"
 							errors={errors}
 							register={register}

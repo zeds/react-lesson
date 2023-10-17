@@ -2,10 +2,11 @@ import { Container, NESTJS_URL } from "../GlobalStyle";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import styled, { CSSProperties } from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Form = styled.div`
 	width: 100%;
@@ -20,28 +21,20 @@ const override: CSSProperties = {
 	borderColor: "red",
 };
 const Users = () => {
-	// const getUsers = async (text: any) => {
-	// 	console.log("text=", text);
-	// 	const res = await axios.get(`${NESTJS_URL}/users`);
-	// 	// const res = await axios.get(`${STRAPI_URL}/api/users`);
-	// 	console.log(res.data);
-	// 	return res.data;
-	// };
-
-	// // 😺CRUDのRead
-	// const { isLoading, error, data } = useQuery(["users"], () =>
-	// 	getUsers("aiueo")
-	// );
-
-	// if (isLoading) {
-	// 	return <div>Loading...</div>;
-	// }
 	let [loading, setLoading] = useState(true);
 	let [color, setColor] = useState ("#000000");
 
+	let navigate = useNavigate()
 	const token = useSelector((state:RootState) => state.auth.jwt);
 	// console.log(token);
 	// 😺CRUDのRead
+	useEffect(() => {
+		if (!token) {
+			navigate("/login");
+		  return;
+		}
+	  }, [token]);
+
 	const { isLoading, isError, isSuccess, data, error } = useQuery({
 		queryKey: ["users"],
 		queryFn: async () => {

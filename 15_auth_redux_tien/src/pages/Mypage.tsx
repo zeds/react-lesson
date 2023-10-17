@@ -46,14 +46,14 @@ const Mypage = () => {
   const navigate = useNavigate();
 
   const token = useSelector((state: RootState) => state.auth.jwt);
-  console.log(token);
+//   console.log(token);
+useEffect(() => {
+  if (!token) {
+	navigate("/login");
+	return;
+  }
+}, [token]);
 
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-  }, [token]);
   const getMe = async (text: any) => {
     // console.log("getMe");
     // const token = localStorage.getItem("token");
@@ -99,7 +99,7 @@ const Mypage = () => {
     navigate("/login");
     dispatch(clear(token));
   };
-const imageUrl = data.avatar_url ? `${NESTJS_URL}${data.avatar_url}` : "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?cs=srgb&dl=pexels-italo-melo-2379005.jpg&fm=jpg"
+const imageUrl = data?.avatar_url ? `${NESTJS_URL}${data.avatar_url}` : "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?cs=srgb&dl=pexels-italo-melo-2379005.jpg&fm=jpg"
   return (
     <Container>
       <h2>マイページ</h2>
@@ -111,7 +111,7 @@ const imageUrl = data.avatar_url ? `${NESTJS_URL}${data.avatar_url}` : "https://
         <button onClick={clickLogout}>ログアウト</button>
         </div>
         <div style={{ position: "relative", background: "white", borderRadius: "10px", padding: "20px", display: "flex", flexDirection: "column" }}>
-          <DlTag><DtTag>お名前:</DtTag><DdTag>{data.username}</DdTag></DlTag>
+          <DlTag><DtTag>お名前:</DtTag><DdTag>{data?.username}</DdTag></DlTag>
           {/* <DlTag><DtTag>国籍:</DtTag><DdTag>{data.nationality}</DdTag></DlTag>
           <DlTag><DtTag>生年月日:</DtTag><DdTag>{data.birthday}</DdTag></DlTag>
           <DlTag><DtTag>性別:</DtTag><DdTag>{data.gender}</DdTag></DlTag>
