@@ -8,25 +8,43 @@ import type { RootState } from "../redux/store";
 import { clear } from "../redux/slices/authSlice";
 import  { styled } from "styled-components"
 import hito from "../assets/hito.svg"
-import { Input } from "../components/Input";
+// import { Input } from "../components/Input";
+import camera from "../assets/camera.svg"
+
 
 
 
 const Header = styled.div`
 	width: 800px;
 	margin: 0 auto;
-
+	display: flex;
+	justify-content: center;
 `
 const Avatar = styled.div`
-	
+	display: flex;
+	width: 800px;
+	margin: 0 auto;
+	justify-content:center;
+	img {
+	width: 50px;
+}
 `
+const Camera = styled.div`
+	width: 20px;
+	display: flex;
+	margin: 0 auto;
+	justify-content: center;
+`
+
 const Grid = styled.div`
-max-width: 800px;
+	max-width: 800px;
 	display: grid;
 	grid-template-columns: 100px 1fr;
 	font-size: 2rem;
 	padding: 15px;
-
+	margin: 0 auto;
+	line-height: 3rem;
+	gap: 10px;
 `
 
 const Mypage = () => {
@@ -98,8 +116,11 @@ const Mypage = () => {
 
 	return (
 		<Container>
-		  <Header>マイページ</Header>
+		  <Header>
+			<h1>マイページ</h1></Header>
 		  <Avatar><img src={hito} alt="" /></Avatar>
+		  <Camera><img src={camera} alt="" /></Camera>
+
 		  <Grid>
 			<div>id</div>
 			<div>{data.id}</div>
@@ -109,12 +130,12 @@ const Mypage = () => {
 			<div>{data.name}</div> 
 			<div>email</div>
 			<div>{data.email}</div> 
-			<div>
+			{/* <div>
 				<Input type=""/>
-			</div>
+			</div> */}
 		  </Grid>
 		  <div>
-			{JSON.stringify(data)}
+			{/* {JSON.stringify(data)} */}
 			<button onClick={() => clickLogout()}>ログアウト</button>
 		  </div>
 		</Container>
