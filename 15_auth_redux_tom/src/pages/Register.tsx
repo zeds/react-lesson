@@ -1,4 +1,4 @@
-import { Container, STRAPI_URL } from "../GlobalStyle";
+import { Container, NESTJS_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
@@ -56,6 +56,7 @@ interface RegisterForm {
 	username: string;
 	email: string;
 	password: string;
+	name: string;
 }
 
 const Register = () => {
@@ -74,12 +75,13 @@ const Register = () => {
 	const postData = useMutation({
 		mutationFn: (newPost: RegisterForm) => {
 			console.log("newPost=" + JSON.stringify(newPost));
-			return axios.post(`${STRAPI_URL}/api/auth/local/register`, newPost);
+			newPost.name = "hogehoge";
+			return axios.post(`${NESTJS_URL}/auth/register`, newPost);
 		},
 		onSuccess: (data) => {
 			console.log(data.data);
 			//local storageにjwtを格納する
-			dispatch(userLoginSuccess(data.data.jwt));
+			dispatch(userLoginSuccess(data.data.result.token));
 
 			navigate("/");
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。

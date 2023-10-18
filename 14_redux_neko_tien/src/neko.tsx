@@ -24,7 +24,7 @@ const Neko = () => {
     console.log(lightSwitch);
     dispatch(lightChange(!lightSwitch));
   };
-  sessionStorage.setItem
+  // sessionStorage.setItem
 
   return (
     <div className="neko">

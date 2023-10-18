@@ -294,6 +294,12 @@ npm i react-spinners
 
 https://contactmentor.com/how-to-add-loading-spinner-react-js/
 
+オフラインの時のエラー処理
+https://lorem-co-ltd.com/internet-check/
+✍️ 難しい、後で。
+
+
+
 
 
 
