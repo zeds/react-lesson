@@ -14,13 +14,14 @@ import {
 
 // localStorageを使う
 import storage from "redux-persist/lib/storage";
+import uxSlice from "./slices/uxSlice";
 
 const persistConfig = {
 	key: "root",
 	storage,
 };
 
-const rootReducer = combineReducers({ auth: authSlice });
+const rootReducer = combineReducers({ auth: authSlice, ux: uxSlice });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({

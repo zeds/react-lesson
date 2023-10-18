@@ -14,6 +14,12 @@ const Form = styled.div`
 	max-width: 400px;
 	margin: 0 auto;
 	margin-top: 40px;
+	.error {
+		font-size: 2rem;
+		color: red;
+		padding: 0 10px;
+		margin: 5px auto;
+	}
 `;
 
 const Header = styled.div`
@@ -54,6 +60,7 @@ interface RegisterForm {
 
 const Register = () => {
 	const navigate = useNavigate();
+	const [errorMessenger, setErrorMessenger] = useState("");
 
 	const {
 		register,
@@ -72,14 +79,20 @@ const Register = () => {
 			// return axios.post(`${STRAPI_URL}/api/auth/local/register`, newPost);
 		},
 		onSuccess: (data) => {
+			// setErrorMessenger("")
 			console.log(data.data);
 			navigate("/");
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			// queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
-		onError: (error, variables, context) => {
-			// console.log("c=" + error.response.data.error.message);
-		},
+		onError: (errors) => {
+			if(errors == "AxiosError: Request failed with status code 400"){
+				setErrorMessenger("このメールアドレスは以前に登録されていました。	")
+			}
+			// setErrorMessenger(errors.message);
+			console.log("Error: " + errors);
+			// console.log("Error: " + context);
+		  }
 	});
 
 	const onSubmit = (data: RegisterForm) => {
@@ -93,6 +106,7 @@ const Register = () => {
 				<Header>
 					<h2>会員登録</h2>
 				</Header>
+				<p className="error">{errorMessenger}</p>
 				<Wrapper>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input

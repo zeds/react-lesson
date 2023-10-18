@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import ImgBurger from "../assets/burger.svg";
 import ImgClose from "../assets/close.svg";
+import ErrorMessage from "./ErrorMessage";
 
 const ShowBurger = styled.div`
 	display: none;
@@ -220,6 +221,7 @@ const Navbar = () => {
 
 	return (
 		<>
+		<ErrorMessage/>
 			<ShowBurger>
 				<div id="burger" onClick={() => clickBurger()}>
 					<img src={ImgBurger} alt="burger" />
