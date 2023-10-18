@@ -1,15 +1,16 @@
-import { useEffect } from "react";
+import { useEffect,useRef } from "react";
 import { Container, NESTJS_URL } from "../GlobalStyle";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../redux/store";
-import { clear } from "../redux/slices/authSlice";
+import { clear, userLoginSuccess } from "../redux/slices/authSlice";
 import  { styled } from "styled-components"
 import hito from "../assets/hito.svg"
 // import { Input } from "../components/Input";
 import camera from "../assets/camera.svg"
+import { showMessage } from "../redux/slices/uxSlice";
 
 
 
@@ -48,6 +49,7 @@ const Grid = styled.div`
 `
 
 const Mypage = () => {
+
 	// const [isOnline, setIsOnline] = useState(false);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -107,12 +109,44 @@ const Mypage = () => {
 		navigate("/login");
 	}
 
+	interface UpdateForm {
+		
+		name: string;
+	}
+	
+	const postData = useMutation({
+		mutationFn: (newPost: UpdateForm) => {
+			console.log("newPost=" + JSON.stringify(newPost));
+			newPost.name = "hogehoge";
+			return axios.post(`${NESTJS_URL}/auth/register`, newPost);
+		},
+		onSuccess: (data) => {
+			console.log(data.data);
+			//local storageにjwtを格納する
+			dispatch(userLoginSuccess(data.data.result.token));
+
+			navigate("/");
+			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+			// queryClient.invalidateQueries({ queryKey: ["comments"] });
+		},
+		onError: (error: any) => {
+			console.log("c=" + error.response.data.error.message);
+			setError(error.response.data.error.message);
+		},
+	});
+
 	const clickLogout = () => {
 		// purgeしてlocal storageが消えても、sliceが更新されないので注意！
 		dispatch(clear(""));
 
 		navigate("/login");
 	};
+	// const ClickUpdate =()=> {
+	// 	dispatch(showMessage(true))
+	// }
+	const ClickUpdate =()=>{
+		dispatch(showMessage(true))
+	}
 
 	return (
 		<Container>
@@ -127,17 +161,15 @@ const Mypage = () => {
 			<div>username</div>
 			<div>{data.username}</div> 
 			<div>name</div>
-			<div>{data.name}</div> 
+			<input type="text" onChange={(e)} value={data.name}></input>
+			{/* <div>{data.name}</div>  */}
 			<div>email</div>
 			<div>{data.email}</div> 
-			{/* <div>
-				<Input type=""/>
-			</div> */}
+			
 		  </Grid>
-		  <div>
-			{/* {JSON.stringify(data)} */}
 			<button onClick={() => clickLogout()}>ログアウト</button>
-		  </div>
+			<button onClick={() => ClickUpdate()}>更新</button>
+
 		</Container>
 	  );
 	}
