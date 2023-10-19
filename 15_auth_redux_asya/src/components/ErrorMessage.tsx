@@ -51,7 +51,7 @@ const ErrorMessage = () => {
 
 	if (!ux.message_window) {
 		console.log("!ux", ux);
-		return null;
+		return <div></div>;
 	}
 
 	return (
