@@ -12,12 +12,19 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { userLoginSuccess } from "../redux/slices/authSlice";
+import { useState } from "react";
 // import { showMessage } from "../";
 
 const Form = styled.div`
 	max-width: 400px;
 	margin: 0 auto;
 	margin-top: 40px;
+	.error {
+		font-size: 2rem;
+		color: red;
+		padding: 0 10px;
+		margin: 5px auto;
+	}
 `;
 
 const Header = styled.div`
@@ -66,6 +73,7 @@ const Login = () => {
 	// "onChange": submitが押された時呼ばれる
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const [errorMessenger, setErrorMessenger] = useState("");
 
 	const postData = useMutation({
 		mutationFn: (newPost: LoginForm) => {
@@ -74,14 +82,11 @@ const Login = () => {
 			// return axios.post(`${STRAPI_URL}/api/auth/local`, newPost);
 		},
 		onSuccess: (data) => {
+			setErrorMessenger("")
 			console.log(data);
 			// console.log(dataresult.jwt);
 			// cookieに格納する
-			// localStorage.setItem("token", data.data.jwt);
-
 			dispatch(userLoginSuccess(data.data.result.token));
-
-			// dispatch(showMessage(false));
 
 			// rootを開く
 			console.log("rootを開く");
@@ -91,6 +96,14 @@ const Login = () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			// queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
+		onError: (errors: string) => {
+			// if(errors == "AxiosError: Request failed with status code 400"){
+				// }
+				// setErrorMessenger(errors.message);
+				console.log("Error: " + errors);
+				setErrorMessenger("Request failed with status code 500");
+			// console.log("Error: " + context);
+		  }
 	});
 
 	const onSubmit = (data: LoginForm) => {
@@ -105,6 +118,7 @@ const Login = () => {
 				<Header>
 					<h2>ログイン</h2>
 				</Header>
+				<p className="error">{errorMessenger}</p>
 				<Wrapper>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input
