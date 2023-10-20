@@ -81,7 +81,6 @@ const Mypage = () => {
 	const [name, setName] = useState("");
 	const [introduction, setIntroduction] = useState("あいうえお");
 
-	// const [isOnline, setIsOnline] = useState(false);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -105,10 +104,10 @@ const Mypage = () => {
 			});
 		},
 		onSuccess: (data) => {
-			console.log("success");
+			console.log("data=", data);
 		},
 		onError: (error: any) => {
-			console.log("error");
+			console.log("error=", error);
 		},
 	});
 
