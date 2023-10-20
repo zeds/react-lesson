@@ -192,7 +192,6 @@ const Navbar = () => {
 	};
 
 	const jwt = useSelector((state: RootState) => state.auth.jwt);
-	console.log("jwt=", jwt);
 
 	let content;
 
