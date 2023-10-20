@@ -5,6 +5,7 @@ import styled from "styled-components";
 import ImgBurger from "../assets/burger.svg";
 import ImgClose from "../assets/close.svg";
 import ErrorMessage from "./ErrorMessage";
+import { useSelector } from "react-redux";
 
 const ShowBurger = styled.div`
 	display: none;
@@ -168,6 +169,7 @@ const NavigationHeader = styled.header`
 `;
 
 const Navbar = () => {
+	const token = useSelector((store:any) => store.auth.jwt)
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	const clickBurger = () => {
@@ -192,9 +194,9 @@ const Navbar = () => {
 	let content = (
 		<ul>
 			<li>
-				<NavLink to="/mypage" onClick={() => clickClose()}>
+				{/* <NavLink to="/mypage" onClick={() => clickClose()}>
 					マイページ
-				</NavLink>
+				</NavLink> */}
 			</li>
 			<li>
 				<NavLink to="/users" onClick={() => clickClose()}>
@@ -207,9 +209,11 @@ const Navbar = () => {
 				</NavLink>
 			</li>
 			<li>
-				<NavLink to="/login" onClick={() => clickClose()}>
+				{ token ? (<NavLink to="/mypage" onClick={() => clickClose()}>
+					マイページ
+				</NavLink>) : (<NavLink to="/login" onClick={() => clickClose()}>
 					ログイン
-				</NavLink>
+				</NavLink>)}
 			</li>
 			<li>
 				<NavLink to="/register" onClick={() => clickClose()}>

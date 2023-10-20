@@ -1,19 +1,15 @@
-import { Container, NESTJS_URL, 
-	// STRAPI_URL
- } from "../GlobalStyle";
-
+import { Container, NESTJS_URL, } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import { validation } from "../common/validation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { userLoginSuccess } from "../redux/slices/authSlice";
 import { useState } from "react";
-// import { showMessage } from "../";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -60,7 +56,6 @@ interface LoginForm {
 	identifier: string; // strapiはemailではなくidentifierを使っている
 	password: string;
 }
-
 const Login = () => {
 	const {
 		register,
@@ -71,44 +66,35 @@ const Login = () => {
 	}); // "onBlur"
 	// "onBlur": fieldがfocusを失った時呼ばれる
 	// "onChange": submitが押された時呼ばれる
+
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [errorMessenger, setErrorMessenger] = useState("");
 
 	const postData = useMutation({
 		mutationFn: (newPost: LoginForm) => {
-			// console.log(newPost)
 			return axios.post(`${NESTJS_URL}/auth/login`, newPost);
-			// return axios.post(`${STRAPI_URL}/api/auth/local`, newPost);
 		},
 		onSuccess: (data) => {
 			setErrorMessenger("")
-			console.log(data);
-			// console.log(dataresult.jwt);
+			// console.log(data);
 			// cookieに格納する
 			dispatch(userLoginSuccess(data.data.result.token));
-
-			// rootを開く
-			console.log("rootを開く");
-
-			navigate("/");
+			navigate("/mypage");
 
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			// queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
-		onError: (errors: string) => {
-			// if(errors == "AxiosError: Request failed with status code 400"){
-				// }
-				// setErrorMessenger(errors.message);
-				console.log("Error: " + errors);
-				setErrorMessenger("Request failed with status code 500");
-			// console.log("Error: " + context);
+		onError: (errors: any) => {
+				setErrorMessenger(errors.message);
+				// console.log("Error: " + errors);
+				// setErrorMessenger("Request failed with status code 500");
 		  }
 	});
 
 	const onSubmit = (data: LoginForm) => {
-		console.log("ログイン成功");
-		console.log(data);
+		// console.log("ログイン成功");
+		// console.log(data);
 		postData.mutate(data);
 	};
 

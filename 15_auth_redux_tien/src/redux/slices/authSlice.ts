@@ -11,7 +11,7 @@ const authSlice = createSlice({
 	initialState,
 	reducers: {
 		userLoginSuccess: (state, action) => {
-			console.log("action=", action);
+			// console.log("action=", action);
 			state.jwt = action.payload;
 		},
 		clear: (state, action) => {
