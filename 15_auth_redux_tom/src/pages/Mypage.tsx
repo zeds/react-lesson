@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { validation } from "../common/validation";
-import { Container, NESTJS_URL } from "../GlobalStyle";
+import { Container, NESTJS_URL, STRAPI_URL } from "../GlobalStyle";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -22,22 +22,44 @@ const Header = styled.div`
 
 const Avatar = styled.div`
 	display: flex;
-	width: 800px;
+	width: 100px;
 	margin: 0 auto;
 	justify-content: center;
-	img {
+	input {
 		width: 100px;
+		height: 100px;
+		cursor: pointer;
+	}
+	img {
+		position: absolute;
+		width: 100px;
+		height: 100px;
+		background: white;
+
+		/* クリックを無効化 */
+		pointer-events: none;
+		cursor: pointer;
 	}
 `;
 
 const Grid = styled.div`
 	max-width: 800px;
 	display: grid;
-	grid-template-columns: 150px 1fr;
+	grid-template-columns: 100px 1fr;
 	font-size: 2rem;
 	padding: 15px;
 	margin: 0 auto;
 	gap: 10px;
+
+	input {
+		height: 35px;
+		padding: 5px;
+	}
+
+	textarea {
+		height: 100px;
+		padding: 5px;
+	}
 `;
 
 interface EditForm {
@@ -51,15 +73,18 @@ interface UpdateForm {
 }
 
 const Mypage = () => {
+	const hiddenFileInput = useRef(null);
+	const [image, setImage] = useState(avatar);
+
+	const [avatarUrl, setAvatarUrl] = useState("");
 	const [userId, setUserId] = useState("");
 	const [name, setName] = useState("");
+	const [introduction, setIntroduction] = useState("あいうえお");
 
-	// const [isOnline, setIsOnline] = useState(false);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const token = useSelector((state: RootState) => state.auth.jwt);
-	console.log("token=", token);
 
 	const {
 		register,
@@ -69,26 +94,26 @@ const Mypage = () => {
 		mode: "onChange",
 	}); // "onBlur"
 
-	const postData = useMutation({
+	// 😺更新
+	const patchData = useMutation({
 		mutationFn: async (newPost: UpdateForm) => {
 			return await axios.patch(`${NESTJS_URL}/users/${userId}`, newPost, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-
-			return axios.post(`${NESTJS_URL}/auth/register`, newPost);
 		},
 		onSuccess: (data) => {
-			console.log("success");
+			console.log("data=", data);
 		},
 		onError: (error: any) => {
-			console.log("error");
+			console.log("error=", error);
 		},
 	});
 
 	useEffect(() => {
 		console.log("useEffect token=", token);
+
 		if (!token) {
 			navigate("/login");
 			return;
@@ -111,8 +136,13 @@ const Mypage = () => {
 				},
 			});
 
+			console.log("data=", JSON.stringify(res.data));
 			setUserId(res.data.id);
 			setName(res.data.name);
+			const url = res.data.avatar_url;
+			console.log("url=", url);
+			setImage(`${STRAPI_URL}${url}`);
+			setIntroduction(res.data.introduction);
 
 			return res.data;
 		} catch (error) {
@@ -146,18 +176,44 @@ const Mypage = () => {
 		dispatch(showMessage(true));
 		let data = {
 			name: name,
+			avatar_url: avatarUrl,
+			introduction: introduction,
 		};
-		postData.mutate(data);
+		patchData.mutate(data);
 		console.log("name=", name);
+	};
+
+	const clickAvatar = (e: any) => {
+		const file = e.target.files[0];
+		const formData = new FormData();
+		formData.append("files", file);
+		axios
+			.post(`${STRAPI_URL}/api/upload`, formData)
+			.then((response) => {
+				console.log("response=", response);
+				setAvatarUrl(response.data[0].url);
+			})
+			.catch((error) => {
+				console.log("error movie:", error);
+			});
+
+		setImage(window.URL.createObjectURL(file));
 	};
 
 	return (
 		<Container>
 			<Header>
 				<h1>マイページ</h1>
+				{avatarUrl}
 			</Header>
-			<Avatar>
-				<img src={avatar} alt="avatar" />
+			<Avatar onClick={clickAvatar}>
+				<img src={image} alt="avatar" />
+				<input
+					type="file"
+					accept="image/*"
+					ref={hiddenFileInput}
+					onChange={clickAvatar}
+				/>
 			</Avatar>
 
 			<Grid>
@@ -165,6 +221,8 @@ const Mypage = () => {
 				<div>{data.id}</div>
 				<div>username</div>
 				<div>{data.username}</div>
+				<div>email</div>
+				<div>{data.email}</div>
 				<div>name</div>
 				<div>
 					<input
@@ -173,8 +231,11 @@ const Mypage = () => {
 						onChange={(e) => setName(e.target.value)}
 					></input>
 				</div>
-				<div>email</div>
-				<div>{data.email}</div>
+				<div>自己紹介</div>
+				<textarea
+					value={introduction}
+					onChange={(e) => setIntroduction(e.target.value)}
+				></textarea>
 			</Grid>
 			<button onClick={() => clickLogout()}>ログアウト</button>
 			<button onClick={() => clickUpdate()}>更新</button>
