@@ -1,12 +1,16 @@
 import { Container, NESTJS_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import { validation } from "../common/validation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { userLoginSuccess } from "../redux/slices/authSlice";
+import { showMessage } from "../redux/slices/uxSlice";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -25,6 +29,11 @@ const Wrapper = styled.div`
 	border-radius: 4px;
 	background: white;
 
+	.duplicate {
+		font-size: 1.5rem;
+		color: red;
+		font-weight: bold;
+	}
 	.recaptcha {
 		display: flex;
 		justify-content: center;
@@ -44,16 +53,14 @@ const Wrapper = styled.div`
 `;
 
 interface LoginForm {
-	email: string;
-	password: string;
-}
-//Strapiは、emailではなくて、identifierとしてemailを渡さないといけない。
-interface PostForm {
-	email: string;
+	identifier: string; // strapiはemailではなくidentifierを使っている
 	password: string;
 }
 
 const Login = () => {
+	const dispatch = useDispatch();
+	const [error, setError] = useState("あいうえお");
+
 	const {
 		register,
 		handleSubmit,
@@ -66,14 +73,16 @@ const Login = () => {
 	const navigate = useNavigate();
 
 	const postData = useMutation({
-		mutationFn: (newPost: PostForm) => {
+		mutationFn: (newPost: LoginForm) => {
 			return axios.post(`${NESTJS_URL}/auth/login`, newPost);
 		},
 		onSuccess: (data) => {
-			console.log(data.data);
-			console.log(data.data.jwt);
-			// cookieに格納する
-			localStorage.setItem("token", data.data.jwt);
+			console.log("login data=", data.data);
+
+			//local storageにjwtを格納する
+			dispatch(userLoginSuccess(data.data.result.token));
+
+			dispatch(showMessage(false));
 
 			// rootを開く
 			console.log("rootを開く");
@@ -83,16 +92,16 @@ const Login = () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			// queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
+		onError: (error: any) => {
+			console.log("c=" + error.response.data.error.message);
+			setError(error.response.data.error.message);
+		},
 	});
 
 	const onSubmit = (data: LoginForm) => {
-		console.log("ログイン成功");
-		console.log(data);
-		const obj: PostForm = {
-			email: data.email,
-			password: data.password,
-		};
-		postData.mutate(obj);
+		console.log(`${NESTJS_URL}/api/auth/local`);
+		dispatch(showMessage(true));
+		postData.mutate(data);
 	};
 
 	return (
@@ -102,6 +111,8 @@ const Login = () => {
 					<h2>ログイン</h2>
 				</Header>
 				<Wrapper>
+					<div className="duplicate">{error}</div>
+
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input
 							type="email"

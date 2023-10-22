@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import Eye from "../assets/eye.svg";
 import EyeOff from "../assets/eye-off.svg";
