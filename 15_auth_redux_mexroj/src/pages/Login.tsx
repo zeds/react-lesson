@@ -1,4 +1,4 @@
-import { Container, STRAPI_URL } from "../GlobalStyle";
+import { Container, NESTJS_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
@@ -49,7 +49,7 @@ interface LoginForm {
 }
 //Strapiは、emailではなくて、identifierとしてemailを渡さないといけない。
 interface PostForm {
-	identifier: string;
+	email: string;
 	password: string;
 }
 
@@ -67,7 +67,7 @@ const Login = () => {
 
 	const postData = useMutation({
 		mutationFn: (newPost: PostForm) => {
-			return axios.post(`${STRAPI_URL}/api/auth/local`, newPost);
+			return axios.post(`${NESTJS_URL}/auth/login`, newPost);
 		},
 		onSuccess: (data) => {
 			console.log(data.data);
@@ -89,7 +89,7 @@ const Login = () => {
 		console.log("ログイン成功");
 		console.log(data);
 		const obj: PostForm = {
-			identifier: data.email,
+			email: data.email,
 			password: data.password,
 		};
 		postData.mutate(obj);
