@@ -229,6 +229,8 @@ const Mypage = () => {
 						type="text"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
+						// validationSchema={validation[1]}
+						// required={false}
 					></input>
 				</div>
 				<div>自己紹介</div>

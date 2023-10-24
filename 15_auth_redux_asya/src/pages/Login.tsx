@@ -1,6 +1,6 @@
 import { Container, NESTJS_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from 'react';
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
@@ -59,50 +59,80 @@ interface LoginForm {
 
 const Login = () => {
 	const dispatch = useDispatch();
-	const [error, setError] = useState("あいうえお");
+	// const [error, setError] = useState("あいうえお");
+	// const [errorMessage, setErrorMessage] = useState("");
+	let errorMessage = "";
+	const navigate = useNavigate();
 
 	const {
 		register,
 		handleSubmit,
+		setValue,
 		formState: { errors },
 	} = useForm<LoginForm>({
 		mode: "onChange",
 	}); // "onBlur"
 	// "onBlur": fieldがfocusを失った時呼ばれる
 	// "onChange": submitが押された時呼ばれる
-	const navigate = useNavigate();
-
-	const postData = useMutation({
+	
+	const { data, isSuccess, isError, error, mutate } = useMutation({
 		mutationFn: (newPost: LoginForm) => {
+			console.log("newPost=" + JSON.stringify(newPost));
 			return axios.post(`${NESTJS_URL}/auth/login`, newPost);
 		},
-		onSuccess: (data) => {
-			console.log("login data=", data.data);
+		// onSuccess: (data) => {
+		// 	console.log("login data=", data.data);
 
-			//local storageにjwtを格納する
-			dispatch(userLoginSuccess(data.data.result.token));
+		// 	//local storageにjwtを格納する
+		// 	dispatch(userLoginSuccess(data.data.result.token));
 
-			dispatch(showMessage(false));
+		// 	dispatch(showMessage(false));
 
-			// rootを開く
-			console.log("rootを開く");
+		// 	// rootを開く
+		// 	console.log("rootを開く");
 
-			navigate("/");
+		// 	navigate("/");
 
-			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
-			// queryClient.invalidateQueries({ queryKey: ["comments"] });
-		},
+		// 	//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+		// 	// queryClient.invalidateQueries({ queryKey: ["comments"] });
+		// },
 		onError: (error: any) => {
 			console.log("c=" + error.response.data.error.message);
-			setError(error.response.data.error.message);
+			// setErrorMessage(error.response.data.error.message);
 		},
 	});
 
+	if (isSuccess) {
+		console.log("isSuccess token:", data.data.result.token);
+		console.log(data.data);
+		//local storageにjwtを格納する
+		dispatch(userLoginSuccess(data.data.result.token));
+
+		navigate("/");
+		//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+		// queryClient.invalidateQueries({ queryKey: ["comments"] });
+	}
+	if (isError) {
+		console.log("isError error=", error);
+		// const message = error.response.data.message
+		const message = error.response.data.status;
+		console.log("error=", message)
+		// setErrorMessage(message);
+		errorMessage = message;
+
+	}
+
 	const onSubmit = (data: LoginForm) => {
-		console.log(`${NESTJS_URL}/api/auth/local`);
+		console.log("onSubmit:", `${NESTJS_URL}/api/auth/local`);
 		dispatch(showMessage(true));
-		postData.mutate(data);
+		mutate(data);
 	};
+
+	useEffect(() => {
+		console.log("useEffect");
+		setValue("identifier", "aiueo"); 
+		setValue("password", "kakikukeko");		
+	}, []);
 
 	return (
 		<Container>
@@ -111,7 +141,7 @@ const Login = () => {
 					<h2>ログイン</h2>
 				</Header>
 				<Wrapper>
-					<div className="duplicate">{error}</div>
+					<div className="duplicate">{errorMessage}</div>
 
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input
