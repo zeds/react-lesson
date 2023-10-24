@@ -115,7 +115,7 @@ const Login = () => {
 	if (isError) {
 		console.log("isError error=", error);
 		// const message = error.response.data.message
-		const message = error.response.data.status;
+		const message = error.response.data.message; //изменила со статуса
 		console.log("error=", message)
 		// setErrorMessage(message);
 		errorMessage = message;

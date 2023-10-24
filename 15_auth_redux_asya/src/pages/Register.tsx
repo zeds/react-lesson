@@ -103,7 +103,7 @@ const Register = () => {
 	if (isError) {
 		console.log("isError error=", error);
 		// const message = error.response.data.message
-		const message = error.response.data.status;
+		const message = error.response.data.message; //убрала статус
 		errorMessage = message;
 	}
 
