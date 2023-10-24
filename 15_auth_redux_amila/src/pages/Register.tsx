@@ -63,7 +63,7 @@ const Register = () => {
 	const dispatch = useDispatch();
 	// const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
-   let Errormessage= ""
+   let errorMessage = ("");
 	useEffect(() => {
 		console.log("useEffect");
 		setValue("name", "Tsutomu Okumura");
@@ -85,7 +85,7 @@ const Register = () => {
 		},
 		onError: (error: any) => {
 			console.log("c=" + error.response.data.error.message);
-			Errormessage(error.response.data.error.message);
+			// errorMessage(error.response.data.error.message);
 		},
 	});
 
@@ -104,7 +104,7 @@ const Register = () => {
 		console.log("isError error=", error);
 		// const message = error.response.data.message
 		const message = error.response.data.status;
-		Errormessage=message
+		errorMessage = message;
 	}
 
 	const onSubmit = (data: RegisterForm) => {
@@ -119,7 +119,7 @@ const Register = () => {
 					<h2>会員登録</h2>
 				</Header>
 				<Wrapper>
-					<div className="duplicate">{Errormessage}</div>
+					<div className="duplicate">{errorMessage}</div>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input
 							type="text"

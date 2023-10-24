@@ -59,8 +59,9 @@ interface LoginForm {
 
 const Login = () => {
 	const dispatch = useDispatch();
-	const [error, setError] = useState("あいうえお");
-
+	
+	// const [error, setError] = useState("あいうえお");
+	let errorMessage = ("");
 	const {
 		register,
 		handleSubmit,
@@ -72,7 +73,7 @@ const Login = () => {
 	// "onChange": submitが押された時呼ばれる
 	const navigate = useNavigate();
 
-	const postData = useMutation({
+	const {data, isSuccess, isError, error, mutate} = useMutation({
 		mutationFn: (newPost: LoginForm) => {
 			return axios.post(`${NESTJS_URL}/auth/login`, newPost);
 		},
@@ -94,14 +95,33 @@ const Login = () => {
 		},
 		onError: (error: any) => {
 			console.log("c=" + error.response.data.error.message);
-			setError(error.response.data.error.message);
+			// setError(error.response.data.error.message);
 		},
 	});
+	if (isSuccess) {
+		console.log("isSuccess token:", data.data.result.token);
+		console.log(data.data);
+		//local storageにjwtを格納する
+		dispatch(userLoginSuccess(data.data.result.token));
+
+		navigate("/");
+		//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+		// queryClient.invalidateQueries({ queryKey: ["comments"] });
+	}
+	if (isError) {
+		console.log("isError error=", error);
+		// const message = error.response.data.message
+		const message = error.response.data.status;
+		console.log("error=", message)
+		// setErrorMessage(message);
+		errorMessage = message;
+
+	}
 
 	const onSubmit = (data: LoginForm) => {
 		console.log(`${NESTJS_URL}/api/auth/local`);
 		dispatch(showMessage(true));
-		postData.mutate(data);
+		mutate(data);
 	};
 
 	return (
@@ -111,7 +131,7 @@ const Login = () => {
 					<h2>ログイン</h2>
 				</Header>
 				<Wrapper>
-					<div className="duplicate">{error}</div>
+					<div className="duplicate">{errorMessage}</div>
 
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input
