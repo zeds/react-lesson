@@ -1,6 +1,7 @@
 import styled, { createGlobalStyle } from "styled-components";
 
 export const NESTJS_URL = `${import.meta.env.VITE_NESTJS_URL}`;
+export const STRAPI_URL = `${import.meta.env.VITE_STRAPI_URL}`;
 
 export const DISPLAY_MD = "599px";
 export const DISPLAY_LG = "1024px";
@@ -247,7 +248,7 @@ const GlobalStyle = createGlobalStyle`
 
 	@media (max-width: ${DISPLAY_MD}) {
 		html {
-			font-size: 45%;
+			font-size: 50%;
 		}
 	}
 

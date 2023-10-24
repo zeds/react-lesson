@@ -1,6 +1,6 @@
 import { Container, NESTJS_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
@@ -56,46 +56,60 @@ interface RegisterForm {
 	username: string;
 	email: string;
 	password: string;
-	name: string;
+	name: string; 
 }
 
 const Register = () => {
 	const dispatch = useDispatch();
-	const [error, setError] = useState("");
+	// const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
+   let errorMessage = ("");
+	useEffect(() => {
+		console.log("useEffect");
+		setValue("name", "Tsutomu Okumura");
+	}, []);
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
+		setValue,
 	} = useForm<RegisterForm>({
 		mode: "onChange", // onBluer: フォーカスを失った時に呼ばれる
 	});
 
-	const postData = useMutation({
+	const { data, isSuccess, isError, error, mutate } = useMutation({
 		mutationFn: (newPost: RegisterForm) => {
 			console.log("newPost=" + JSON.stringify(newPost));
-			newPost.name = "hogehoge";
 			return axios.post(`${NESTJS_URL}/auth/register`, newPost);
-		},
-		onSuccess: (data) => {
-			console.log(data.data);
-			//local storageにjwtを格納する
-			dispatch(userLoginSuccess(data.data.result.token));
-
-			navigate("/");
-			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
-			// queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
 		onError: (error: any) => {
 			console.log("c=" + error.response.data.error.message);
-			setError(error.response.data.error.message);
+			// errorMessage(error.response.data.error.message);
 		},
 	});
 
+	if (isSuccess) {
+		console.log("isSuccess token:", data.data.result.token);
+		console.log(data.data);
+		//local storageにjwtを格納する
+		dispatch(userLoginSuccess(data.data.result.token));
+
+		navigate("/");
+		//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+		// queryClient.invalidateQueries({ queryKey: ["comments"] });
+	}
+
+	if (isError) {
+		console.log("isError error=", error);
+		// const message = error.response.data.message
+		const message = error.response.data.status;
+		errorMessage = message;
+	}
+
 	const onSubmit = (data: RegisterForm) => {
-		console.log(JSON.stringify(data));
-		postData.mutate(data);
+		console.log("onSubmit:", JSON.stringify(data));
+		mutate(data);
 	};
 
 	return (
@@ -105,7 +119,7 @@ const Register = () => {
 					<h2>会員登録</h2>
 				</Header>
 				<Wrapper>
-					<div className="duplicate">{error}</div>
+					<div className="duplicate">{errorMessage}</div>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input
 							type="text"

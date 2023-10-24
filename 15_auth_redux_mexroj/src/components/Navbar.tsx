@@ -1,9 +1,12 @@
 import { DISPLAY_MD, HEIGHT_NAV } from "../GlobalStyle";
 import { Link, NavLink } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import ImgBurger from "../assets/burger.svg";
 import ImgClose from "../assets/close.svg";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
+import ErrorMessage from "./ErrorMessage";
 
 const ShowBurger = styled.div`
 	display: none;
@@ -188,33 +191,60 @@ const Navbar = () => {
 		document.body.style.overflow = "auto";
 	};
 
-	let content = (
-		<ul>
-			<li>
-				<NavLink to="/users" onClick={() => clickClose()}>
-					ユーザー一覧
-				</NavLink>
-			</li>
-			<li>
-				<NavLink to="/about" onClick={() => clickClose()}>
-					About
-				</NavLink>
-			</li>
-			<li>
-				<NavLink to="/login" onClick={() => clickClose()}>
-					ログイン
-				</NavLink>
-			</li>
-			<li>
-				<NavLink to="/register" onClick={() => clickClose()}>
-					会員登録
-				</NavLink>
-			</li>
-		</ul>
-	);
+	const jwt = useSelector((state: RootState) => state.auth.jwt);
+
+	let content;
+
+	if (jwt) {
+		content = (
+			<ul>
+				<li>
+					<NavLink to="/users" onClick={() => clickClose()}>
+						ユーザー一覧
+					</NavLink>
+				</li>
+				<li>
+					<NavLink to="/about" onClick={() => clickClose()}>
+						About
+					</NavLink>
+				</li>
+				<li>
+					<NavLink to="/mypage" onClick={() => clickClose()}>
+						マイページ
+					</NavLink>
+				</li>
+			</ul>
+		);
+	} else {
+		content = (
+			<ul>
+				<li>
+					<NavLink to="/users" onClick={() => clickClose()}>
+						ユーザー一覧
+					</NavLink>
+				</li>
+				<li>
+					<NavLink to="/about" onClick={() => clickClose()}>
+						About
+					</NavLink>
+				</li>
+				<li>
+					<NavLink to="/login" onClick={() => clickClose()}>
+						ログイン
+					</NavLink>
+				</li>
+				<li>
+					<NavLink to="/register" onClick={() => clickClose()}>
+						会員登録
+					</NavLink>
+				</li>
+			</ul>
+		);
+	}
 
 	return (
 		<>
+			<ErrorMessage />
 			<ShowBurger>
 				<div id="burger" onClick={() => clickBurger()}>
 					<img src={ImgBurger} alt="burger" />
