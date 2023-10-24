@@ -50,6 +50,7 @@ interface InputInterface {
 	register: any;
 	validationSchema: {};
 	required: boolean;
+	value?: string;
 }
 
 export function Input({
@@ -70,13 +71,54 @@ export function Input({
 		setIsRevealPassword((prevState) => !prevState);
 	};
 
+	function renderSwitch(param: any) {
+		switch (param) {
+			case "text":
+			case "email":
+				return (
+					<div>
+						<input
+							id={name}
+							name={name}
+							type={type}
+							placeholder={placeholder}
+							{...register(name, validationSchema)}
+						/>
+					</div>
+				);
+			case "password":
+				return (
+					<div className="password">
+						<input
+							id={name}
+							name={name}
+							type={isRevealPassword ? "text" : "password"}
+							placeholder={placeholder}
+							{...register(name, validationSchema)}
+						/>
+						<button onClick={(e) => togglePassword(e)}>
+							{isRevealPassword ? (
+								<img src={Eye} alt="eye" />
+							) : (
+								<img src={EyeOff} alt="eye" />
+							)}
+						</button>
+					</div>
+				);
+			default:
+				<div>あいうえお</div>;
+		}
+	}
+
 	return (
 		<Frame>
 			<label htmlFor={name}>
 				{label}
 				<span className="required">{required && " 必須"}</span>
 			</label>
-			{type == "password" ? (
+			{renderSwitch(type)}
+
+			{/* {type == "password" ? (
 				<div className="password">
 					<input
 						id={name}
@@ -94,14 +136,16 @@ export function Input({
 					</button>
 				</div>
 			) : (
-				<input
-					id={name}
-					name={name}
-					type={type}
-					placeholder={placeholder}
-					{...register(name, validationSchema)}
-				/>
-			)}
+				<div>
+					<input
+						id={name}
+						name={name}
+						type={type}
+						placeholder={placeholder}
+						{...register(name, validationSchema)}
+					/>
+				</div>
+			)} */}
 			{errors && errors[name]?.type === "required" && (
 				<div className="error">{errors[name]?.message}</div>
 			)}

@@ -70,15 +70,14 @@ const Login = () => {
 			return axios.post(`${NESTJS_URL}/auth/login`, newPost);
 		},
 		onSuccess: (data) => {
-			console.log(data.data);
-			console.log(data.data.jwt);
+			console.log(data);
 			// cookieに格納する
-			localStorage.setItem("token", data.data.jwt);
+			localStorage.setItem("token", data.data.result.token);
 
 			// rootを開く
 			console.log("rootを開く");
 
-			navigate("/");
+			// navigate("/");
 
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			// queryClient.invalidateQueries({ queryKey: ["comments"] });
