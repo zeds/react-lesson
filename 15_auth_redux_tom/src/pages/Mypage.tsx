@@ -45,7 +45,6 @@ const Avatar = styled.div`
 
 const Frame = styled.div`
 	max-width: 400px;
-	background: red;
 	margin: 0 auto;
 `;
 
@@ -164,14 +163,6 @@ const Mypage = () => {
 			setValue("name", res.data.name);
 			setValue("introduction", res.data.introduction);
 
-			// setInitialData((prevData) => ({
-			// 	...prevData,
-			// 	name: res.data.name,
-			// 	introduction: res.data.introduction,
-			// 	avatar_url: res.data.avatar_url,
-			// }));
-			// console.log("initialData=", initialData); //この時点では変更は反映されていない
-
 			return res.data;
 		} catch (error) {
 			// JWTの有効期限切れなら、期限を表示する
@@ -184,17 +175,17 @@ const Mypage = () => {
 	};
 
 	// 😺CRUDのRead
-	const { isLoading, isError, data } = useQuery({
+	const queryData = useQuery({
 		queryKey: ["getme"],
 		queryFn: () => getMe(),
 		refetchOnWindowFocus: false,
 		cacheTime: 0,
 	});
 
-	if (isLoading) {
+	if (queryData.isLoading) {
 		return <div>Loading...</div>;
 	}
-	if (isError) {
+	if (queryData.isError) {
 		console.log("isError");
 		navigate("/login");
 	}
@@ -206,6 +197,7 @@ const Mypage = () => {
 		navigate("/login");
 	};
 
+	//avatar画像を変更
 	const clickAvatar = async (e: any) => {
 		const file = e.target.files[0];
 		const formData = new FormData();
@@ -236,7 +228,9 @@ const Mypage = () => {
 			});
 	};
 
+	//更新
 	const onSubmit = (data: UpdateForm) => {
+		console.log("onSubmit");
 		dispatch(
 			showMessage({
 				show: true,
@@ -245,13 +239,10 @@ const Mypage = () => {
 				message: "更新中。。。",
 			})
 		);
-		console.log("MyPage data=", data);
-	};
-	// 更新
-	const clickUpdate = () => {
+
 		let obj = {
-			name: getValues("name"),
-			introduction: getValues("introduction"),
+			name: data.name,
+			introduction: data.introduction,
 			avatar_url: avatarUrl,
 		};
 
@@ -274,15 +265,13 @@ const Mypage = () => {
 			</Avatar>
 
 			<Frame>
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<div>id</div>
-					<div>{data.id}</div>
+				<Grid>
 					<div>username</div>
-					<div>{data.username}</div>
+					<div>{queryData.data.username}</div>
 					<div>email</div>
-					<div>{data.email}</div>
-					<div>name</div>
-					{data.name}
+					<div>{queryData.data.email}</div>
+				</Grid>
+				<form onSubmit={handleSubmit(onSubmit)}>
 					<Input
 						type="text"
 						name="name"
@@ -293,8 +282,16 @@ const Mypage = () => {
 						validationSchema={validation[0]}
 						required={true}
 					/>
-					<div>自己紹介</div>
-					<textarea {...register("introduction", validation[3])} />
+					<Input
+						type="textarea"
+						name="introduction"
+						label="自己紹介"
+						placeholder="メッセージを書いてください"
+						errors={errors}
+						register={register}
+						validationSchema={validation[0]}
+						required={false}
+					/>
 					<input type="submit" value="更新" />
 				</form>
 			</Frame>

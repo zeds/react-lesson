@@ -73,6 +73,16 @@ export function Input({
 
 	function renderSwitch(param: any) {
 		switch (param) {
+			case "textarea":
+				return (
+					<div>
+						<textarea
+							{...register("introduction")}
+							placeholder={placeholder}
+						/>
+					</div>
+				);
+
 			case "text":
 			case "email":
 				return (
@@ -118,34 +128,6 @@ export function Input({
 			</label>
 			{renderSwitch(type)}
 
-			{/* {type == "password" ? (
-				<div className="password">
-					<input
-						id={name}
-						name={name}
-						type={isRevealPassword ? "text" : "password"}
-						placeholder={placeholder}
-						{...register(name, validationSchema)}
-					/>
-					<button onClick={(e) => togglePassword(e)}>
-						{isRevealPassword ? (
-							<img src={Eye} alt="eye" />
-						) : (
-							<img src={EyeOff} alt="eye" />
-						)}
-					</button>
-				</div>
-			) : (
-				<div>
-					<input
-						id={name}
-						name={name}
-						type={type}
-						placeholder={placeholder}
-						{...register(name, validationSchema)}
-					/>
-				</div>
-			)} */}
 			{errors && errors[name]?.type === "required" && (
 				<div className="error">{errors[name]?.message}</div>
 			)}
