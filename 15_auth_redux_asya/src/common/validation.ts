@@ -20,4 +20,5 @@ export const validation = [
 			message: "6文字以上で入力してください",
 		},
 	},
+	
 ];
