@@ -1,14 +1,16 @@
 import { Container, NESTJS_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 import { validation } from "../common/validation";
+import { userLoginSuccess } from "../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -60,17 +62,25 @@ interface RegisterForm {
 
 const Register = () => {
 	const navigate = useNavigate();
-	const [errorMessenger, setErrorMessenger] = useState("");
+	const dispatch = useDispatch();
+	// const [errorMessage, setErrorMessage] = useState("");
+	let errorMessage = "";
+
+	useEffect(() => {
+		console.log("useEffect");
+		setValue("name", "Tsutomu Okumura");
+	}, []);
 
 	const {
 		register,
 		handleSubmit,
+		setValue,
 		formState: { errors },
 	} = useForm<RegisterForm>({
 		mode: "onChange", // onBluer: フォーカスを失った時に呼ばれる
 	});
 
-	const postData = useMutation({
+	const { data, isSuccess, isError, error, mutate } = useMutation({
 		mutationFn: (newPost: RegisterForm) => {
 			// console.log("newPost=" + JSON.stringify(newPost));
 			console.log("newPost=" + newPost);
@@ -85,19 +95,44 @@ const Register = () => {
 			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 			// queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
-		onError: (errors) => {
-			if(errors == "AxiosError: Request failed with status code 400"){
-				setErrorMessenger("このメールアドレスは以前に登録されていました。	")
-			}
-			// setErrorMessenger(errors.message);
-			console.log("Error: " + errors);
-			// console.log("Error: " + context);
-		  }
+		// onError: (errors) => {
+		// 	if(errors == "AxiosError: Request failed with status code 400"){
+		// 		setErrorMessenger("このメールアドレスは以前に登録されていました。	")
+		// 	}
+		// 	// setErrorMessenger(errors.message);
+		// 	console.log("Error: " + errors);
+		// 	// console.log("Error: " + context);
+		//   }
+		onError: (error: any) => {
+			console.log("c=" + error.response.data.error.message);
+
+			// errorMessage(error.response.data.error.message);
+		},
 	});
+	
+	if (isSuccess) {
+		console.log("isSuccess token:", data.data.result.token);
+		console.log(data.data);
+		//local storageにjwtを格納する
+		dispatch(userLoginSuccess(data.data.result.token));
+
+		navigate("/");
+		//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+		// queryClient.invalidateQueries({ queryKey: ["comments"] });
+	}
+
+	if (isError) {
+		console.log("isError error=", error);
+		const message = error.response.data.message
+		// const message = error.response.data;
+		console.log(message)
+		
+		errorMessage=message;
+	}
 
 	const onSubmit = (data: RegisterForm) => {
 		console.log(JSON.stringify(data));
-		postData.mutate(data);
+		mutate(data);
 	};
 
 	return (
@@ -106,7 +141,7 @@ const Register = () => {
 				<Header>
 					<h2>会員登録</h2>
 				</Header>
-				<p className="error">{errorMessenger}</p>
+				<p className="error">{errorMessage}</p>
 				<Wrapper>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<Input
@@ -119,7 +154,7 @@ const Register = () => {
 							validationSchema={validation[0]}
 							required
 						/>
-						<Input
+						{/* <Input
 							type="text"
 							name="name"
 							label="名前"
@@ -128,7 +163,7 @@ const Register = () => {
 							register={register}
 							validationSchema={validation[0]}
 							required
-						/>
+						/> */}
 						<Input
 							type="email"
 							name="email"

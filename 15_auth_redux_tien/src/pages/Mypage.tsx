@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import { Container, DISPLAY_CT, NESTJS_URL } from "../GlobalStyle";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-// import { useForm } from "react-hook-form";
-// import { Input } from "../components/Input";
-// import { Button } from "../components/Button";
-// import { validation } from "../common/validation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -14,13 +10,8 @@ import type { RootState } from "../redux/store";
 import { clear } from "../redux/slices/authSlice";
 // import { showMessage } from "../redux/slices/uxSlice";
 import edit from "../../src/assets/edit.svg";
-// import ModalConfirm from "../components/ModalConfirm";
 import Modal from "../components/Modal";
-import {
-  // CircleSpinnerOverlay,
-  DotLoader,
-  // FerrisWheelSpinner,
-} from "react-spinner-overlay";
+import { DotLoader } from "react-spinner-overlay";
 import imageDefault from "../assets/images.jpeg";
 
 const SpinnerContainer = styled.div`
@@ -35,7 +26,6 @@ const SpinnerContainer = styled.div`
 
 const Layout = styled.div`
   display: grid;
-  /* grid-template-columns: 1fr 2fr; */
   grid-template-columns: 1fr;
   grid-gap: 20px;
   margin: 25px 0;
@@ -63,7 +53,6 @@ const DdTag = styled.dd`
   flex: 2;
   font-size: 1.3rem;
   font-weight: 400;
-  /* width: 100%; */
 `;
 const Introduction = styled.div`
     height: auto;
@@ -124,7 +113,6 @@ const Mypage = () => {
   const getMe = async () => {
     try {
       const res = await axios.get(`${NESTJS_URL}/users/user-info`, {
-        // const res = await axios.get(`${STRAPI_URL}/api/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -132,26 +120,12 @@ const Mypage = () => {
       setUserId(res.data.id);
 
       return res.data;
+      
     } catch (error) {
       console.log("error=" + error);
       return null;
     }
   };
-
-  // 😺CRUDのCreate
-  // const mutationCreate = useMutation({
-  // 	mutationFn: (newComment) => {
-  // 		return axios.post(
-  // 			"https://lusty.asia:1443/api/mercari-comments",
-  // 			newComment
-  // 		);
-  // 	},
-  // 	onSuccess: () => {
-  // 		//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
-  // 		queryClient.invalidateQueries({ queryKey: ["comments"] });
-  // 		setLoading(false)
-  // 	},
-  // });
 
   // 😺CRUDのRead
   const { isLoading, isError, data } = useQuery({
@@ -231,7 +205,6 @@ const Mypage = () => {
       );
     }
   };
-  // console.log(loading)
   const imageUrl = data?.avatar_url ? `https://lusty.asia:1443${data.avatar_url}`: imageDefault;
     return (
       <>
@@ -250,6 +223,7 @@ const Mypage = () => {
             <img
             src={imageUrl}
             alt="" width={80} height={80} style={{ borderRadius: "50%", objectFit: "cover" }} />
+            <br />
             <button onClick={clickLogout}>ログアウト</button>
             </div>
             <div style={{ position: "relative", background: "white", borderRadius: "10px", padding: "20px", display: "flex", flexDirection: "column",width: "auto" }}>

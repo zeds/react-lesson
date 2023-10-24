@@ -25,7 +25,7 @@ const ModalFrame = styled.div`
   background: #f4fbfe;
 
   .contents {
-    display: flex;
+    display: flexbox;
     gap: 10px;
     img {
       width: 100px;
@@ -91,6 +91,7 @@ const ModalFrame = styled.div`
   .textArea {
     min-width: 325px;
     min-height: 150px;
+    padding: 5px;
   }
 `;
 interface Form {
@@ -100,7 +101,7 @@ interface Form {
   introduction: string;
 }
 const Modal = (props: any) => {
-  //   console.log(props)
+  console.log(props);
   const [image, setImage] = useState(props.data.avatar_url);
   const [fileName, setFileName] = useState("");
   const [name, setName] = useState(props.data.name);
@@ -114,7 +115,7 @@ const Modal = (props: any) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Form>({ mode: "onChange" }); // "onBlur"
+  } = useForm<Form>({ mode: "onBlur" }); // "onChange"
 
   const onSubmit = (data: Form) => {
     console.log(data);
@@ -204,7 +205,7 @@ const Modal = (props: any) => {
                   autoFocus={true}
                 ></input>
               </p>
-              <p>{errors.name?.message as React.ReactNode}</p>
+              <p className="error">{errors.name?.message as React.ReactNode}</p>
               <p>
                 ニックネーム
                 <input
@@ -213,7 +214,9 @@ const Modal = (props: any) => {
                   value={username}
                 ></input>
               </p>
-              <p>{errors.username?.message as React.ReactNode}</p>
+              <p className="error">
+                {errors.username?.message as React.ReactNode}
+              </p>
               <p>
                 自己紹介
                 <div>
@@ -227,22 +230,22 @@ const Modal = (props: any) => {
                   />
                 </div>
               </p>
-              <p>{errors.introduction?.message as React.ReactNode}</p>
+              <p className="error">
+                {errors.introduction?.message as React.ReactNode}
+              </p>
             </div>
           </div>
 
-          <input type="file" accept="image/*" onChange={clickImageButton} />
+          <p>
+            <input type="file" accept="image/*" onChange={clickImageButton} />
+          </p>
 
           <div className="buttonBlock">
             <button className="cancel" onClick={() => clickCancel()}>
               キャンセル
             </button>
             <button type="submit" className="post">
-              {props.data.type == "edit" ? (
-                <div>更新</div>
-              ) : (
-                <div>新規登録</div>
-              )}
+              <div>更新</div>
             </button>
           </div>
         </form>
