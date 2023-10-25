@@ -21,7 +21,10 @@ const persistConfig = {
 	storage,
 };
 
-const rootReducer = combineReducers({ auth: authSlice, ux: uxSlice });
+const rootReducer = combineReducers({
+	auth: authSlice,
+	ux: uxSlice,
+});
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({

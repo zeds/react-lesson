@@ -13,17 +13,32 @@ const Wrapper = styled.div`
 	width: 100%;
 	height: 100%;
 	background: rgba(0, 0, 0, 0.5);
+`;
 
-	img {
-		width: 100px;
-		height: 100px;
+const Frame = styled.div`
+	font-size: 3rem;
+	color: white;
+
+	.img_div {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		img {
+			width: 100px;
+			height: 100px;
+		}
 	}
 
-	button {
-		background: red;
-		border: none;
-		padding: 20px;
-		border-radius: 5px;
+	.button_div {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		button {
+			background: orange;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 5px;
+		}
 	}
 	.loader {
 		border: 16px solid #f3f3f3;
@@ -47,18 +62,30 @@ const ErrorMessage = () => {
 	const dispatch = useDispatch();
 
 	const ux = useSelector((state: RootState) => state.ux);
-	console.log("ux=", ux);
 
-	if (!ux.message_window) {
-		console.log("!ux", ux);
+	if (!ux.show) {
 		return null;
 	}
 
 	return (
 		<Wrapper>
 			ErrorMessage
-			<img src={firedRice} alt="loading..." />
-			<button onClick={() => dispatch(showMessage(false))}>close</button>
+			<Frame>
+				{ux.animation ? (
+					<div className="img_div">
+						<img src={firedRice} alt="loading..." />
+					</div>
+				) : null}
+
+				<p>{ux.message}</p>
+				{ux.button ? (
+					<div className="button_div">
+						<button onClick={() => dispatch(showMessage(false))}>
+							OK
+						</button>
+					</div>
+				) : null}
+			</Frame>
 		</Wrapper>
 	);
 };

@@ -1,5 +1,5 @@
 import { DISPLAY_MD, HEIGHT_NAV } from "../GlobalStyle";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
 import ImgBurger from "../assets/burger.svg";
@@ -170,6 +170,7 @@ const NavigationHeader = styled.header`
 `;
 
 const Navbar = () => {
+	const location = useLocation();
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	const clickBurger = () => {
@@ -186,6 +187,9 @@ const Navbar = () => {
 		setMenuOpen(false);
 		let burger = document.querySelector<HTMLElement>("#burger")!;
 		burger.style.display = "flex";
+
+		// urlを保存
+		console.log("navlink=", location.pathname);
 
 		//スクロール出来るようにする
 		document.body.style.overflow = "auto";

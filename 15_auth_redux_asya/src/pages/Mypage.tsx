@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { validation } from "../common/validation";
 import { Container, NESTJS_URL, STRAPI_URL } from "../GlobalStyle";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../redux/store";
-import { clear, userLoginSuccess } from "../redux/slices/authSlice";
+import { clear } from "../redux/slices/authSlice";
 import styled from "styled-components";
 import avatar from "../assets/people-circle.svg";
-import { Input } from "../components/Input";
 import { useForm } from "react-hook-form";
 import { showMessage } from "../redux/slices/uxSlice";
+import jwt_decode from "jwt-decode";
+import { Input } from "../components/Input";
+import { validation } from "../common/validation";
 
 const Header = styled.div`
 	width: 800px;
@@ -42,6 +43,11 @@ const Avatar = styled.div`
 	}
 `;
 
+const Frame = styled.div`
+	max-width: 400px;
+	margin: 0 auto;
+`;
+
 const Grid = styled.div`
 	max-width: 800px;
 	display: grid;
@@ -62,27 +68,21 @@ const Grid = styled.div`
 	}
 `;
 
-interface EditForm {
-	username: string;
-	name: string;
-	email: string;
-}
-
 interface UpdateForm {
 	name: string;
+	avatar_url: string;
+	introduction: string;
 }
 
 const Mypage = () => {
-	const hiddenFileInput = useRef(null);
-	const [image, setImage] = useState(avatar);
-
-	const [avatarUrl, setAvatarUrl] = useState("");
-	const [userId, setUserId] = useState("");
-	const [name, setName] = useState("");
-	const [introduction, setIntroduction] = useState("あいうえお");
-
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
+	const hiddenFileInput = useRef(null);
+
+	const [image, setImage] = useState(avatar);
+	const [userId, setUserId] = useState("");
+	const [avatarUrl, setAvatarUrl] = useState("");
 
 	const token = useSelector((state: RootState) => state.auth.jwt);
 
@@ -90,9 +90,26 @@ const Mypage = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<EditForm>({
+		setValue,
+		getValues,
+	} = useForm<UpdateForm>({
 		mode: "onChange",
 	}); // "onBlur"
+
+	useEffect(() => {
+		console.log("useEffect token=", token);
+
+		if (!token) {
+			navigate("/login");
+			return;
+		} else {
+			let decoded: any = jwt_decode(token);
+			console.log("exp=", decoded.exp);
+			const d = new Date(0);
+			d.setUTCSeconds(decoded.exp);
+			console.log(d);
+		}
+	}, [token]);
 
 	// 😺更新
 	const patchData = useMutation({
@@ -104,21 +121,21 @@ const Mypage = () => {
 			});
 		},
 		onSuccess: (data) => {
+			dispatch(
+				showMessage({
+					show: true,
+					animation: false,
+					button: true,
+					message: "更新しました",
+				})
+			);
+
 			console.log("data=", data);
 		},
 		onError: (error: any) => {
 			console.log("error=", error);
 		},
 	});
-
-	useEffect(() => {
-		console.log("useEffect token=", token);
-
-		if (!token) {
-			navigate("/login");
-			return;
-		}
-	}, [token]);
 
 	const getMe = async () => {
 		console.log("getMe");
@@ -138,75 +155,106 @@ const Mypage = () => {
 
 			console.log("data=", JSON.stringify(res.data));
 			setUserId(res.data.id);
-			setName(res.data.name);
 			const url = res.data.avatar_url;
 			console.log("url=", url);
 			setImage(`${STRAPI_URL}${url}`);
-			setIntroduction(res.data.introduction);
+
+			// react-hook-formのフィールドの値をリアルタイムに変更できる
+			setValue("name", res.data.name);
+			setValue("introduction", res.data.introduction);
 
 			return res.data;
 		} catch (error) {
-			console.log("error=" + error);
+			// JWTの有効期限切れなら、期限を表示する
+			console.log("エラー");
+
+			navigate("/login");
+
 			return null;
 		}
 	};
 
 	// 😺CRUDのRead
-	const { isLoading, isError, data } = useQuery({
+	const queryData = useQuery({
 		queryKey: ["getme"],
 		queryFn: () => getMe(),
+		refetchOnWindowFocus: false,
+		cacheTime: 0,
 	});
 
-	if (isLoading) {
+	if (queryData.isLoading) {
 		return <div>Loading...</div>;
 	}
-	if (isError) {
+	if (queryData.isError) {
 		console.log("isError");
 		navigate("/login");
 	}
 
 	const clickLogout = () => {
-		// purgeしてlocal storageが消えても、sliceが更新されないので注意！
+		// purge()関数でlocal storageは消されるが、sliceが更新されないので注意！
 		dispatch(clear(""));
 
 		navigate("/login");
 	};
 
-	const clickUpdate = () => {
-		dispatch(showMessage(true));
-		let data = {
-			name: name,
-			avatar_url: avatarUrl,
-			introduction: introduction,
-		};
-		patchData.mutate(data);
-		console.log("name=", name);
-	};
-
-	const clickAvatar = (e: any) => {
+	//avatar画像を変更
+	const clickAvatar = async (e: any) => {
 		const file = e.target.files[0];
 		const formData = new FormData();
 		formData.append("files", file);
-		axios
+		dispatch(
+			showMessage({
+				show: true,
+				animation: true,
+				button: false,
+				message: "画像処理中。。。",
+			})
+		);
+
+		await axios
 			.post(`${STRAPI_URL}/api/upload`, formData)
 			.then((response) => {
 				console.log("response=", response);
 				setAvatarUrl(response.data[0].url);
+				setImage(window.URL.createObjectURL(file));
+				dispatch(
+					showMessage({
+						show: false,
+					})
+				);
 			})
 			.catch((error) => {
 				console.log("error movie:", error);
 			});
+	};
 
-		setImage(window.URL.createObjectURL(file));
+	//更新
+	const onSubmit = (data: UpdateForm) => {
+		console.log("onSubmit");
+		dispatch(
+			showMessage({
+				show: true,
+				animation: true,
+				button: true,
+				message: "更新中。。。",
+			})
+		);
+
+		let obj = {
+			name: data.name,
+			introduction: data.introduction,
+			avatar_url: avatarUrl,
+		};
+
+		patchData.mutate(obj);
 	};
 
 	return (
 		<Container>
 			<Header>
 				<h1>マイページ</h1>
-				{avatarUrl}
 			</Header>
-			<Avatar onClick={clickAvatar}>
+			<Avatar onClick={() => clickAvatar}>
 				<img src={image} alt="avatar" />
 				<input
 					type="file"
@@ -216,31 +264,38 @@ const Mypage = () => {
 				/>
 			</Avatar>
 
-			<Grid>
-				<div>id</div>
-				<div>{data.id}</div>
-				<div>username</div>
-				<div>{data.username}</div>
-				<div>email</div>
-				<div>{data.email}</div>
-				<div>name</div>
-				<div>
-					<input
+			<Frame>
+				<Grid>
+					<div>username</div>
+					<div>{queryData.data.username}</div>
+					<div>email</div>
+					<div>{queryData.data.email}</div>
+				</Grid>
+				<form onSubmit={handleSubmit(onSubmit)}>
+					<Input
 						type="text"
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-						// validationSchema={validation[1]}
-						// required={false}
-					></input>
-				</div>
-				<div>自己紹介</div>
-				<textarea
-					value={introduction}
-					onChange={(e) => setIntroduction(e.target.value)}
-				></textarea>
-			</Grid>
+						name="name"
+						label="お名前"
+						placeholder="山田 太郎"
+						errors={errors}
+						register={register}
+						validationSchema={validation[0]}
+						required={true}
+					/>
+					<Input
+						type="textarea"
+						name="introduction"
+						label="自己紹介"
+						placeholder="メッセージを書いてください"
+						errors={errors}
+						register={register}
+						validationSchema={validation[0]}
+						required={false}
+					/>
+					<input type="submit" value="更新" />
+				</form>
+			</Frame>
 			<button onClick={() => clickLogout()}>ログアウト</button>
-			<button onClick={() => clickUpdate()}>更新</button>
 		</Container>
 	);
 };
