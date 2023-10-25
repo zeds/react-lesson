@@ -76,8 +76,9 @@ const Mypage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = useSelector((state: RootState) => state.auth.jwt);
+  const buger = useSelector((state: RootState) => state.ux.burger);
 
-  //khi load thì không thể contoro
+  //khi load thì không thể control
   useEffect(() => {
     if (loading) {
       document.body.style.overflow = "hidden";
@@ -112,6 +113,7 @@ const Mypage = () => {
 
   const getMe = async () => {
     try {
+      //
       const res = await axios.get(`${NESTJS_URL}/users/user-info`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -134,6 +136,7 @@ const Mypage = () => {
   });
   if (isLoading) {
     return (
+      //DotLoaderを表す
       <SpinnerContainer>
         <DotLoader loading={loading} size={50} />
       </SpinnerContainer>
@@ -149,9 +152,8 @@ const Mypage = () => {
     navigate("/login");
     dispatch(clear(token));
   };
-  // console.log(data);
+  
   const handleChange = (item: any) => {
-    // console.log(item);
     let imageUrl = "";
     imageUrl = `https://lusty.asia:1443/${item.avatar_url}`;
     setModalData({
@@ -195,13 +197,11 @@ const Mypage = () => {
     } else {
       console.log("なし");
       postData.mutate(
-        // {data:
         {
           name: data.name,
           username: data.username,
           introduction: data.introduction,
         }
-        // }
       );
     }
   };
@@ -226,7 +226,7 @@ const Mypage = () => {
             <br />
             <button onClick={clickLogout}>ログアウト</button>
             </div>
-            <div style={{ position: "relative", background: "white", borderRadius: "10px", padding: "20px", display: "flex", flexDirection: "column",width: "auto" }}>
+            <div style={{ background: "white", borderRadius: "10px", padding: "20px", display: "flex", flexDirection: "column",width: "auto" }}>
               <DlTag><DtTag>Id:</DtTag><DdTag>{data?.id}</DdTag></DlTag>
               <DlTag><DtTag>メールアドレス:</DtTag><DdTag>{data?.email}</DdTag></DlTag>
               <DlTag><DtTag>お名前:</DtTag><DdTag>{data?.name}</DdTag></DlTag>

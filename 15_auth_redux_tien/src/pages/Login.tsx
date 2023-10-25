@@ -72,7 +72,14 @@ const Login = () => {
   const dispatch = useDispatch();
   let errorMessenger= ""
 
-  const { data, isSuccess, isError, error, mutate } = useMutation({
+  const { data, isSuccess, isError, error, mutate } : {
+    data: any;
+    isSuccess: boolean;
+    isError: boolean;
+    error: any | null;
+    mutate: any;
+  } = useMutation({
+    
     mutationFn: (newPost: LoginForm) => {
       axios.defaults.withCredentials = false;
       return axios.post(`${NESTJS_URL}/auth/login`, newPost);
@@ -87,11 +94,10 @@ const Login = () => {
       //invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
       // queryClient.invalidateQueries({ queryKey: ["comments"] });
     },
-    onError: (error: any) => {
-		console.log("c=" + error.response.data.error.message);
-
-		// errorMessage(error.response.data.error.message);
-	},
+  //   onError: (error: any) => {
+	// 	console.log("c=" + error.response.data.error.message);
+	// 	// errorMessage(error.response.data.error.message);
+  // },
   });
 
   const onSubmit = (data: any) => {

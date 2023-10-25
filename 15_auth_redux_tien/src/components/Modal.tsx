@@ -94,6 +94,29 @@ const ModalFrame = styled.div`
     padding: 5px;
   }
 `;
+const Avatar = styled.div`
+	display: flex;
+	width: 100px;
+	margin: 0 auto;
+	justify-content: center;
+	input {
+		width: 100px;
+		height: 100px;
+		cursor: pointer;
+	}
+	img {
+		position: absolute;
+		width: 100px;
+		height: 100px;
+		background: white;
+
+		/* クリックを無効化 */
+		pointer-events: none;
+		cursor: pointer;
+	}
+`;
+
+
 interface Form {
   name: string;
   username: string;
@@ -107,9 +130,6 @@ const Modal = (props: any) => {
   const [name, setName] = useState(props.data.name);
   const [username, setUserName] = useState(props.data.username);
   const [introduction, setIntroduction] = useState(props.data.introduction);
-
-  //   const [errorName, setErrorName] = useState("");
-  //   const [errorUserName, setErrorUserName] = useState("");
 
   const {
     register,
@@ -194,7 +214,10 @@ const Modal = (props: any) => {
         <div>新規登録</div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="contents">
-            <img src={image} alt="" />
+            <Avatar onClick={() => clickImageButton}>
+              <img src={image} alt="" />
+              <input type="file" accept="image/*" onChange={clickImageButton} />
+            </Avatar>
             <div className="update">
               <p className="name">
                 名前
@@ -206,7 +229,7 @@ const Modal = (props: any) => {
                 ></input>
               </p>
               <p className="error">{errors.name?.message as React.ReactNode}</p>
-              <p>
+              <p></p>
                 ニックネーム
                 <input
                   {...register("username", { validate: { validateRequired } })}
@@ -235,10 +258,6 @@ const Modal = (props: any) => {
               </p>
             </div>
           </div>
-
-          <p>
-            <input type="file" accept="image/*" onChange={clickImageButton} />
-          </p>
 
           <div className="buttonBlock">
             <button className="cancel" onClick={() => clickCancel()}>

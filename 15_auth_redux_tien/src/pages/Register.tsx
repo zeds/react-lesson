@@ -60,6 +60,13 @@ interface RegisterForm {
 	name: string;
 }
 
+interface MyMutation {
+	data: any;
+		isSuccess: boolean;
+		isError: boolean;
+		error: any;
+		mutate: any;
+}
 const Register = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -80,21 +87,20 @@ const Register = () => {
 		mode: "onChange", // onBluer: フォーカスを失った時に呼ばれる
 	});
 
-	const { data, isSuccess, isError, error, mutate } = useMutation({
+	const { data, isSuccess, isError, error, mutate } : MyMutation = useMutation({
 		mutationFn: (newPost: RegisterForm) => {
 			// console.log("newPost=" + JSON.stringify(newPost));
 			console.log("newPost=" + newPost);
-			// newPost.name="tiennn"
 			return axios.post(`${NESTJS_URL}/auth/register`, newPost);
 			// return axios.post(`${STRAPI_URL}/api/auth/local/register`, newPost);
 		},
-		onSuccess: (data) => {
-			// setErrorMessenger("")
-			console.log(data.data);
-			navigate("/");
-			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
-			// queryClient.invalidateQueries({ queryKey: ["comments"] });
-		},
+		// onSuccess: (data) => {
+		// 	// setErrorMessenger("")
+		// 	console.log(data.data);
+		// 	navigate("/");
+		// 	//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+		// 	// queryClient.invalidateQueries({ queryKey: ["comments"] });
+		// },
 		// onError: (errors) => {
 		// 	if(errors == "AxiosError: Request failed with status code 400"){
 		// 		setErrorMessenger("このメールアドレスは以前に登録されていました。	")
@@ -103,11 +109,11 @@ const Register = () => {
 		// 	console.log("Error: " + errors);
 		// 	// console.log("Error: " + context);
 		//   }
-		onError: (error: any) => {
-			console.log("c=" + error.response.data.error.message);
+		// onError: (error: any) => {
+		// 	console.log("c=" + error.response.data.error.message);
 
-			// errorMessage(error.response.data.error.message);
-		},
+		// 	// errorMessage(error.response.data.error.message);
+		// },
 	});
 	
 	if (isSuccess) {
