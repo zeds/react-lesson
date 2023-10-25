@@ -56,27 +56,27 @@ interface RegisterForm {
 	username: string;
 	email: string;
 	password: string;
-	name: string; 
+	name: string;
 }
 
 const Register = () => {
 	const dispatch = useDispatch();
-	// const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
-   let errorMessage = ("");
-	useEffect(() => {
-		console.log("useEffect");
-		setValue("name", "Tsutomu Okumura");
-	}, []);
+	let errorMessage = "";
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-		setValue,
+		// setValue,
 	} = useForm<RegisterForm>({
 		mode: "onChange", // onBluer: フォーカスを失った時に呼ばれる
 	});
+
+	useEffect(() => {
+		console.log("useEffect");
+		// setValue("username", "Tsutomu Okumura");
+	}, []);
 
 	const { data, isSuccess, isError, error, mutate } = useMutation({
 		mutationFn: (newPost: RegisterForm) => {
@@ -85,9 +85,14 @@ const Register = () => {
 		},
 		onError: (error: any) => {
 			console.log("c=" + error.response.data.error.message);
-			// errorMessage(error.response.data.error.message);
+			// setErrorMessage(error.response.data.error.message);
 		},
 	});
+
+	const onSubmit = (data: RegisterForm) => {
+		console.log("onSubmit:", JSON.stringify(data));
+		mutate(data);
+	};
 
 	if (isSuccess) {
 		console.log("isSuccess token:", data.data.result.token);
@@ -102,15 +107,9 @@ const Register = () => {
 
 	if (isError) {
 		console.log("isError error=", error);
-		// const message = error.response.data.message
-		const message = error.response.data.message; //убрала статус
+		const message = error.response.data.message;
 		errorMessage = message;
 	}
-
-	const onSubmit = (data: RegisterForm) => {
-		console.log("onSubmit:", JSON.stringify(data));
-		mutate(data);
-	};
 
 	return (
 		<Container>

@@ -26,8 +26,9 @@ const Users = () => {
 	let [loading, setLoading] = useState(true);
 	let [color, setColor] = useState("#000000");
 
-	const token = useSelector((state: RootState) => state.auth.jwt);
-	console.log("token=", token);
+	const auth = useSelector((state: RootState) => state.auth);
+	const token = auth.jwt;
+	console.log("auth=", auth);
 
 	// 😺CRUDのRead
 	const { isLoading, isError, isSuccess, data, error } = useQuery({
