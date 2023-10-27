@@ -11,6 +11,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { validation } from "../common/validation";
 import { useDispatch } from "react-redux";
 import { userLoginSuccess } from "../redux/slices/authSlice";
+import { showMessage } from "../redux/slices/uxSlice";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -59,10 +60,16 @@ interface RegisterForm {
 	name: string;
 }
 
+interface MyMutation {
+	data: any;
+	error: any;
+	mutate: any;
+}
+
 const Register = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	let errorMessage = "";
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const {
 		register,
@@ -78,38 +85,26 @@ const Register = () => {
 		// setValue("username", "Tsutomu Okumura");
 	}, []);
 
-	const { data, isSuccess, isError, error, mutate } = useMutation({
+	const { mutate }: MyMutation = useMutation({
 		mutationFn: (newPost: RegisterForm) => {
-			console.log("newPost=" + JSON.stringify(newPost));
 			return axios.post(`${NESTJS_URL}/auth/register`, newPost);
 		},
-		onError: (error: any) => {
-			console.log("c=" + error.response.data.error.message);
-			// setErrorMessage(error.response.data.error.message);
+		onError: (error) => {
+			dispatch(showMessage({ show: false }));
+			setErrorMessage(error.response.data.message);
+		},
+		onSuccess: (data) => {
+			// registerは、email認証が完了したらloginできる
+
+			navigate("/login");
+			//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
+			// queryClient.invalidateQueries({ queryKey: ["comments"] });
 		},
 	});
 
 	const onSubmit = (data: RegisterForm) => {
-		console.log("onSubmit:", JSON.stringify(data));
 		mutate(data);
 	};
-
-	if (isSuccess) {
-		console.log("isSuccess token:", data.data.result.token);
-		console.log(data.data);
-		//local storageにjwtを格納する
-		dispatch(userLoginSuccess(data.data.result.token));
-
-		navigate("/");
-		//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
-		// queryClient.invalidateQueries({ queryKey: ["comments"] });
-	}
-
-	if (isError) {
-		console.log("isError error=", error);
-		const message = error.response.data.message;
-		errorMessage = message;
-	}
 
 	return (
 		<Container>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Icon } from "@iconify/react";
 import { Container, NESTJS_URL, STRAPI_URL } from "../GlobalStyle";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -15,31 +16,52 @@ import { Input } from "../components/Input";
 import { validation } from "../common/validation";
 
 const Header = styled.div`
-	width: 800px;
-	margin: 0 auto;
-	display: flex;
-	justify-content: center;
+	text-align: center;
+`;
+
+const Blank = styled.div`
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	background: white;
+	pointer-events: none;
 `;
 
 const Avatar = styled.div`
 	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	/* display: flex;
 	width: 100px;
+	height: 100px;
 	margin: 0 auto;
 	justify-content: center;
 	input {
 		width: 100px;
 		height: 100px;
+		border: none;
+
+		cursor: pointer;
+	} */
+	img {
+		width: 150px;
+		height: 150px;
+		object-fit: cover;
+		margin-bottom: -15px;
+		border-radius: 5px;
+	}
+	label {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 		cursor: pointer;
 	}
-	img {
-		position: absolute;
-		width: 100px;
-		height: 100px;
-		background: white;
-
-		/* クリックを無効化 */
-		pointer-events: none;
-		cursor: pointer;
+	input {
+		display: none;
+	}
+	.icon {
+		/* opacity: 0; */
 	}
 `;
 
@@ -61,11 +83,6 @@ const Grid = styled.div`
 		height: 35px;
 		padding: 5px;
 	}
-
-	textarea {
-		height: 100px;
-		padding: 5px;
-	}
 `;
 
 interface UpdateForm {
@@ -78,8 +95,6 @@ const Mypage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const hiddenFileInput = useRef(null);
-
 	const [image, setImage] = useState(avatar);
 	const [userId, setUserId] = useState("");
 	const [avatarUrl, setAvatarUrl] = useState("");
@@ -91,7 +106,6 @@ const Mypage = () => {
 		handleSubmit,
 		formState: { errors },
 		setValue,
-		getValues,
 	} = useForm<UpdateForm>({
 		mode: "onChange",
 	}); // "onBlur"
@@ -112,9 +126,9 @@ const Mypage = () => {
 	}, [token]);
 
 	// 😺更新
-	const patchData = useMutation({
-		mutationFn: async (newPost: UpdateForm) => {
-			return await axios.patch(`${NESTJS_URL}/users/${userId}`, newPost, {
+	const { mutate } = useMutation({
+		mutationFn: (newPost: UpdateForm) => {
+			return axios.patch(`${NESTJS_URL}/users/${userId}`, newPost, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
@@ -137,6 +151,7 @@ const Mypage = () => {
 		},
 	});
 
+	// 😺取得
 	const getMe = async () => {
 		console.log("getMe");
 
@@ -153,11 +168,11 @@ const Mypage = () => {
 				},
 			});
 
-			console.log("data=", JSON.stringify(res.data));
 			setUserId(res.data.id);
 			const url = res.data.avatar_url;
-			console.log("url=", url);
-			setImage(`${STRAPI_URL}${url}`);
+			if (url) {
+				setImage(`${STRAPI_URL}${url}`);
+			}
 
 			// react-hook-formのフィールドの値をリアルタイムに変更できる
 			setValue("name", res.data.name);
@@ -174,7 +189,7 @@ const Mypage = () => {
 		}
 	};
 
-	// 😺CRUDのRead
+	// 😺useQuery
 	const queryData = useQuery({
 		queryKey: ["getme"],
 		queryFn: () => getMe(),
@@ -198,10 +213,9 @@ const Mypage = () => {
 	};
 
 	//avatar画像を変更
-	const clickAvatar = async (e: any) => {
-		const file = e.target.files[0];
-		const formData = new FormData();
-		formData.append("files", file);
+	const clickAvatar = async (event: React.FocusEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0];
+		console.log("file=", file);
 		dispatch(
 			showMessage({
 				show: true,
@@ -210,27 +224,31 @@ const Mypage = () => {
 				message: "画像処理中。。。",
 			})
 		);
-
-		await axios
-			.post(`${STRAPI_URL}/api/upload`, formData)
-			.then((response) => {
-				console.log("response=", response);
-				setAvatarUrl(response.data[0].url);
-				setImage(window.URL.createObjectURL(file));
-				dispatch(
-					showMessage({
-						show: false,
-					})
-				);
-			})
-			.catch((error) => {
-				console.log("error movie:", error);
-			});
+		if (file) {
+			const formData = new FormData();
+			formData.append("files", file);
+			await axios
+				.post(`${STRAPI_URL}/api/upload`, formData)
+				.then((response) => {
+					console.log("response=", response);
+					setAvatarUrl(response.data[0].url);
+					setImage(window.URL.createObjectURL(file));
+					dispatch(
+						showMessage({
+							show: false,
+						})
+					);
+				})
+				.catch((error) => {
+					console.log("error movie:", error);
+				});
+		}
 	};
 
 	//更新
 	const onSubmit = (data: UpdateForm) => {
 		console.log("onSubmit");
+		console.log("data=", data);
 		dispatch(
 			showMessage({
 				show: true,
@@ -240,31 +258,32 @@ const Mypage = () => {
 			})
 		);
 
-		let obj = {
-			name: data.name,
-			introduction: data.introduction,
-			avatar_url: avatarUrl,
-		};
+		//avatarが変更されている場合、data.avatar_urlを変更
+		//変更されていない場合、元の値のまま更新
+		if (avatarUrl.length) {
+			data["avatar_url"] = avatarUrl;
+		}
 
-		patchData.mutate(obj);
+		mutate(data);
 	};
 
 	return (
 		<Container>
-			<Header>
-				<h1>マイページ</h1>
-			</Header>
-			<Avatar onClick={() => clickAvatar}>
-				<img src={image} alt="avatar" />
-				<input
-					type="file"
-					accept="image/*"
-					ref={hiddenFileInput}
-					onChange={clickAvatar}
-				/>
-			</Avatar>
-
 			<Frame>
+				<Header>
+					<h1>マイページ</h1>
+				</Header>
+				<Avatar>
+					<img src={image} alt="Preview" />
+					<label htmlFor="fileInput">
+						<Icon
+							className="icon"
+							icon="solar:camera-bold-duotone"
+							style={{ fontSize: "30px", color: "red" }}
+						/>
+						<input type="file" id="fileInput" onChange={clickAvatar} />
+					</label>
+				</Avatar>
 				<Grid>
 					<div>username</div>
 					<div>{queryData.data.username}</div>

@@ -1,6 +1,5 @@
 import { Container, NESTJS_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
@@ -8,10 +7,10 @@ import { Button } from "../components/Button";
 import { validation } from "../common/validation";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { userLoginSuccess } from "../redux/slices/authSlice";
 import { showMessage } from "../redux/slices/uxSlice";
-import { RootState } from "../redux/store";
+import { useState } from "react";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -52,6 +51,13 @@ const Wrapper = styled.div`
 		}
 	}
 `;
+interface MyMutation {
+	data: any;
+	isSuccess: boolean;
+	isError: boolean;
+	error: any;
+	mutate: any;
+}
 
 interface LoginForm {
 	email: string; // strapiはemailではなくidentifierを使っている
@@ -61,7 +67,7 @@ interface LoginForm {
 const Login = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	let errorMessage = "";
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const {
 		register,
@@ -71,41 +77,32 @@ const Login = () => {
 		mode: "onBlur", // or "onChange"
 	});
 
-	const { data, isSuccess, isError, error, mutate } = useMutation(
-		async (newPost: LoginForm) => {
-			return await axios.post(`${NESTJS_URL}/auth/login`, newPost);
+	const { mutate }: MyMutation = useMutation({
+		mutationFn: (newPost: LoginForm) => {
+			return axios.post(`${NESTJS_URL}/auth/login`, newPost);
 		},
-		{
-			onError(error: any, variables, context) {
-				console.log("error=", error);
-			},
-		}
-	);
+		onError: (error) => {
+			// isErrorをuseMutationの外で判定すると、何度も呼び出されてしまう？と思う。
+			console.log("isError error=", error);
+			dispatch(showMessage({ show: false }));
+			setErrorMessage(error.response.data.message);
+		},
+		onSuccess: (data) => {
+			console.log("login data=", data.data);
 
-	if (isSuccess) {
-		console.log("login data=", data.data);
+			// local storageにjwtを格納する
+			dispatch(userLoginSuccess(data.data.result.token));
 
-		// local storageにjwtを格納する
-		dispatch(userLoginSuccess(data.data.result.token));
+			dispatch(showMessage({ show: false }));
 
-		dispatch(showMessage({ show: false }));
+			// rootを開く
+			console.log("current_page_urlを開く");
 
-		// rootを開く
-		console.log("current_page_urlを開く");
-
-		navigate("/");
-
-		//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
-		// queryClient.invalidateQueries({ queryKey: ["comments"] });
-	}
-
-	if (isError) {
-		console.log("isError error=", error);
-		errorMessage = error.response.data.message;
-	}
+			navigate("/");
+		},
+	});
 
 	const onSubmit = (data: LoginForm) => {
-		console.log(`${NESTJS_URL}/api/auth/local`);
 		dispatch(
 			showMessage({
 				show: true,
@@ -114,6 +111,7 @@ const Login = () => {
 				message: "ログインしています。。。",
 			})
 		);
+
 		mutate(data);
 	};
 

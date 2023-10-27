@@ -12,6 +12,11 @@ const Frame = styled.div`
 		margin-top: 20px;
 		margin-bottom: 6px;
 	}
+	textarea {
+		width: 100%;
+		height: 100px;
+		padding: 5px;
+	}
 	.required {
 		color: #bc3852;
 		font-size: 1.2rem;
@@ -77,6 +82,7 @@ export function Input({
 				return (
 					<div>
 						<textarea
+							id={name}
 							{...register("introduction")}
 							placeholder={placeholder}
 						/>

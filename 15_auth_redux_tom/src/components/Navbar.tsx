@@ -1,5 +1,5 @@
 import { DISPLAY_MD, HEIGHT_NAV } from "../GlobalStyle";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
 import ImgBurger from "../assets/burger.svg";
@@ -7,6 +7,7 @@ import ImgClose from "../assets/close.svg";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import ErrorMessage from "./ErrorMessage";
+import { useDispatch } from "react-redux";
 
 const ShowBurger = styled.div`
 	display: none;
@@ -108,7 +109,7 @@ const NavigationHeader = styled.header`
 		height: 100px;
 		background: green;
 		animation-name: animationBoxClose;
-		animation-duration: 0.3s;
+		animation-duration: 0.4s;
 		animation-fill-mode: forwards;
 		top: ${HEIGHT_NAV};
 		ul {
@@ -117,6 +118,13 @@ const NavigationHeader = styled.header`
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
+			li {
+				margin: 10px 0;
+				a {
+					font-size: 3rem;
+					padding: 10px;
+				}
+			}
 		}
 	}
 	@keyframes animationBoxClose {
@@ -170,8 +178,8 @@ const NavigationHeader = styled.header`
 `;
 
 const Navbar = () => {
-	const location = useLocation();
 	const [menuOpen, setMenuOpen] = useState(false);
+	const dispatch = useDispatch();
 
 	const clickBurger = () => {
 		let burger = document.querySelector<HTMLElement>("#burger")!;
@@ -184,15 +192,13 @@ const Navbar = () => {
 	};
 
 	const clickClose = () => {
-		setMenuOpen(false);
 		let burger = document.querySelector<HTMLElement>("#burger")!;
 		burger.style.display = "flex";
 
-		// urlを保存
-		console.log("navlink=", location.pathname);
-
 		//スクロール出来るようにする
 		document.body.style.overflow = "auto";
+
+		setMenuOpen(false);
 	};
 
 	const jwt = useSelector((state: RootState) => state.auth.jwt);
