@@ -7,7 +7,15 @@ import { Provider } from "react-redux";
 import { store, persistor } from "./redux/store.ts";
 import { PersistGate } from "redux-persist/integration/react";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			retry: false, //デフォルトだと、3回retryしてしまう。
+			refetchOnWindowFocus: false,
+			staleTime: 0, //キャッシュの有効期限
+		},
+	},
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	// <React.StrictMode>

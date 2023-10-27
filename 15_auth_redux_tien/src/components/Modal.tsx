@@ -25,7 +25,7 @@ const ModalFrame = styled.div`
   background: #f4fbfe;
 
   .contents {
-    display: flex;
+    display: flexbox;
     gap: 10px;
     img {
       width: 100px;
@@ -91,8 +91,32 @@ const ModalFrame = styled.div`
   .textArea {
     min-width: 325px;
     min-height: 150px;
+    padding: 5px;
   }
 `;
+const Avatar = styled.div`
+	display: flex;
+	width: 100px;
+	margin: 0 auto;
+	justify-content: center;
+	input {
+		width: 100px;
+		height: 100px;
+		cursor: pointer;
+	}
+	img {
+		position: absolute;
+		width: 100px;
+		height: 100px;
+		background: white;
+
+		/* クリックを無効化 */
+		pointer-events: none;
+		cursor: pointer;
+	}
+`;
+
+
 interface Form {
   name: string;
   username: string;
@@ -100,21 +124,18 @@ interface Form {
   introduction: string;
 }
 const Modal = (props: any) => {
-  //   console.log(props)
+  console.log(props);
   const [image, setImage] = useState(props.data.avatar_url);
   const [fileName, setFileName] = useState("");
   const [name, setName] = useState(props.data.name);
   const [username, setUserName] = useState(props.data.username);
   const [introduction, setIntroduction] = useState(props.data.introduction);
 
-  //   const [errorName, setErrorName] = useState("");
-  //   const [errorUserName, setErrorUserName] = useState("");
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Form>({ mode: "onChange" }); // "onBlur"
+  } = useForm<Form>({ mode: "onBlur" }); // "onChange"
 
   const onSubmit = (data: Form) => {
     console.log(data);
@@ -193,7 +214,10 @@ const Modal = (props: any) => {
         <div>新規登録</div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="contents">
-            <img src={image} alt="" />
+            <Avatar onClick={() => clickImageButton}>
+              <img src={image} alt="" />
+              <input type="file" accept="image/*" onChange={clickImageButton} />
+            </Avatar>
             <div className="update">
               <p className="name">
                 名前
@@ -204,8 +228,8 @@ const Modal = (props: any) => {
                   autoFocus={true}
                 ></input>
               </p>
-              <p>{errors.name?.message as React.ReactNode}</p>
-              <p>
+              <p className="error">{errors.name?.message as React.ReactNode}</p>
+              <p></p>
                 ニックネーム
                 <input
                   {...register("username", { validate: { validateRequired } })}
@@ -213,7 +237,9 @@ const Modal = (props: any) => {
                   value={username}
                 ></input>
               </p>
-              <p>{errors.username?.message as React.ReactNode}</p>
+              <p className="error">
+                {errors.username?.message as React.ReactNode}
+              </p>
               <p>
                 自己紹介
                 <div>
@@ -227,22 +253,18 @@ const Modal = (props: any) => {
                   />
                 </div>
               </p>
-              <p>{errors.introduction?.message as React.ReactNode}</p>
+              <p className="error">
+                {errors.introduction?.message as React.ReactNode}
+              </p>
             </div>
           </div>
-
-          <input type="file" accept="image/*" onChange={clickImageButton} />
 
           <div className="buttonBlock">
             <button className="cancel" onClick={() => clickCancel()}>
               キャンセル
             </button>
             <button type="submit" className="post">
-              {props.data.type == "edit" ? (
-                <div>更新</div>
-              ) : (
-                <div>新規登録</div>
-              )}
+              <div>更新</div>
             </button>
           </div>
         </form>

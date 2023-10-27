@@ -20,5 +20,11 @@ export const validation = [
 			message: "6文字以上で入力してください",
 		},
 	},
-	
+	{
+		required: "自己紹介",
+		minLength: {
+			value: 10,
+			message: "10文字以上で入力してください",
+		},
+	},
 ];

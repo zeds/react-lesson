@@ -1,6 +1,6 @@
 import { Container, NESTJS_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { Input } from "../components/Input";
@@ -8,9 +8,10 @@ import { Button } from "../components/Button";
 import { validation } from "../common/validation";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userLoginSuccess } from "../redux/slices/authSlice";
 import { showMessage } from "../redux/slices/uxSlice";
+import { RootState } from "../redux/store";
 
 const Form = styled.div`
 	max-width: 400px;
@@ -53,86 +54,68 @@ const Wrapper = styled.div`
 `;
 
 interface LoginForm {
-	identifier: string; // strapiはemailではなくidentifierを使っている
+	email: string; // strapiはemailではなくidentifierを使っている
 	password: string;
 }
 
 const Login = () => {
 	const dispatch = useDispatch();
-	// const [error, setError] = useState("あいうえお");
-	// const [errorMessage, setErrorMessage] = useState("");
-	let errorMessage = "";
 	const navigate = useNavigate();
+	let errorMessage = "";
 
 	const {
 		register,
 		handleSubmit,
-		setValue,
 		formState: { errors },
 	} = useForm<LoginForm>({
-		mode: "onChange",
-	}); // "onBlur"
-	// "onBlur": fieldがfocusを失った時呼ばれる
-	// "onChange": submitが押された時呼ばれる
-	
-	const { data, isSuccess, isError, error, mutate } = useMutation({
-		mutationFn: (newPost: LoginForm) => {
-			console.log("newPost=" + JSON.stringify(newPost));
-			return axios.post(`${NESTJS_URL}/auth/login`, newPost);
-		},
-		// onSuccess: (data) => {
-		// 	console.log("login data=", data.data);
-
-		// 	//local storageにjwtを格納する
-		// 	dispatch(userLoginSuccess(data.data.result.token));
-
-		// 	dispatch(showMessage(false));
-
-		// 	// rootを開く
-		// 	console.log("rootを開く");
-
-		// 	navigate("/");
-
-		// 	//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
-		// 	// queryClient.invalidateQueries({ queryKey: ["comments"] });
-		// },
-		onError: (error: any) => {
-			console.log("c=" + error.response.data.error.message);
-			// setErrorMessage(error.response.data.error.message);
-		},
+		mode: "onBlur", // or "onChange"
 	});
 
+	const { data, isSuccess, isError, error, mutate } = useMutation(
+		async (newPost: LoginForm) => {
+			return await axios.post(`${NESTJS_URL}/auth/login`, newPost);
+		},
+		{
+			onError(error: any, variables, context) {
+				console.log("error=", error);
+			},
+		}
+	);
+
 	if (isSuccess) {
-		console.log("isSuccess token:", data.data.result.token);
-		console.log(data.data);
-		//local storageにjwtを格納する
+		console.log("login data=", data.data);
+
+		// local storageにjwtを格納する
 		dispatch(userLoginSuccess(data.data.result.token));
 
+		dispatch(showMessage({ show: false }));
+
+		// rootを開く
+		console.log("current_page_urlを開く");
+
 		navigate("/");
+
 		//invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
 		// queryClient.invalidateQueries({ queryKey: ["comments"] });
 	}
+
 	if (isError) {
 		console.log("isError error=", error);
-		// const message = error.response.data.message
-		const message = error.response.data.message; //изменила со статуса
-		console.log("error=", message)
-		// setErrorMessage(message);
-		errorMessage = message;
-
+		errorMessage = error.response.data.message;
 	}
 
 	const onSubmit = (data: LoginForm) => {
-		console.log("onSubmit:", `${NESTJS_URL}/api/auth/local`);
-		dispatch(showMessage(true));
+		console.log(`${NESTJS_URL}/api/auth/local`);
+		dispatch(
+			showMessage({
+				show: true,
+				animation: true,
+				button: false,
+				message: "ログインしています。。。",
+			})
+		);
 		mutate(data);
 	};
-
-	useEffect(() => {
-		console.log("useEffect");
-		setValue("identifier", "aiueo"); 
-		setValue("password", "kakikukeko");		
-	}, []);
 
 	return (
 		<Container>
