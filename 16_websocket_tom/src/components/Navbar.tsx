@@ -209,6 +209,11 @@ const Navbar = () => {
 		content = (
 			<ul>
 				<li>
+					<NavLink to="/chat" onClick={() => clickClose()}>
+						チャット
+					</NavLink>
+				</li>
+				<li>
 					<NavLink to="/users" onClick={() => clickClose()}>
 						ユーザー一覧
 					</NavLink>
@@ -228,6 +233,11 @@ const Navbar = () => {
 	} else {
 		content = (
 			<ul>
+				<li>
+					<NavLink to="/chat" onClick={() => clickClose()}>
+						チャット
+					</NavLink>
+				</li>
 				<li>
 					<NavLink to="/users" onClick={() => clickClose()}>
 						ユーザー一覧
