@@ -1,4 +1,3 @@
-import { Container, NESTJS_URL } from "../GlobalStyle";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
@@ -9,8 +8,19 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { userLoginSuccess } from "../redux/slices/authSlice";
-import React  from "react";
+import React from "react";
+
+import { DISPLAY_LG, NESTJS_URL } from "../GlobalStyle";
 // import { showMessage } from "../redux/slices/uxSlice";
+
+const Container = styled.div`
+	max-width: ${DISPLAY_LG};
+	padding: 62px 10px;
+	width: 100%;
+	height: 100vh;
+	background: white;
+	margin: 0 auto;
+`;
 
 const Form = styled.div`
   max-width: 400px;
@@ -83,14 +93,14 @@ const Login = () => {
     mutationFn: (newPost: LoginForm) => {
       axios.defaults.withCredentials = false;
       console.log(newPost)
-      return axios.post(`${NESTJS_URL}/auth/login`, newPost);
+      return axios.post('https://danang-alley.com:2443/auth/login', newPost);
     },
     onSuccess: (data:any) => {
 
       // console.log(data);
       // cookieに格納する
       dispatch(userLoginSuccess(data.data.result.token));
-      navigate("/mypage");
+      navigate("/");
 
       //invalidateQueriesメソッドを実行することでキャッシュが古くなったとみなし、データを再取得することができます。
       // queryClient.invalidateQueries({ queryKey: ["comments"] });
