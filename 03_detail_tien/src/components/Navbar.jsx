@@ -98,7 +98,7 @@ function Navbar() {
 				<nav>
 					<ul>
 						<li>お知らせ</li>
-						<li>ログイン</li>
+						<Link to='/login'>ログイン</Link>
 						<li>会員登録</li>
 						<button>出品</button>
 					</ul>

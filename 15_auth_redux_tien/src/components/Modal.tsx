@@ -229,7 +229,7 @@ const Modal = (props: any) => {
                 ></input>
               </p>
               <p className="error">{errors.name?.message as React.ReactNode}</p>
-              <p></p>
+              <p>
                 ニックネーム
                 <input
                   {...register("username", { validate: { validateRequired } })}

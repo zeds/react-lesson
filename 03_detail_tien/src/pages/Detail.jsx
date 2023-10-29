@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useParams, useLocation } from "react-router-dom";
 
 import { useQuery } from "@tanstack/react-query";
-
+import Shield from "../assets/icons/Shield.svg"
 import {
 	NekoContainer,
 	LeftBox,
@@ -23,11 +23,25 @@ import Star from "./Star";
 import ImageGallery from "react-image-gallery";
 import Comment from "../components/Comment";
 
-const Container = styled.div`
-	width: 100%;
-	height: 100vh;
-	background: red;
-`;
+import axios from "axios";
+// import { NESTJS_URL } from "../GlobalStyle";
+
+// import { useSelector, useDispatch } from "react-redux";
+import imageDefault from "../assets/images.jpeg";
+
+// const Container = styled.div`
+// 	width: 100%;
+// 	height: 100vh;
+// 	background: red;
+// `;
+const Seller = styled.div`
+Padding: 10px;
+display: flex;
+margin:20px 0;
+background: red;
+width: 100%;
+
+`
 
 function Detail() {
 	const location = useLocation();
@@ -89,6 +103,34 @@ function Detail() {
 	// 		console.log("存在しません");
 	// 	};
 	// }
+
+	// const token = useSelector((state) => state.auth.jwt);
+			// console.log(NESTJS_URL);
+
+	const getMe = async () => {
+		try {
+		  //
+		  const res = await axios.get(`${NESTJS_URL}/users/user-info`, {
+			headers: {
+			  Authorization: `Bearer ${token}`,
+			},
+		  });
+		  setUserId(res.data.id);
+	
+		  return res.data;
+		  
+		} catch (error) {
+		  console.log("error=" + error);
+		  return null;
+		}
+	  };
+	    // 😺CRUDのRead
+//   const { UserIsLoading, isError, Userdata } = useQuery({
+//     queryKey: ["getMe"],
+//     queryFn: () => getMe(),
+//   });
+const imageUrl = data?.avatar_url ? `https://lusty.asia:1443${data.avatar_url}`: imageDefault;
+
 	return (
 		<>
 			<NekoContainer>
@@ -186,7 +228,19 @@ function Detail() {
 							<img src={arrow} alt="arrow" />
 						</div>
 					</AuthorContainer>
-					<Star text="あいうえお"></Star>
+					<Seller>
+						<div style={{ background: "red", borderRadius: "10px", padding: "20px", width: "50px" }}>
+							<img src={imageUrl} alt="" width={80} height={80} style={{ borderRadius: "50%", objectFit: "cover" }} /><br />
+							</div>
+						<div>{content.title}
+						<Star text="あいうえお"></Star>
+						<div style={{display: "flex", margin: "10px 0"}}>
+							<img src={Shield} />
+							<p>本人確認済</p>
+						</div>
+						</div>
+					</Seller>
+					<h1>コメント</h1>
 					<Comment />
 				</RightBox>
 			</NekoContainer>
