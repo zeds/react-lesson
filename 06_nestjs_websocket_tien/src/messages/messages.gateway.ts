@@ -15,8 +15,8 @@ import { Server, Socket } from 'socket.io';
   },
 })
 export class MessagesGateway {
-  @WebSocketServer()
-  server: Server;
+  @WebSocketServer() //decorator dùng để chú thích biến server nhằm liên kết biến này với máy chủ WebSocket
+  server: Server; //
 
   constructor(private readonly messagesService: MessagesService) {}
 
@@ -43,6 +43,7 @@ export class MessagesGateway {
   //複雑になるので、roomは１つにしている。
   @SubscribeMessage('join')
   joinRoom(
+    //trích xuất giá trị từ thông điệp WebSocket gửi từ client thông qua sự kiện "tycostacsdping." 
     @MessageBody('name') name: string,
     @ConnectedSocket() client: Socket,
   ) {

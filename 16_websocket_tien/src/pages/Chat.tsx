@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, CSSProperties } from "react";
 import io from "socket.io-client"; //default io は　socket.io　通信をする必要があるライブラリです。
 import styled from "styled-components";
 import { PulseLoader } from "react-spinners";
+import { useDispatch, useSelector } from "react-redux";
+import { showChat } from "../redux/slices/chatSlice";
 
 const override: CSSProperties = {
 	display: "block",
@@ -25,17 +27,23 @@ type Chat = {
 type ChatLog = Array<Chat>;
 
 //接続
-const socket = io("http://localhost:3443");
+const socket = io("http://localhost:3000");
 // const socket = io("http://danang-alley.com:3443");
+
 const Chat = () => {
 	const [chatLog, setChatLog] = useState<ChatLog>([]); //今までのチャットデータ、サーバーの方、過去の履歴
 	const [name, setName] = useState<string>(""); // userの名前
 	const [text, setText] = useState<string>(""); //入力するテクスト
-	const [joined, setJoined] = useState(false); //参加した時に、トゥルーになる、joinedは送信ボタンを押すと、
+	const [typingName, setTypingName] = useState<string>(""); //入力するテクスト
+	
+	const joined = useSelector((state:any)=>state.chat.joined);
+	const dispatch = useDispatch();
+	// const [joined, setJoined] = useState(false);
+	 //参加した時に、トゥルーになる、joinedは送信ボタンを押すと、
 	//チャットの履歴が表示されるようになって来ます、joinedはfalseとお入力してください。のインプットファイルを表示される
 	const [typingDisplay, setTypingDisplay] = useState(false); //サーバにテクストを書いている最中に、相手は書いているよ別れるように、なってます
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+	
 	useEffect(() => {
 		//接続が完了したら、発火
 		socket.on("connect", () => {
@@ -85,13 +93,16 @@ const Chat = () => {
 			// console.log(current);
 			console.log(chatLog);
 		});
-		socket.on("typing", ({ name, isTyping }) => {
+		socket.on("typing", ({ name, isTyping }) => { //socket.on 
 			console.log("誰かが入力してます");
+			console.log(name);
 			if (isTyping) {
 				console.log("typing");
 				setTypingDisplay(true);
+				setTypingName(name);
 			} else {
 				setTypingDisplay(false);
+				setTypingName('');
 			}
 		});
 	}, []);
@@ -102,11 +113,14 @@ const Chat = () => {
 			setText("");
 		});
 	};
-
+//Khi máy chủ gửi một sự kiện "join" thông qua WebSocket,đoạn mã này được thực thi. 
 	const join = (event: any) => {
+		//submitボタンを押すときに、inputの値はサーバーに送って、browserをリロード
 		event.preventDefault();
 		socket.emit("join", { name: name }, () => {
-			setJoined(true);
+			
+			// setJoined(true);
+			dispatch(showChat(true));
 		});
 	};
 
@@ -117,7 +131,6 @@ const Chat = () => {
 	// 		datetime.getMonth() + 1
 	// 	}/${datetime.getDate()} ${datetime.getHours()}:${datetime.getMinutes()}:${datetime.getSeconds()}`;
 	// }, []);
-
 	return (
 		<Frame>
 			{joined ? (
@@ -153,14 +166,17 @@ const Chat = () => {
 						<button onClick={sendMessage}> send </button>
 					</div>
 					{typingDisplay ? (
-						<PulseLoader
-							// color={color}
-							// loading={loading}
-							cssOverride={override}
-							size={50}
-							aria-label="Loading Spinner"
-							data-testid="loader"
-						/>
+					<div>
+						<p>{typingName}</p>
+							<PulseLoader
+								// color={color}
+								// loading={loading}
+								cssOverride={override}
+								size={10}
+								aria-label="Loading Spinner"
+								data-testid="loader"
+								/>
+								</div>
 					) : (
 						<div></div>
 					)}
