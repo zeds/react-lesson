@@ -35,18 +35,14 @@ const Chat = () => {
 	const [typingDisplay, setTypingDisplay] = useState(false);
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	useEffect(() => {
-		//接続が完了したら、発火
-		socket.on("connect", () => {
-			console.log("接続ID : ", socket.id);
-		});
+	// useEffect(() => {
+	// 	//接続が完了したら、発火
+	// 	socket.on("connect", () => {
+	// 		console.log("接続ID : ", socket.id);
+	// 	});
 
-		//切断
-		return () => {
-			console.log("切断");
-			socket.disconnect();
-		};
-	}, []);
+		
+	// }, []);
 
 	useEffect(() => {
 		console.log("text=", text);
@@ -84,6 +80,12 @@ const Chat = () => {
 				setTypingDisplay(false);
 			}
 		});
+		
+		//切断
+		return () => {
+			console.log("切断");
+			socket.disconnect();
+		};
 	}, []);
 
 	const sendMessage = () => {
