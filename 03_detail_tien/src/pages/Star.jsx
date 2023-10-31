@@ -48,7 +48,7 @@ const Star = (props) => {
    return (
       <>
          <Header>
-            <p>あいうえお</p>
+            {/* <p>あいうえお</p> */}
 
             <StarComponent rate="1" font_size="5">
                <span>★★★★★</span>

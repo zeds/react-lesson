@@ -229,7 +229,7 @@ const imageUrl = data?.avatar_url ? `https://lusty.asia:1443${data.avatar_url}`:
 						</div>
 					</AuthorContainer>
 					<Seller>
-						<div style={{ background: "red", borderRadius: "10px", padding: "20px", width: "50px" }}>
+						<div style={{ background: "red", borderRadius: "10px", padding: "20px"}}>
 							<img src={imageUrl} alt="" width={80} height={80} style={{ borderRadius: "50%", objectFit: "cover" }} /><br />
 							</div>
 						<div>{content.title}
