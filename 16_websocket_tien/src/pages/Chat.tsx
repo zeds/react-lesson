@@ -3,7 +3,7 @@ import io from "socket.io-client"; //default io は　socket.io　通信をす�
 import styled from "styled-components";
 import { PulseLoader } from "react-spinners";
 import { useDispatch, useSelector } from "react-redux";
-import { showChat } from "../redux/slices/chatSlice";
+import { setName, showChat } from "../redux/slices/chatSlice";
 
 const override: CSSProperties = {
 	display: "block",
@@ -32,30 +32,32 @@ const socket = io("http://localhost:3000");
 
 const Chat = () => {
 	const [chatLog, setChatLog] = useState<ChatLog>([]); //今までのチャットデータ、サーバーの方、過去の履歴
-	const [name, setName] = useState<string>(""); // userの名前
+
 	const [text, setText] = useState<string>(""); //入力するテクスト
 	const [typingName, setTypingName] = useState<string>(""); //入力するテクスト
 	
 	const joined = useSelector((state:any)=>state.chat.joined);
+	const name = useSelector((state:any)=>state.chat.name);
 	const dispatch = useDispatch();
-	// const [joined, setJoined] = useState(false);
+
 	 //参加した時に、トゥルーになる、joinedは送信ボタンを押すと、
 	//チャットの履歴が表示されるようになって来ます、joinedはfalseとお入力してください。のインプットファイルを表示される
 	const [typingDisplay, setTypingDisplay] = useState(false); //サーバにテクストを書いている最中に、相手は書いているよ別れるように、なってます
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	
 	useEffect(() => {
+		let client:number = 0;
 		//接続が完了したら、発火
 		socket.on("connect", () => {
+			client ++;
 			console.log("接続ID : ", socket.id);
-			// console.log("sockett : ", socket);
 		});
 
 		//切断
-		return () => {
-			console.log("切断");
-			socket.disconnect();
-		};
+		// return () => {
+		// 	console.log("切断");
+		// 	socket.disconnect();
+		// };
 	}, []);
 
 	useEffect(() => {
@@ -77,12 +79,12 @@ const Chat = () => {
 		socket.emit("findAllMessages", (chat: any) => {
 			setChatLog(chat);
 			console.log("chat受信", chat);
-			console.log("chat受信", chatLog);
+			// console.log("chat受信", chatLog);
 		});
 
-//Khi máy chủ gửi một sự kiện "message" thông qua WebSocket,đoạn mã này được thực thi. 
-//Nó lắng nghe thông điệp được gửi từ máy chủ và thực hiện các hành động  
-//như hiển thị thông điệp trên giao diện người dùng và cập nhật danh sách tin nhắn (chatLog).
+		//Khi máy chủ gửi một sự kiện "message" thông qua WebSocket,đoạn mã này được thực thi. 
+		//Nó lắng nghe thông điệp được gửi từ máy chủ và thực hiện các hành động  
+		//như hiển thị thông điệp trên giao diện người dùng và cập nhật danh sách tin nhắn (chatLog).
 
 		socket.on("message", (message) => { //sau khi nhập text, bấm　送信ボタンと名前と入力値は
 			//ユーザーインターフェイスにメッセージを表示し、メッセージリストを更新します
@@ -93,6 +95,7 @@ const Chat = () => {
 			// console.log(current);
 			console.log(chatLog);
 		});
+
 		socket.on("typing", ({ name, isTyping }) => { //socket.on 
 			console.log("誰かが入力してます");
 			console.log(name);
@@ -108,18 +111,24 @@ const Chat = () => {
 	}, []);
 
 	const sendMessage = () => {
-		socket.emit("createMessage", { name: name, text: text }, () => {
+		socket.emit("createMessage", { name: name, text: text }, (res:any) => {
 			//TODO: clear name, text
 			setText("");
+			console.log(res);
 		});
+	};
+
+	const backMessage = () => {
+		dispatch(showChat(false));
 	};
 //Khi máy chủ gửi một sự kiện "join" thông qua WebSocket,đoạn mã này được thực thi. 
 	const join = (event: any) => {
 		//submitボタンを押すときに、inputの値はサーバーに送って、browserをリロード
 		event.preventDefault();
-		socket.emit("join", { name: name }, () => {
+		socket.emit("join", { name: name }, (res:any) => {
 			
 			// setJoined(true);
+			console.log(res);
 			dispatch(showChat(true));
 		});
 	};
@@ -145,6 +154,7 @@ const Chat = () => {
 								<div key={index}>
 									<span>{item.name}</span>
 									<span>：{item.text}</span>
+									<span>：{item.date}</span>
 								</div>
 							))}
 						</div>
@@ -162,12 +172,13 @@ const Chat = () => {
 						/>
 					</div>
 					<br />
-					<div>
+					<div style={{display: "flex"}}>
 						<button onClick={sendMessage}> send </button>
+						<button onClick={backMessage}> back </button>
 					</div>
 					{typingDisplay ? (
 					<div>
-						<p>{typingName}</p>
+				<p>{typingName}</p>
 							<PulseLoader
 								// color={color}
 								// loading={loading}
@@ -188,7 +199,7 @@ const Chat = () => {
 						type="text"
 						value={name}
 						onChange={(event) => {
-							setName(event.target.value);
+							dispatch(setName(event.target.value));
 						}}
 						placeholder="お名前"
 					/>

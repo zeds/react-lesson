@@ -2,10 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface chat {
     joined : boolean;
+    name : string;
 }
 
 export const initialState: chat = {
-    joined : false
+    joined : false,
+    name: ""
 };
 
 const chatSlice = createSlice({
@@ -14,9 +16,12 @@ const chatSlice = createSlice({
     reducers: {
         showChat: (state, action) => {
             state.joined = action.payload;
+        },
+        setName: (state, action) => {
+            state.name = action.payload;
         }
     }
 })
 
-export const { showChat } = chatSlice.actions;
+export const { showChat,setName } = chatSlice.actions;
 export default chatSlice.reducer;
