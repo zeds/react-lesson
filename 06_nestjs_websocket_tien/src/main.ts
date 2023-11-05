@@ -20,7 +20,7 @@ async function bootstrap() {
   );
   app.use(cookieParser());
   app.use('/files', serveStatic(path.join(__dirname, '../public/images')));
-  const PORT = envConfig.APP_PORT;
+  const PORT = 3000;
   await app.init();
   await app.listen(PORT, () => {
     console.log(`Sever is running in http://localhost:${PORT}/`);
