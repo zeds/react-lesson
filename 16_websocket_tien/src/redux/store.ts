@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authSlice from "./slices/authSlice";
 import uxSlice from "./slices/uxSlice";
+import chatSlice from "./slices/chatSlice";
 
 import {
 	persistStore,
@@ -15,7 +16,6 @@ import {
 
 // localStorageを使う
 import storage from "redux-persist/lib/storage";
-import chatSlice from "./slices/chatSlice";
 
 const persistConfig = {
 	key: "root",

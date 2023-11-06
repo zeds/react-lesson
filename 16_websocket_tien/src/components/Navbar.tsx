@@ -209,7 +209,7 @@ const Navbar = () => {
 		content = (
 			<ul>
 				<li>
-					<NavLink to="/chat" onClick={() => clickClose()}>
+					<NavLink to="/chathome" onClick={() => clickClose()}>
 						チャット
 					</NavLink>
 				</li>
@@ -234,7 +234,7 @@ const Navbar = () => {
 		content = (
 			<ul>
 				<li>
-					<NavLink to="/chat" onClick={() => clickClose()}>
+					<NavLink to="/chathome" onClick={() => clickClose()}>
 						チャット
 					</NavLink>
 				</li>
@@ -288,6 +288,7 @@ const Navbar = () => {
 					<div className={menuOpen ? "menu" : "menu_close"}>{content}</div>
 				</nav>
 			</NavigationHeader>
+			<br />
 		</>
 	);
 };
