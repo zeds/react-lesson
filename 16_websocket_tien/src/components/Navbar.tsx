@@ -263,7 +263,7 @@ const Navbar = () => {
 	}
 
 	return (
-		<>
+		<div>
 			<ErrorMessage />
 			<ShowBurger>
 				<div id="burger" onClick={() => clickBurger()}>
@@ -289,7 +289,10 @@ const Navbar = () => {
 				</nav>
 			</NavigationHeader>
 			<br />
-		</>
+			<br />
+			<br />
+			<br />
+		</div>
 	);
 };
 

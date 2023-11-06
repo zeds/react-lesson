@@ -23,8 +23,10 @@ const Input = styled.input`
 	padding: 5px;
 `;
 
-const RoomButton = styled.button`
-	margin: 5px;
+export const RoomButton = styled.button`
+	display: flex;
+	margin: 20px;
+	font-size: 2rem;
 `;
 
 const ChatHomePage = () => {
