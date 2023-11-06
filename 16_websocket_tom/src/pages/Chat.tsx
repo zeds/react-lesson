@@ -15,6 +15,24 @@ const Frame = styled.div`
 	height: 100vh;
 	background: lightblue;
 	padding-top: 64px;
+	font-size: 20px;
+
+	input {
+		width: 200px;
+		padding: 5px;
+	}
+	button {
+		width: 100px;
+		height: 50px;
+		margin-left: 100px;
+	}
+	.rooms {
+		margin-top: 20px;
+		button {
+			width: 50px;
+			height: 30px;
+		}
+	}
 `;
 
 type Chat = {
@@ -25,9 +43,13 @@ type Chat = {
 type ChatLog = Array<Chat>;
 
 //接続
-// const socket = io("http://localhost:3443");
-const socket = io("http://danang-alley.com:3443");
+const socket = io("http://localhost:3000");
+// const socket = io("https://linkstaff.online:3000");
+// const socket = io("http://danang-alley.com:3443");
 const Chat = () => {
+	const [rooms, setRooms] = useState([]);
+	const [room, setRoom] = useState("");
+
 	const [chatLog, setChatLog] = useState<ChatLog>([]);
 	const [name, setName] = useState<string>("");
 	const [text, setText] = useState<string>("");
@@ -35,18 +57,16 @@ const Chat = () => {
 	const [typingDisplay, setTypingDisplay] = useState(false);
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+	//ルーム名が変更されたら、呼び出される
 	useEffect(() => {
-		//接続が完了したら、発火
-		socket.on("connect", () => {
-			console.log("接続ID : ", socket.id);
+		console.log("room名：", room);
+		//参加しているルームのメッセージを取得
+		socket.emit("findAllMessages", { room: room }, (chat: any) => {
+			setChatLog(chat);
+			console.log("chat受信", chat);
+			console.log("chat受信", chatLog);
 		});
-
-		//切断
-		return () => {
-			console.log("切断");
-			socket.disconnect();
-		};
-	}, []);
+	}, [room]);
 
 	useEffect(() => {
 		console.log("text=", text);
@@ -63,11 +83,17 @@ const Chat = () => {
 
 	useEffect(() => {
 		console.log("useEffectで登録サーバーから初期値を取得");
+		socket.recovered;
 
-		socket.emit("findAllMessages", (chat: any) => {
-			setChatLog(chat);
-			console.log("chat受信", chat);
-			console.log("chat受信", chatLog);
+		//接続が完了したら、発火
+		socket.on("connect", () => {
+			console.log("接続ID : ", socket.id);
+		});
+
+		//room一覧を取得
+		socket.emit("rooms", (data: any) => {
+			console.log("rooms=", data);
+			setRooms(data);
 		});
 
 		socket.on("message", (message) => {
@@ -75,6 +101,7 @@ const Chat = () => {
 			setChatLog((current) => [...current, message]);
 			console.log(chatLog);
 		});
+
 		socket.on("typing", ({ name, isTyping }) => {
 			console.log("誰かが入力してます");
 			if (isTyping) {
@@ -84,20 +111,27 @@ const Chat = () => {
 				setTypingDisplay(false);
 			}
 		});
+
+		//切断
+		return () => {
+			console.log("切断");
+			if (timerRef.current) {
+				window.clearTimeout(timerRef.current);
+			}
+
+			socket.disconnect();
+		};
 	}, []);
 
 	const sendMessage = () => {
-		socket.emit("createMessage", { name: name, text: text }, () => {
-			//TODO: clear name, text
-			setText("");
-		});
-	};
-
-	const join = (event: any) => {
-		event.preventDefault();
-		socket.emit("join", { name: name }, () => {
-			setJoined(true);
-		});
+		socket.emit(
+			"createMessage",
+			{ name: name, room: room, text: text },
+			() => {
+				//TODO: clear name, text
+				setText("");
+			}
+		);
 	};
 
 	//現在時刻取得
@@ -108,10 +142,20 @@ const Chat = () => {
 	// 	}/${datetime.getDate()} ${datetime.getHours()}:${datetime.getMinutes()}:${datetime.getSeconds()}`;
 	// }, []);
 
+	const joinRoom = (item: string) => {
+		console.log(item + "に参加しました");
+		setRoom(item);
+		socket.emit("join", { room: item, name: name }, (ret: any) => {
+			console.log("join response=", ret);
+			setJoined(true);
+		});
+	};
+
 	return (
 		<Frame>
 			{joined ? (
 				<div>
+					<div>参加している部屋：{room}</div>
 					<span>お名前：</span>
 					<span>{name}</span>
 					<br />
@@ -122,6 +166,7 @@ const Chat = () => {
 								<div key={index}>
 									<span>{item.name}</span>
 									<span>：{item.text}</span>
+									<span>{item.date}</span>
 								</div>
 							))}
 						</div>
@@ -139,24 +184,22 @@ const Chat = () => {
 						/>
 					</div>
 					<br />
-					<div>
-						<button onClick={sendMessage}> send </button>
+					<div className="sendButton">
+						<button onClick={sendMessage}> 送信 </button>
 					</div>
 					{typingDisplay ? (
 						<PulseLoader
-							// color={color}
-							// loading={loading}
 							cssOverride={override}
-							size={50}
+							size={20}
 							aria-label="Loading Spinner"
 							data-testid="loader"
 						/>
 					) : (
-						<div></div>
+						<div>入力できます！</div>
 					)}
 				</div>
 			) : (
-				<form onSubmit={(event) => join(event)}>
+				<div>
 					<label>What's your name?</label>
 					<input
 						type="text"
@@ -166,9 +209,14 @@ const Chat = () => {
 						}}
 						placeholder="お名前"
 					/>
-
-					<button type="submit">送信</button>
-				</form>
+					<div className="rooms">
+						{rooms.map((item, index) => (
+							<button key={index} onClick={() => joinRoom(item)}>
+								{item}
+							</button>
+						))}
+					</div>
+				</div>
 			)}
 		</Frame>
 	);
