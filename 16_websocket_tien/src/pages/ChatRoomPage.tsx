@@ -1,14 +1,13 @@
-import React, { useState, useEffect, CSSProperties, useRef } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect, CSSProperties, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { io, Socket } from "socket.io-client";
-// import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { showChat, setName } from "../redux/slices/chatSlice";
-// import { showMessage } from "../redux/slices/uxSlice";
+import { showChat } from "../redux/slices/chatSlice";
 import { PulseLoader } from "react-spinners";
 import { Link } from "react-router-dom";
 import { RoomButton } from "./ChatHomePage";
+import downArrow from "../assets/downArrow.svg";
 
 const override: CSSProperties = {
   display: "block",
@@ -18,9 +17,9 @@ const override: CSSProperties = {
 };
 
 const Container = styled.div`
-  margin-top: 18px;
+  /* margin-top: 18px; */
   display: flex;
-  background-color: red;
+  /* background-color: red; */
 `;
 
 const Title = styled.h1`
@@ -29,23 +28,23 @@ const Title = styled.h1`
 `;
 
 const ChatContainer = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
 const MessageList = styled.ul`
-  background-color: #ffffff;
-  padding: 20px;
-  /* display: flex; */
+  background-color: #fffdfd;
   list-style: none;
   margin: 0;
   width: 80%;
-  max-height: 300px;
-  overflow-y: auto;
+  overflow-y: scroll;
+  height: 78vh;
 `;
 
 const InputContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -63,29 +62,55 @@ const Button = styled.button`
 `;
 const Nav = styled.nav`
   flex: 2;
+  border-right: 1px solid #000000;
 `;
 const Article = styled.article`
   flex: 8;
   text-align: center;
-  padding: 20px;
 `;
 const Text = styled.div`
   display: flex;
   align-items: center;
   font-size: 1.7rem;
   .date {
-    margin-left: 10%;
+    margin-left: 2%;
     font-size: 1.3rem;
   }
 `;
 const Content = styled.div`
+  margin-left: 5%;
   display: flex;
   font-size: 1.5rem;
 `;
-const Main = styled.main`
-  /* display: flex; */
-  
+const Main = styled.main``;
+const Typing = styled.div`
+  display: flex;
+  align-items: center;
+  .text {
+    font-size: 1rem;
+  }
 `;
+const Loader = styled.div`
+  position: relative;
+  width: auto;
+  height: 20px;
+`;
+const Img = styled.button`
+  /* border: 1px solid black; */
+  position: absolute;
+  bottom: 50px;
+  right: 50%;
+  border-radius: 9999px;
+  background-color: #c2c2d1;
+  img {
+    border-radius: 50%;
+    color: rgba(86, 88, 105, 1);
+    cursor: pointer;
+    height: 2rem;
+    width: 2.2rem;
+  }
+`;
+
 type Chat = {
   name: string;
   text: string;
@@ -96,26 +121,24 @@ type ChatLog = Array<Chat>;
 const socket: Socket = io("http://localhost:3443");
 
 const ChatRoomPage = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
 
   //ルーム名、ユーザー名
   const [roomName, setRoomName] = useState(searchParams.get("room"));
-  const [userName, setUserName] = useState(searchParams.get("name"));
-  const dispatch = useDispatch();
-  // const userName = searchParams.get("name");
-  // const roomName = searchParams.get("room");
+  // const [userName, setUserName] = useState(searchParams.get("name"));
+  const userName = searchParams.get("name");
 
-  // const [message, setMessage] = useState("");
   const [chatLog, setChatLog] = useState<ChatLog>([]);
   const [text, setText] = useState<string>(""); //入力するテクスト
   const [typingName, setTypingName] = useState<string>(""); //入力するテクスト
   const [typingDisplay, setTypingDisplay] = useState(false); //サーバにテクストを書いている最中に、相手は書いているよ別れるように、なってます
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // const [room, setRoom] = useState<string>("");
-
   const joined = useSelector((state: any) => state.chat.joined);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const messageListRef = useRef<HTMLUListElement | null>(null);
+
 
   useEffect(() => {
     //接続が完了したら、発火
@@ -162,38 +185,35 @@ const ChatRoomPage = () => {
   };
 
   const handleChangeGroup = (roomName: string) => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    }
     // Cập nhật trạng thái roomName
     setRoomName(roomName);
     socket.emit("findAllMessages", { room: roomName }, (chat: any) => {
       setChatLog(chat);
       console.log("chat受信", chat);
-      // console.log("全てchat受信", chatLog);
     });
   };
 
   useEffect(() => {
     // console.log("useEffectで登録サーバーから初期値を取得");
-
-    // socket.emit("findAllMessages", (chat: any) => {
-    socket.emit("findAllMessages", { room: roomName }, (chat: any) => {
-      setChatLog(chat);
-      console.log("chat受信", chat);
-      // console.log("全てchat受信", chatLog);
-    });
+    socket.emit(
+      "findAllMessages",
+      { room: roomName },
+      (chat: any) => {
+        setChatLog(chat);
+        console.log("chat受信", chat);
+      },
+      [roomName]
+    );
 
     socket.on("message", (message) => {
-      // console.log("message=", message);
       setChatLog((current) => [...current, message]); //currentでメッセージリストをもう一個追加する
-
-      // console.log(current);
-      // console.log(chatLog);
     });
     socket.on("typing", ({ name, isTyping }) => {
-      //socket.on
       console.log("誰かが入力してます");
-      // console.log(name);
       if (isTyping) {
-        // console.log("typing");
         setTypingDisplay(true);
         setTypingName(name);
       } else {
@@ -201,18 +221,12 @@ const ChatRoomPage = () => {
         setTypingName("");
       }
     });
-  }, []);
+  });
 
-  // const join = (event: any) => {
-  // 	event.preventDefault();
-  // 	socket.emit("join", { name: name, room }, () => {
-  // 		dispatch(showChat(true));
-  // 	});
-  // };
   return (
     <Container>
       <Nav>
-        <p>Select a room:</p>
+        <h2>Select a room:</h2>
         <Link to={`/chat?room=roomA&name=${userName}`}>
           <RoomButton onClick={() => handleChangeGroup("roomA")}>
             Room A
@@ -234,9 +248,12 @@ const ChatRoomPage = () => {
           <Title>Chat Room: {roomName}</Title>
           {joined ? (
             <ChatContainer>
-              <MessageList>
+              <MessageList
+                ref={messageListRef}
+                // id="message-list"
+              >
                 {chatLog.map((item: any, index) => (
-                  <div key={index}>
+                  <div style={{ margin: "15px" }} key={index}>
                     <Text>
                       <span>名前：{item.name}さん</span>
                       <span className="date">{item.date}</span>
@@ -244,23 +261,34 @@ const ChatRoomPage = () => {
                     <Content>{item.text}</Content>
                   </div>
                 ))}
-                <div>
+                <Loader>
                   {typingDisplay ? (
-                    <>
-                      <p>{typingName}</p>
+                    <Typing>
+                      <span className="text">{typingName}</span>
                       <PulseLoader
+                        style={{ left: "15px" }}
                         cssOverride={override}
-                        size={20}
+                        size={10}
                         aria-label="Loading Spinner"
                         data-testid="loader"
                       />
-                    </>
+                    </Typing>
                   ) : (
                     <div></div>
                   )}
-                </div>
+                </Loader>
               </MessageList>
               <InputContainer>
+                <Img
+                  onClick={() => {
+                    if (messageListRef.current) {
+                      messageListRef.current.scrollTop =
+                        messageListRef.current.scrollHeight;
+                    }
+                  }}
+                >
+                  <img src={downArrow} alt=""></img>
+                </Img>
                 <Input
                   type="text"
                   value={text}

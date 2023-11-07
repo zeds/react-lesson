@@ -27,6 +27,7 @@ export const RoomButton = styled.button`
 	display: flex;
 	margin: 20px;
 	font-size: 2rem;
+	cursor: pointer;
 `;
 
 const ChatHomePage = () => {
