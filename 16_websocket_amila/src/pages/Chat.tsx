@@ -12,22 +12,20 @@ const override: CSSProperties = {
 	margin: "0 auto",
 	borderColor: "red",
 };
+const Footer = styled.div`
+	width: 100%;
+	height: 50px;
+	left: 0;
+	position: fixed;
+	background: red;
+`
 
 const Frame = styled.div`
-	width: 100%;
-	height: 100vh;
-	background: lightblue;
-	padding-top: 64px;
+  width: 100%;
+  height: 100vh;
+  background: lightblue;
+  padding-top: 64px;
 `;
-
-type Chat = {
-	name: string;
-	text: string;  
-  timestamp: string;
-};
-
-
-
 
 const ChatContainer = styled.div`
   display: flex;
@@ -42,6 +40,7 @@ const MessageContainer = styled.div`
   margin: 10px;
   max-width: 80%;
   border-radius: 8px;
+  background-color: #fff; 
 `;
 
 const InputContainer = styled.div`
@@ -50,6 +49,24 @@ const InputContainer = styled.div`
   justify-content: space-between;
   margin-top: 10px;
 `;
+
+const InputField = styled.input`
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+const SendButton = styled.button`
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
+
 
 // const InputField = styled.input`
 //   flex: 1;
@@ -113,14 +130,14 @@ const Chat = () => {
 
 	useEffect(() => {
 		console.log("text=", text);
-		socket.emit("typing", { isTyping: true }); //入力テキストは変わると　EMITはサーバーにデータを送るコマンドISTYPINGはトゥルーというステータス
+		socket.emit("typing", { name: name,room:room,isTyping: true }); //入力テキストは変わると　EMITはサーバーにデータを送るコマンドISTYPINGはトゥルーというステータス
 
 		if (timerRef.current) {
 			window.clearTimeout(timerRef.current); 
 		}
 
 		timerRef.current = setTimeout(() => { //タイムは２秒はたったら、関数を呼び出す、サーバーにデータを送るコマンドISTYPINGはfalseを設定されます　
-			socket.emit("typing", { isTyping: false });	 
+			socket.emit("typing", { name: name,room:room,isTyping: false });	 
 		}, 2000);
 	}, [text]);
 
@@ -189,88 +206,98 @@ const changeRoom = (newRoom: string) => {
 	// }, []);
 	return (
 		<Frame>
-			{joined ? (
-				<ChatContainer>
-				<div>
-					<span>お名前：</span>
-					<span>{name}</span>
-					<br />
-
-         			 <div>
-						<span>ルームを選んでください</span>
-						<button onClick={() => changeRoom('roomA')}>A</button>
-						<button onClick={() => changeRoom('roomB')}>B</button>
-						<button onClick={() => changeRoom('roomC')}>C</button>
-					</div>
-
-					<MessageContainer>
-							{chatLog.map((item: any, index) => (
-								<div key={index}>
-									<span>{item.name}</span>
-									<span>：{item.text}</span>
-                  <span>{item.timestamp}</span>
-								</div>
-							))}
-						</MessageContainer>
-					</div>
-					<div>送信内容</div>
-					<div>
-						<span>メッセージ</span>
-						<input
-							type="text"
-							value={text}
-							onChange={(event) => {
-								setText(event.target.value);
-							}}
-							placeholder="メッセージ"
-						/>
-					</div>
-					<br />
-						<span>ユーザー名</span>
-						<InputContainer>
-              <input
-                type="text"
-                value={name}
-                onChange={(event) => {
-                  setName(event.target.value);
-                }}
-              />
-						<button onClick={join}>登録</button>
-						<button onClick={sendMessage}> send </button>
-						</InputContainer>
-					{typingDisplay ? (
-					<div>
-						<p>{typingName}</p>
-							<PulseLoader
-								// color={color}
-								// loading={loading}
-								cssOverride={override}
-								size={10}
-								aria-label="Loading Spinner"
-								data-testid="loader"
-								/>
-								</div>
-					) : (
-						<div></div>
-					)}
-				</ChatContainer>
-
+		{joined ? (
+		  <ChatContainer>
+			<div>
+			  <span>お名前：</span>
+			  <span>{name}</span>
+			  <br />
+  
+			  <div>
+				<span>ルームを選んでください</span>
+				<button onClick={() => changeRoom("roomA")}>A</button>
+				<button onClick={() => changeRoom("roomB")}>B</button>
+				<button onClick={() => changeRoom("roomC")}>C</button>
+			  </div>
+  
+			  <MessageContainer>
+				{chatLog.map((item: any, index) => (
+				  <div key={index}>
+					<span>{item.name}</span>
+					<span>：{item.text}</span>
+					<span>{item.timestamp}</span>
+				  </div>
+				))}
+			  </MessageContainer>
+			</div>
+			<div>送信内容</div>
+			<div>
+			  <span>メッセージ</span>
+			  <Footer>
+			  <InputField
+				type="text"
+				value={text}
+				onChange={(event) => {
+				  setText(event.target.value);
+				}}
+				placeholder="メッセージ"
+			  />
+			  </Footer>
+			</div>
+			<br />
+			<span>ユーザー名</span>
+			<InputContainer>
+			  <input
+				type="text"
+				value={name}
+				onChange={(event) => {
+				  setName(event.target.value);
+				}}
+			  />
+			  <SendButton onClick={join}>登録</SendButton>
+			  <SendButton onClick={sendMessage}> send </SendButton>
+			</InputContainer>
+			{typingDisplay ? (
+			  <div>
+				<p>{typingName}</p>
+				<PulseLoader
+				  cssOverride={override}
+				  size={10}
+				  aria-label="Loading Spinner"
+				  data-testid="loader"
+				/>
+			  </div>
 			) : (
-				<form onSubmit={(event) => join(event)}>
-					<label>What's your name?</label>
-					<input
-						type="text"
-						value={name}
-						onChange={(event) => {
-							setName(event.target.value);
-						}}
-						placeholder="お名前"
-					/>
-
-					<button type="submit">送信</button>
-				</form>
+			  <div></div>
 			)}
-		</Frame>
+		  </ChatContainer>
+		) : (
+		  <form onSubmit={(event) => join(event)}>
+			<label>What's your name?</label>
+			<InputField
+			  type="text"
+			  value={name}
+			  onChange={(event) => {
+				setName(event.target.value);
+			  }}
+			  placeholder="お名前"
+			/>
+			<SendButton type="submit">送信</SendButton>
+		  </form>
+		)}
+			  <div>ggjgjgjgj</div>
+
+	  </Frame>
+	//   <Footer>
+	// 	<InputField
+	// 			type="text"
+	// 			value={text}
+	// 			onChange={(event) => {
+	// 			  setText(event.target.value);
+	// 			}}
+	// 			placeholder="メッセージ"
+	// 		  />
+	//   </Footer>
 	);
 };
 

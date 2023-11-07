@@ -209,7 +209,7 @@ const Navbar = () => {
 		content = (
 			<ul>
 				<li>
-					<NavLink to="/chat" onClick={() => clickClose()}>
+					<NavLink to="/chathome" onClick={() => clickClose()}>
 						チャット
 					</NavLink>
 				</li>
@@ -234,7 +234,7 @@ const Navbar = () => {
 		content = (
 			<ul>
 				<li>
-					<NavLink to="/chat" onClick={() => clickClose()}>
+					<NavLink to="/chathome" onClick={() => clickClose()}>
 						チャット
 					</NavLink>
 				</li>
@@ -263,7 +263,7 @@ const Navbar = () => {
 	}
 
 	return (
-		<>
+		<div>
 			<ErrorMessage />
 			<ShowBurger>
 				<div id="burger" onClick={() => clickBurger()}>
@@ -288,7 +288,11 @@ const Navbar = () => {
 					<div className={menuOpen ? "menu" : "menu_close"}>{content}</div>
 				</nav>
 			</NavigationHeader>
-		</>
+			<br />
+			<br />
+			<br />
+			<br />
+		</div>
 	);
 };
 
