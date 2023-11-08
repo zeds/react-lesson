@@ -477,6 +477,7 @@ function App() {
 
 			<Container>
 				<Header>
+					
 					<div className="logo">
 						<p>コメント CRUD</p>
 						<input
@@ -488,6 +489,7 @@ function App() {
 							<img src={Search} alt="" />
 						</button>
 					</div>
+
 					<button onClick={() => clickNew()}>新規登録</button>
 				</Header>
 

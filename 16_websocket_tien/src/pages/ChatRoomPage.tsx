@@ -1,4 +1,4 @@
-import { useState, useEffect, CSSProperties, useRef } from "react";
+import { useState, useEffect, CSSProperties, useRef,useLayoutEffect  } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { io, Socket } from "socket.io-client";
@@ -17,7 +17,7 @@ const override: CSSProperties = {
 };
 
 const Container = styled.div`
-  /* margin-top: 18px; */
+  margin-top: 18px;
   display: flex;
   /* background-color: red; */
 `;
@@ -28,19 +28,20 @@ const Title = styled.h1`
 `;
 
 const ChatContainer = styled.div`
+/* background-color: aquamarine; */
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+/* list-style: none; */
 `;
 
 const MessageList = styled.ul`
-  background-color: #fffdfd;
-  list-style: none;
+  /* background-color: #de6f6f; */
   margin: 0;
   width: 80%;
   overflow-y: scroll;
-  height: 78vh;
+  height: 70vh;
 `;
 
 const InputContainer = styled.div`
@@ -138,23 +139,34 @@ const ChatRoomPage = () => {
   const joined = useSelector((state: any) => state.chat.joined);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messageListRef = useRef<HTMLUListElement | null>(null);
+  const chatBoxRef = useRef<null>(null);
 
+  // console.log(messageListRef)
 
   useEffect(() => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    }
+  }, [messageListRef.current]);
+
+   useEffect(() => {
     //接続が完了したら、発火
     socket.on("connect", () => {
       console.log("接続ID : ", socket.id);
     });
     socket.emit("join", { name: userName, room: roomName }, () => {
       dispatch(showChat(true));
-    });
+    }); 
+    // if (messageListRef.current) {
+    //   messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    // }
 
     // 切断
     // return () => {
     // 	console.log("切断");
     // 	socket.disconnect();
     // };
-  }, []);
+  });
 
   useEffect(() => {
     console.log("text=", text);
@@ -191,8 +203,9 @@ const ChatRoomPage = () => {
     // Cập nhật trạng thái roomName
     setRoomName(roomName);
     socket.emit("findAllMessages", { room: roomName }, (chat: any) => {
-      setChatLog(chat);
+
       console.log("chat受信", chat);
+      setChatLog(chat);
     });
   };
 
@@ -204,12 +217,11 @@ const ChatRoomPage = () => {
       (chat: any) => {
         setChatLog(chat);
         console.log("chat受信", chat);
-      },
-      [roomName]
-    );
+      });
 
     socket.on("message", (message) => {
       setChatLog((current) => [...current, message]); //currentでメッセージリストをもう一個追加する
+      console.log(chatLog);
     });
     socket.on("typing", ({ name, isTyping }) => {
       console.log("誰かが入力してます");
@@ -221,8 +233,17 @@ const ChatRoomPage = () => {
         setTypingName("");
       }
     });
-  });
+  },[]);
 
+  const handleKeyDown = (e:any) => {
+    // console.log("key=", e.key);
+		if (e.nativeEvent.isComposing || e.key !== "Enter") return;
+		sendMessage()
+    if (messageListRef.current) {
+        messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+      }
+	};
+  
   return (
     <Container>
       <Nav>
@@ -252,15 +273,17 @@ const ChatRoomPage = () => {
                 ref={messageListRef}
                 // id="message-list"
               >
-                {chatLog.map((item: any, index) => (
-                  <div style={{ margin: "15px" }} key={index}>
-                    <Text>
-                      <span>名前：{item.name}さん</span>
-                      <span className="date">{item.date}</span>
-                    </Text>
-                    <Content>{item.text}</Content>
-                  </div>
-                ))}
+                <div style={{background: "", }}>
+                  {chatLog.map((item: any, index) => (
+                    <div style={{ margin: "15px" }} key={index}>
+                      <Text>
+                        <span>名前：{item.name}さん</span>
+                        <span className="date">{item.date}</span>
+                      </Text>
+                      <Content>{item.text}</Content>
+                    </div>
+                  ))}
+                </div>
                 <Loader>
                   {typingDisplay ? (
                     <Typing>
@@ -290,8 +313,11 @@ const ChatRoomPage = () => {
                   <img src={downArrow} alt=""></img>
                 </Img>
                 <Input
+                  ref={chatBoxRef}
                   type="text"
                   value={text}
+                  onKeyDown={handleKeyDown}
+                  autoFocus={true}
                   onChange={(event) => {
                     setText(event.target.value);
                   }}

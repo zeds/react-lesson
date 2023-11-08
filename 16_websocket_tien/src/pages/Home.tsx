@@ -92,7 +92,7 @@ const Home = () => {
 
 	const content = data.map((item: any) => {
 		let show = item.attributes.images.data ? true : false;
-		console.log(item.id);
+		// console.log(item.id);
 
 		if (show == true) {
 			return (
