@@ -299,13 +299,9 @@ https://lorem-co-ltd.com/internet-check/
 ✍️ 難しい、後で。
 
 
-
-
-
-
-
-
-
-
-ー以上
+😺[17_blocknote_tom]
+https://www.blocknotejs.org/
+npm create vite@latest .
+TypeScript + SWC
+npm install @blocknote/core @blocknote/react
 

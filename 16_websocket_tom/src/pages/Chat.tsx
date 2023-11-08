@@ -1,4 +1,10 @@
-import { useState, useEffect, useRef, CSSProperties } from "react";
+import {
+	useState,
+	useEffect,
+	useRef,
+	CSSProperties,
+	useLayoutEffect,
+} from "react";
 import io from "socket.io-client";
 import styled from "styled-components";
 import { PulseLoader } from "react-spinners";
@@ -7,8 +13,75 @@ const override: CSSProperties = {
 	display: "block",
 	position: "absolute",
 	margin: "0 auto",
+	marginBottom: "100px",
 	borderColor: "red",
 };
+
+const Pulse = styled.div`
+	width: 100px;
+	height: 30px;
+	background: red;
+	position: fixed;
+	left: 0;
+	bottom: 55px;
+`;
+
+const LabelBox = styled.div`
+	width: 100%;
+	height: 70px;
+	background: orange;
+	position: fixed;
+	left: 0;
+	top: 62px;
+	padding: 5px;
+	display: flex;
+	justify-content: space-between;
+`;
+
+const Footer = styled.div`
+	width: 100%;
+	height: 50px;
+	background: green;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	padding: 5px;
+	input {
+		width: 300px;
+		height: 40px;
+		padding: 5px;
+	}
+	button {
+		margin-left: 5px;
+		width: 50px;
+		height: 40px;
+	}
+`;
+
+const ChatFrame = styled.div`
+	overflow: auto;
+	margin-top: 68px;
+	width: 100%;
+	height: 80vh;
+	background: purple;
+	align-items: flex-end;
+	padding-bottom: 100px;
+	div {
+		background: yellow;
+	}
+`;
+
+const MessageBox = styled.div`
+	max-width: 800px;
+	background: #eeeeee;
+	margin: 10px;
+	.timestamp {
+		font-size: 15px;
+	}
+	div {
+		margin-left: 60px;
+	}
+`;
 
 const Frame = styled.div`
 	width: 100%;
@@ -16,8 +89,7 @@ const Frame = styled.div`
 	background: lightblue;
 	padding-top: 64px;
 	font-size: 20px;
-
-	input {
+	padding: input {
 		width: 200px;
 		padding: 5px;
 	}
@@ -56,9 +128,28 @@ const Chat = () => {
 	const [joined, setJoined] = useState(false);
 	const [typingDisplay, setTypingDisplay] = useState(false);
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const refChatFrame = useRef<HTMLDivElement>(null);
+	const [showAll, setShowAll] = useState(false);
+
+	useEffect(() => {
+		console.log("refChatFrame.current=", refChatFrame.current);
+		if (refChatFrame.current) {
+			refChatFrame.current.scrollTop = refChatFrame.current.scrollHeight;
+		}
+	}, [refChatFrame.current]);
+
+	useLayoutEffect(() => {
+		if (refChatFrame.current) {
+			refChatFrame.current.scrollTop = refChatFrame.current.scrollHeight;
+			// 下のコードは、少ししかスクロールできなかった
+			// refChatFrame.current.scrollIntoView(false);
+		}
+	}, [showAll]);
 
 	//ルーム名が変更されたら、呼び出される
 	useEffect(() => {
+		document.body.style.overflow = "hidden";
+
 		console.log("room名：", room);
 		//参加しているルームのメッセージを取得
 		socket.emit("findAllMessages", { room: room }, (chat: any) => {
@@ -68,22 +159,25 @@ const Chat = () => {
 		});
 	}, [room]);
 
+	//タイピング
 	useEffect(() => {
 		console.log("text=", text);
-		socket.emit("typing", { isTyping: true });
+		socket.emit("typing", { room: room, isTyping: true });
 
 		if (timerRef.current) {
 			window.clearTimeout(timerRef.current);
 		}
 
 		timerRef.current = setTimeout(() => {
-			socket.emit("typing", { isTyping: false });
+			socket.emit("typing", { room: room, isTyping: false });
 		}, 2000);
 	}, [text]);
 
 	useEffect(() => {
 		console.log("useEffectで登録サーバーから初期値を取得");
 		socket.recovered;
+
+		//socket.onはAddEventListerと同じでイベントハンドラーとして扱う。
 
 		//接続が完了したら、発火
 		socket.on("connect", () => {
@@ -132,15 +226,10 @@ const Chat = () => {
 				setText("");
 			}
 		);
-	};
+		setShowAll(!showAll);
 
-	//現在時刻取得
-	// const getNow = useCallback((): string => {
-	// 	const datetime = new Date();
-	// 	return `${datetime.getFullYear()}/${
-	// 		datetime.getMonth() + 1
-	// 	}/${datetime.getDate()} ${datetime.getHours()}:${datetime.getMinutes()}:${datetime.getSeconds()}`;
-	// }, []);
+		// refChatFrame.current?.scrollIntoView({ behavior: "smooth" });
+	};
 
 	const joinRoom = (item: string) => {
 		console.log(item + "に参加しました");
@@ -151,74 +240,83 @@ const Chat = () => {
 		});
 	};
 
-	return (
-		<Frame>
-			{joined ? (
-				<div>
-					<div>参加している部屋：{room}</div>
-					<span>お名前：</span>
-					<span>{name}</span>
-					<br />
+	const exitRoom = () => {
+		setJoined(false);
+	};
 
-					<div className="chat_container">
-						<div className="message_container">
+	return (
+		<>
+			<Frame>
+				{joined ? (
+					<div>
+						<LabelBox>
+							<div>
+								<div>参加している部屋：{room}</div>
+								<span>お名前：</span>
+								<span>{name}</span>
+							</div>
+							<button onClick={() => exitRoom()}>退出</button>
+						</LabelBox>
+
+						<ChatFrame ref={refChatFrame}>
 							{chatLog.map((item: any, index) => (
-								<div key={index}>
+								<MessageBox key={index}>
+									<span>名前：</span>
 									<span>{item.name}</span>
-									<span>：{item.text}</span>
-									<span>{item.date}</span>
-								</div>
+									<span className="timestamp">{item.date}</span>
+									<div>{item.text}</div>
+								</MessageBox>
+							))}
+						</ChatFrame>
+					</div>
+				) : (
+					<div>
+						<label>What's your name?</label>
+						<input
+							type="text"
+							value={name}
+							onChange={(event) => {
+								setName(event.target.value);
+							}}
+							placeholder="お名前"
+						/>
+
+						<div className="rooms">
+							{rooms.map((item, index) => (
+								<button key={index} onClick={() => joinRoom(item)}>
+									{item}
+								</button>
 							))}
 						</div>
 					</div>
-					<div>送信内容</div>
-					<div>
-						<span>メッセージ</span>
-						<input
-							type="text"
-							value={text}
-							onChange={(event) => {
-								setText(event.target.value);
-							}}
-							placeholder="メッセージ"
-						/>
-					</div>
-					<br />
-					<div className="sendButton">
-						<button onClick={sendMessage}> 送信 </button>
-					</div>
-					{typingDisplay ? (
-						<PulseLoader
-							cssOverride={override}
-							size={20}
-							aria-label="Loading Spinner"
-							data-testid="loader"
-						/>
-					) : (
-						<div>入力できます！</div>
-					)}
-				</div>
-			) : (
-				<div>
-					<label>What's your name?</label>
-					<input
-						type="text"
-						value={name}
-						onChange={(event) => {
-							setName(event.target.value);
-						}}
-						placeholder="お名前"
+				)}
+			</Frame>
+
+			<Pulse>
+				{typingDisplay ? (
+					<PulseLoader
+						cssOverride={override}
+						size={20}
+						aria-label="Loading Spinner"
+						data-testid="loader"
 					/>
-					<div className="rooms">
-						{rooms.map((item, index) => (
-							<button key={index} onClick={() => joinRoom(item)}>
-								{item}
-							</button>
-						))}
-					</div>
-				</div>
-			)}
-		</Frame>
+				) : (
+					<div>入力できます！</div>
+				)}
+			</Pulse>
+
+			<Footer>
+				<input
+					type="text"
+					value={text}
+					onChange={(event) => {
+						setText(event.target.value);
+					}}
+					placeholder="メッセージ"
+				/>
+				<button onClick={sendMessage}> 送信 </button>
+			</Footer>
+		</>
 	);
 };
 
