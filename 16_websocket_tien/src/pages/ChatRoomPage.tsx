@@ -157,10 +157,7 @@ const ChatRoomPage = () => {
     socket.emit("join", { name: userName, room: roomName }, () => {
       dispatch(showChat(true));
     }); 
-    // if (messageListRef.current) {
-    //   messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
-    // }
-
+ 
     // 切断
     // return () => {
     // 	console.log("切断");
@@ -211,13 +208,6 @@ const ChatRoomPage = () => {
 
   useEffect(() => {
     // console.log("useEffectで登録サーバーから初期値を取得");
-    socket.emit(
-      "findAllMessages",
-      { room: roomName },
-      (chat: any) => {
-        setChatLog(chat);
-        console.log("chat受信", chat);
-      });
 
     socket.on("message", (message) => {
       setChatLog((current) => [...current, message]); //currentでメッセージリストをもう一個追加する
@@ -235,6 +225,16 @@ const ChatRoomPage = () => {
     });
   },[]);
 
+  useEffect(() => {
+    socket.emit(
+      "findAllMessages",
+      { room: roomName },
+      (chat: any) => {
+        setChatLog(chat);
+        console.log("chat受信", chat);
+      });
+  },[roomName]);
+
   const handleKeyDown = (e:any) => {
     // console.log("key=", e.key);
 		if (e.nativeEvent.isComposing || e.key !== "Enter") return;
@@ -243,6 +243,9 @@ const ChatRoomPage = () => {
         messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
       }
 	};
+  // const exitMessenger = () => {
+  //   socket.leaveRoom
+  // };
   
   return (
     <Container>
