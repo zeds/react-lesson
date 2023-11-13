@@ -10,6 +10,7 @@ import Mypage from "./pages/Mypage";
 import ChatHomePage from "./pages/ChatHomePage";
 import ChatRoomPage from './pages/ChatRoomPage';
 import { UserProvider } from './pages/UserContext';
+import Test from "./components/chatTest";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
 				<Route path="/chat" element={<ChatRoomPage />} />
 				<Route path="/chatHome" element={<ChatHomePage />} />
         		<Route path="/chat/:roomName/:name" element={<ChatRoomPage />} />
+				<Route path="/test" element={<Test />} />
 			</Routes>
 			</UserProvider>
 			

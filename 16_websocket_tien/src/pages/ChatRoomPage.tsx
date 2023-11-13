@@ -81,7 +81,7 @@ const Text = styled.div`
 const Content = styled.div`
   margin-left: 5%;
   display: flex;
-  font-size: 1.5rem;
+  font-size: 1.7rem;
 `;
 const Main = styled.main``;
 const Typing = styled.div`
@@ -152,7 +152,7 @@ const ChatRoomPage = () => {
    useEffect(() => {
     //接続が完了したら、発火
     socket.on("connect", () => {
-      console.log("接続ID : ", socket.id);
+      // console.log("接続ID : ", socket.id);
     });
     socket.emit("join", { name: userName, room: roomName }, () => {
       dispatch(showChat(true));
@@ -166,9 +166,9 @@ const ChatRoomPage = () => {
   });
 
   useEffect(() => {
-    console.log("text=", text);
+    // console.log("text=", text);
     socket.emit("typing", { isTyping: true, room: roomName }); //入力テキストは変わると　EMITはサーバーにデータを送るコマンドISTYPINGはトゥルーというステータス
-    console.log(roomName);
+    // console.log(roomName);
     if (timerRef.current) {
       window.clearTimeout(timerRef.current);
     }
@@ -200,8 +200,6 @@ const ChatRoomPage = () => {
     // Cập nhật trạng thái roomName
     setRoomName(roomName);
     socket.emit("findAllMessages", { room: roomName }, (chat: any) => {
-
-      console.log("chat受信", chat);
       setChatLog(chat);
     });
   };
@@ -210,8 +208,7 @@ const ChatRoomPage = () => {
     // console.log("useEffectで登録サーバーから初期値を取得");
 
     socket.on("message", (message) => {
-      setChatLog((current) => [...current, message]); //currentでメッセージリストをもう一個追加する
-      console.log(chatLog);
+      setChatLog((current) => [...current, message]); //currentでメッセージリストをもう一個追加する 
     });
     socket.on("typing", ({ name, isTyping }) => {
       console.log("誰かが入力してます");
@@ -231,22 +228,40 @@ const ChatRoomPage = () => {
       { room: roomName },
       (chat: any) => {
         setChatLog(chat);
-        console.log("chat受信", chat);
       });
   },[roomName]);
 
   const handleKeyDown = (e:any) => {
-    // console.log("key=", e.key);
 		if (e.nativeEvent.isComposing || e.key !== "Enter") return;
 		sendMessage()
     if (messageListRef.current) {
         messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
       }
 	};
-  // const exitMessenger = () => {
-  //   socket.leaveRoom
-  // };
+  const exitMessenger = () => {
+    console.log("切断");
+
+    socket.emit('leaveRoom', { room: roomName, name: userName }); // Gửi yêu cầu rời phòng
+
+    socket.on('leaveRoom', (data) => {
+      console.log('User left the room:', data);
+      // Thực hiện các tác vụ cần thiết khi người dùng rời phòng.
+    });
+    socket.on('serverLeave', (data) => {
+      console.log('Server left the room:', data);
+      // Thực hiện các tác vụ cần thiết khi máy chủ rời phòng.
+    });
+      socket.disconnect();
+      navigate("/chathome");
+  };
   
+  useEffect(() => {
+    // Lắng nghe sự kiện "connect" để biết khi nào kết nối thành công
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+  });
+console.log(chatLog)
   return (
     <Container>
       <Nav>
@@ -270,6 +285,7 @@ const ChatRoomPage = () => {
       <Article>
         <Main>
           <Title>Chat Room: {roomName}</Title>
+          <Button style={{ "marginLeft": "78%"}} onClick={exitMessenger}>Exit</Button>
           {joined ? (
             <ChatContainer>
               <MessageList
@@ -278,12 +294,20 @@ const ChatRoomPage = () => {
               >
                 <div style={{background: "", }}>
                   {chatLog.map((item: any, index) => (
-                    <div style={{ margin: "15px" }} key={index}>
+                    <div style={{ 
+                      // background:"#eeeeee",
+                      justifyContent: item.name === userName ? "right" : "left",
+                      margin: "15px",
+                      display: "flex",
+                      padding: "10px",
+                      alignItems: "center",
+                      gap: "3px",
+                      }} key={index}>
                       <Text>
-                        <span>名前：{item.name}さん</span>
-                        <span className="date">{item.date}</span>
+                        <span style={{display: item.name === userName ? "none" : ""}}>名前：{item.name}さん</span>
                       </Text>
                       <Content>{item.text}</Content>
+                      <span style={{padding: "20px 0 0 20px"}} className="date">{item.date}</span>
                     </div>
                   ))}
                 </div>
@@ -337,6 +361,8 @@ const ChatRoomPage = () => {
           )}
         </Main>
       </Article>
+      <>
+      </>
     </Container>
   );
 };
