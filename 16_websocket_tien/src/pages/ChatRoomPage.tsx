@@ -200,6 +200,7 @@ const ChatRoomPage = () => {
     // Cập nhật trạng thái roomName
     setRoomName(roomName);
     socket.emit("findAllMessages", { room: roomName }, (chat: any) => {
+      // console.log(chat);
       setChatLog(chat);
     });
   };
@@ -293,7 +294,8 @@ console.log(chatLog)
                 // id="message-list"
               >
                 <div style={{background: "", }}>
-                  {chatLog.map((item: any, index) => (
+                  
+                  {chatLog ? (chatLog?.map((item: any, index) => (
                     <div style={{ 
                       // background:"#eeeeee",
                       justifyContent: item.name === userName ? "right" : "left",
@@ -309,7 +311,7 @@ console.log(chatLog)
                       <Content>{item.text}</Content>
                       <span style={{padding: "20px 0 0 20px"}} className="date">{item.date}</span>
                     </div>
-                  ))}
+                  ))):""}
                 </div>
                 <Loader>
                   {typingDisplay ? (
