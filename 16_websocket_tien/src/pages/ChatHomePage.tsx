@@ -45,17 +45,17 @@ const ChatHomePage = () => {
 			<Input type="text" value={userName} onChange={handleNameChange} />
 			<div>
 				<p>Select a room:</p>
-				<Link to={`/chat?room=roomA&name=${userName}`}>
+				<Link to={`/chat?room=room-1&name=${userName}`}>
 					<RoomButton onClick={() => setSelectedRoom("roomA")}>
 						Room A
 					</RoomButton>
 				</Link>
-				<Link to={`/chat?room=roomB&name=${userName}`}>
+				<Link to={`/chat?room=room-2&name=${userName}`}>
 					<RoomButton onClick={() => setSelectedRoom("roomB")}>
 						Room B
 					</RoomButton>
 				</Link>
-				<Link to={`/chat?room=roomC&name=${userName}`}>
+				<Link to={`/chat?room=room-3&name=${userName}`}>
 					<RoomButton onClick={() => setSelectedRoom("roomC")}>
 						Room C
 					</RoomButton>

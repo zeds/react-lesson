@@ -119,7 +119,8 @@ type Chat = {
 };
 type ChatLog = Array<Chat>;
 
-const socket: Socket = io("http://localhost:3443");
+// const socket: Socket = io("http://localhost:3443");
+const socket: Socket = io("http://localhost:3000/eventss");
 
 const ChatRoomPage = () => {
   const dispatch = useDispatch();
@@ -150,13 +151,14 @@ const ChatRoomPage = () => {
   }, [messageListRef.current]);
 
    useEffect(() => {
-    //接続が完了したら、発火
     socket.on("connect", () => {
       // console.log("接続ID : ", socket.id);
     });
-    socket.emit("join", { name: userName, room: roomName }, () => {
+    socket.emit("join", { name: userName, room: roomName }, (data:any) => {
+      console.log(data)
       dispatch(showChat(true));
-    }); 
+
+    },[]); 
  
     // 切断
     // return () => {
@@ -262,7 +264,7 @@ const ChatRoomPage = () => {
       console.log('Connected to server');
     });
   });
-console.log(chatLog)
+console.log(joined)
   return (
     <Container>
       <Nav>
@@ -285,7 +287,9 @@ console.log(chatLog)
       </Nav>
       <Article>
         <Main>
+          {/* <h2>{joined}</h2> */}
           <Title>Chat Room: {roomName}</Title>
+          {/* <h2>{joined}</h2> */}
           <Button style={{ "marginLeft": "78%"}} onClick={exitMessenger}>Exit</Button>
           {joined ? (
             <ChatContainer>
