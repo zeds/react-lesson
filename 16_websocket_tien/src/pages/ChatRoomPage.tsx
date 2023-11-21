@@ -126,14 +126,11 @@ const socket: Socket = io("http://localhost:3000/eventss");
 
 const ChatRoomPage = () => {
   const dispatch = useDispatch();
-  const location = useLocation();
+  const {state:{room, userName}} = useLocation();
   const navigate = useNavigate();
-  const searchParams = new URLSearchParams(location.search);
 
   //ルーム名、ユーザー名
-  const [roomName, setRoomName] = useState(searchParams.get("room"));
   // const [userName, setUserName] = useState(searchParams.get("name"));
-  const userName = searchParams.get("name");
 
   const [chatLog, setChatLog] = useState<ChatLog>([]);
   const [text, setText] = useState<string>(""); //入力するテクスト
@@ -156,7 +153,7 @@ const ChatRoomPage = () => {
     socket.on("connect", () => {
       // console.log("接続ID : ", socket.id);
     });
-    socket.emit("join", { name: userName, room: roomName }, (data:any) => {
+    socket.emit("join", { name: userName, room: room.name }, (data:any) => {
       console.log(data)
       dispatch(showChat(true));
     }); 
@@ -169,7 +166,7 @@ const ChatRoomPage = () => {
   },[]);
 
   useEffect(() => {
-    socket.emit("typing", { isTyping: true, room: roomName }); //入力テキストは変わると　EMITはサーバーにデータを送るコマンドISTYPINGはトゥルーというステータス
+    socket.emit("typing", { isTyping: true, room: room.name }); //入力テキストは変わると　EMITはサーバーにデータを送るコマンドISTYPINGはトゥルーというステータス
     // console.log(roomName);
     if (timerRef.current) {
       window.clearTimeout(timerRef.current);
@@ -211,9 +208,7 @@ const ChatRoomPage = () => {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
     // Cập nhật trạng thái roomName
-    setRoomName(roomName);
-    socket.emit("findAllMessages", { room: roomName }, (chat: any) => {
-      // console.log(chat);
+    socket.emit("findAllMessages", { roomId: room.id }, (chat: any) => {
       setChatLog(chat);
     });
   };

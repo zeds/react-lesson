@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useUser } from "./UserContext";
@@ -32,43 +32,50 @@ export const RoomButton = styled.button`
 `;
 
 const ChatHomePage = () => {
-	const [creatRoom, setCreatRoom ] = useState<boolean>(false);
+	const [createRoom, setCreateRoom ] = useState<boolean>(false);
 	const { userName, setUserName } = useUser();
+	const [room, setRoom] = useState<string>("")
+	const [logRoom, setLogRoom] = useState<{id:string, name:string}[]>([])
 	// const [selectedRoom, setSelectedRoom] = useState("");
-
-	const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setUserName(event.target.value);
-	};
-
-	// const creatRoom = async () =>{
-	// 	const 
-	// 	axios.post(('http://localhost:3000/room',))
-	// }
-
+	const handleCreateRoom = async() =>{
+		const newRoom:{data:{id:string, name:string}} = await axios.post('http://localhost:3000/room',{name:room})
+		console.log(newRoom)
+		setLogRoom(rooms=>[...rooms, newRoom.data])
+		setRoom("");
+	}
+useEffect(()=>{
+	axios.get('http://localhost:3000/room')
+	.then((res)=>{
+		setLogRoom(res.data)
+	})
+},[])
 	return (
 		<Container>
 			<Title>Welcome to the Chat Page</Title>
 			<Label>Enter your name:</Label>
-			<Input type="text" value={userName} onChange={handleNameChange} />
-			{/* <button onClick={}>+ new </button> */}
-			{creatRoom && <input type="text"></input>}
+			<Input type="text" value={userName} onChange={(e)=>setUserName(e.target.value)} />
+			<br />
+			<br />
+			<button onClick={()=>setCreateRoom(!createRoom)}>+ new </button>
+			<div>
+				{createRoom && 
+				(<div><input value={room} onChange={(e)=>setRoom(e.target.value)} type="text"></input>
+				<button onClick={handleCreateRoom}>add</button>
+				</div>)}
+				
+			</div>
 			<div>
 				<p>Select a room:</p>
-				<Link to={`/chat?room=room-1&name=${userName}`}>
+				{logRoom.map(r=>{
+					return (
+						<Link to={`/chat`} state={{room:r, userName}}>
 					<RoomButton>
-						Room A
+						{r.name}
 					</RoomButton>
 				</Link>
-				<Link to={`/chat?room=room-2&name=${userName}`}>
-					<RoomButton>
-						Room B
-					</RoomButton>
-				</Link>
-				<Link to={`/chat?room=room-3&name=${userName}`}>
-					<RoomButton>
-						Room C
-					</RoomButton>
-				</Link>
+					)
+				})}
+				
 			</div>
 		</Container>
 	);
