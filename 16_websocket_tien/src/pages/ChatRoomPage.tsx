@@ -8,6 +8,7 @@ import { PulseLoader } from "react-spinners";
 import { Link } from "react-router-dom";
 import { RoomButton } from "./ChatHomePage";
 import downArrow from "../assets/downArrow.svg";
+import axios from "axios";
 
 const override: CSSProperties = {
   display: "block",
@@ -116,6 +117,7 @@ type Chat = {
   name: string;
   text: string;
   timestamp: string;
+  room: string;
 };
 type ChatLog = Array<Chat>;
 
@@ -157,18 +159,16 @@ const ChatRoomPage = () => {
     socket.emit("join", { name: userName, room: roomName }, (data:any) => {
       console.log(data)
       dispatch(showChat(true));
-
-    },[]); 
+    }); 
  
     // 切断
     // return () => {
     // 	console.log("切断");
     // 	socket.disconnect();
     // };
-  });
+  },[]);
 
   useEffect(() => {
-    // console.log("text=", text);
     socket.emit("typing", { isTyping: true, room: roomName }); //入力テキストは変わると　EMITはサーバーにデータを送るコマンドISTYPINGはトゥルーというステータス
     // console.log(roomName);
     if (timerRef.current) {
@@ -182,15 +182,26 @@ const ChatRoomPage = () => {
   }, [text]);
 
   const sendMessage = () => {
+    const data = {
+      name: userName,
+      room: roomName,
+      text: text,
+    }
     setText("");
-    socket.emit(
-      "createMessage",
-      { name: userName, room: roomName, text: text },
-      () => {
-        setText("");
-      }
-    );
+    // socket.emit(
+    //   "createMessage",
+    //   { name: userName, room: roomName, text: text },
+    //   () => {
+    //     setText("");
+    //   }
+    // );
+    axios
+    .post("http://localhost:3000/messages/", data)
+    .then(()=>{
+      console.log("ok")
+    })
   };
+  
   const BackMessage = () => {
     navigate("/chathome");
   };
@@ -264,6 +275,13 @@ const ChatRoomPage = () => {
       console.log('Connected to server');
     });
   });
+  useEffect(() => {
+    socket.on('newMessage', (msg: Chat) => {
+      if(msg.room=== roomName)
+      setChatLog(log=>[...log,msg]);
+    });
+  },[]);
+
 console.log(joined)
   return (
     <Container>
