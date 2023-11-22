@@ -1,11 +1,10 @@
-import { useState, useEffect, CSSProperties, useRef,useLayoutEffect  } from "react";
+import { useState, useEffect, CSSProperties, useRef  } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { io, Socket } from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import { showChat } from "../redux/slices/chatSlice";
 import { PulseLoader } from "react-spinners";
-import { Link } from "react-router-dom";
 import { RoomButton } from "./ChatHomePage";
 import downArrow from "../assets/downArrow.svg";
 import axios from "axios";
@@ -116,8 +115,8 @@ const Img = styled.button`
 type Chat = {
   name: string;
   text: string;
-  timestamp: string;
-  room: string;
+  // timestamp: string;
+  roomId: string;
 };
 type ChatLog = Array<Chat>;
 
@@ -126,7 +125,7 @@ const socket: Socket = io("http://localhost:3000/eventss");
 
 const ChatRoomPage = () => {
   const dispatch = useDispatch();
-  const {state:{room, userName}} = useLocation();
+  const {state:{room,userName,logRoom}}:{state:LocationState} = useLocation();
   const navigate = useNavigate();
 
   //ルーム名、ユーザー名
@@ -140,8 +139,7 @@ const ChatRoomPage = () => {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messageListRef = useRef<HTMLUListElement | null>(null);
   const chatBoxRef = useRef<null>(null);
-
-  // console.log(messageListRef)
+  const [nowRoom, setNowRoom]= useState<{name:string, id:string}>()
 
   useEffect(() => {
     if (messageListRef.current) {
@@ -150,11 +148,11 @@ const ChatRoomPage = () => {
   }, [messageListRef.current]);
 
    useEffect(() => {
+    setNowRoom(room)
     socket.on("connect", () => {
       // console.log("接続ID : ", socket.id);
     });
     socket.emit("join", { name: userName, room: room.name }, (data:any) => {
-      console.log(data)
       dispatch(showChat(true));
     }); 
  
@@ -166,22 +164,19 @@ const ChatRoomPage = () => {
   },[]);
 
   useEffect(() => {
-    socket.emit("typing", { isTyping: true, room: room.name }); //入力テキストは変わると　EMITはサーバーにデータを送るコマンドISTYPINGはトゥルーというステータス
-    // console.log(roomName);
+    socket.emit("typing", { isTyping: true, room: nowRoom?.name }); //入力テキストは変わると　EMITはサーバーにデータを送るコマンドISTYPINGはトゥルーというステータス
     if (timerRef.current) {
       window.clearTimeout(timerRef.current);
     }
-
     timerRef.current = setTimeout(() => {
-      //タイムは２秒はたったら、関数を呼び出す、サーバーにデータを送るコマンドISTYPINGはfalseを設定されます
-      socket.emit("typing", { isTyping: false, room: roomName });
+      socket.emit("typing", { isTyping: false, room: nowRoom?.name});
     }, 2000);
   }, [text]);
 
   const sendMessage = () => {
     const data = {
       name: userName,
-      room: roomName,
+      roomId: nowRoom?.id,
       text: text,
     }
     setText("");
@@ -203,12 +198,13 @@ const ChatRoomPage = () => {
     navigate("/chathome");
   };
 
-  const handleChangeGroup = (roomName: string) => {
+  const handleChangeGroup = (roomId: string) => {
+    setNowRoom(logRoom.find(r=>r.id===roomId));
+
     if (messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-    // Cập nhật trạng thái roomName
-    socket.emit("findAllMessages", { roomId: room.id }, (chat: any) => {
+    socket.emit("findAllMessages", { roomId: roomId }, (chat: any) => {
       setChatLog(chat);
     });
   };
@@ -216,9 +212,9 @@ const ChatRoomPage = () => {
   useEffect(() => {
     // console.log("useEffectで登録サーバーから初期値を取得");
 
-    socket.on("message", (message) => {
-      setChatLog((current) => [...current, message]); //currentでメッセージリストをもう一個追加する 
-    });
+    // socket.on("message", (message) => {
+    //   setChatLog((current) => [...current, message]); //currentでメッセージリストをもう一個追加する 
+    // });
     socket.on("typing", ({ name, isTyping }) => {
       console.log("誰かが入力してます");
       if (isTyping) {
@@ -233,12 +229,10 @@ const ChatRoomPage = () => {
 
   useEffect(() => {
     socket.emit(
-      "findAllMessages",
-      { room: roomName },
-      (chat: any) => {
+      "findAllMessages",{ roomId: nowRoom?.id },(chat: any) => {
         setChatLog(chat);
       });
-  },[roomName]);
+  },[nowRoom]);
 
   const handleKeyDown = (e:any) => {
 		if (e.nativeEvent.isComposing || e.key !== "Enter") return;
@@ -250,7 +244,7 @@ const ChatRoomPage = () => {
   const exitMessenger = () => {
     console.log("切断");
 
-    socket.emit('leaveRoom', { room: roomName, name: userName }); // Gửi yêu cầu rời phòng
+    socket.emit('leaveRoom', { room: room.name, name: userName }); // Gửi yêu cầu rời phòng
 
     socket.on('leaveRoom', (data) => {
       console.log('User left the room:', data);
@@ -270,51 +264,42 @@ const ChatRoomPage = () => {
       console.log('Connected to server');
     });
   });
+
   useEffect(() => {
     socket.on('newMessage', (msg: Chat) => {
-      if(msg.room=== roomName)
+      console.log("nowRoom",nowRoom)
+      console.log("message",msg)
       setChatLog(log=>[...log,msg]);
     });
   },[]);
 
-console.log(joined)
+// console.log(joined)
+// console.log("nowRoom",nowRoom)
   return (
     <Container>
       <Nav>
         <h2>Select a room:</h2>
-        <Link to={`/chat?room=roomA&name=${userName}`}>
-          <RoomButton onClick={() => handleChangeGroup("roomA")}>
-            Room A
-          </RoomButton>
-        </Link>
-        <Link to={`/chat?room=roomB&name=${userName}`}>
-          <RoomButton onClick={() => handleChangeGroup("roomB")}>
-            Room B
-          </RoomButton>
-        </Link>
-        <Link to={`/chat?room=roomC&name=${userName}`}>
-          <RoomButton onClick={() => handleChangeGroup("roomC")}>
-            Room C
-          </RoomButton>
-        </Link>
+        { logRoom && (logRoom.map((item:{name:string, id: string}, index:number)=>{
+          return (
+            <RoomButton onClick={() => handleChangeGroup(item.id)} key={index}>
+              {item.name}
+            </RoomButton>
+            )
+        }))}
       </Nav>
       <Article>
         <Main>
-          {/* <h2>{joined}</h2> */}
-          <Title>Chat Room: {roomName}</Title>
-          {/* <h2>{joined}</h2> */}
+          <Title>Chat Room: {nowRoom?.name}</Title>
           <Button style={{ "marginLeft": "78%"}} onClick={exitMessenger}>Exit</Button>
           {joined ? (
             <ChatContainer>
               <MessageList
                 ref={messageListRef}
-                // id="message-list"
               >
                 <div style={{background: "", }}>
                   
                   {chatLog ? (chatLog?.map((item: any, index) => (
                     <div style={{ 
-                      // background:"#eeeeee",
                       justifyContent: item.name === userName ? "right" : "left",
                       margin: "15px",
                       display: "flex",
@@ -322,11 +307,12 @@ console.log(joined)
                       alignItems: "center",
                       gap: "3px",
                       }} key={index}>
+                      <span style={{padding: "20px 0 0 20px",display:item.name === userName ? "" : "none"}} className="date">{item.createdAt}</span>
                       <Text>
                         <span style={{display: item.name === userName ? "none" : ""}}>名前：{item.name}さん</span>
                       </Text>
                       <Content>{item.text}</Content>
-                      <span style={{padding: "20px 0 0 20px"}} className="date">{item.date}</span>
+                      <span style={{padding: "20px 0 0 20px",display: item.name === userName ? "none" : ""}} className="date">{item.createdAt}</span>
                     </div>
                   ))):""}
                 </div>

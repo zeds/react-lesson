@@ -47,8 +47,9 @@ useEffect(()=>{
 	axios.get('http://localhost:3000/room')
 	.then((res)=>{
 		setLogRoom(res.data)
+		console.log(logRoom)
 	})
-},[])
+},[]) 
 	return (
 		<Container>
 			<Title>Welcome to the Chat Page</Title>
@@ -68,7 +69,7 @@ useEffect(()=>{
 				<p>Select a room:</p>
 				{logRoom.map(r=>{
 					return (
-						<Link to={`/chat`} state={{room:r, userName}}>
+						<Link to={`/chat`} state={{room:r, userName,logRoom}}>
 					<RoomButton>
 						{r.name}
 					</RoomButton>
