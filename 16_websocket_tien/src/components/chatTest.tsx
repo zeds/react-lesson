@@ -195,7 +195,7 @@ const MessageInstance = ({
             justifyContent: "center",
             alignItems: "center",
             borderRadius: "50%",
-            color: "#fff",
+            color: "#871919",
             background: "green",
           }}
         >

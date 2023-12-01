@@ -37,19 +37,19 @@ const ChatHomePage = () => {
 	const [room, setRoom] = useState<string>("")
 	const [logRoom, setLogRoom] = useState<{id:string, name:string}[]>([])
 	// const [selectedRoom, setSelectedRoom] = useState("");
+	useEffect(()=>{
+		axios.get('http://localhost:3000/room')
+		.then((res)=>{
+			setLogRoom(res.data)
+			console.log(logRoom)
+		})
+	},[]) 
 	const handleCreateRoom = async() =>{
 		const newRoom:{data:{id:string, name:string}} = await axios.post('http://localhost:3000/room',{name:room})
 		console.log(newRoom)
 		setLogRoom(rooms=>[...rooms, newRoom.data])
 		setRoom("");
 	}
-useEffect(()=>{
-	axios.get('http://localhost:3000/room')
-	.then((res)=>{
-		setLogRoom(res.data)
-		console.log(logRoom)
-	})
-},[]) 
 	return (
 		<Container>
 			<Title>Welcome to the Chat Page</Title>

@@ -5,7 +5,6 @@ import { io, Socket } from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import { showChat } from "../redux/slices/chatSlice";
 import { PulseLoader } from "react-spinners";
-import { RoomButton } from "./ChatHomePage";
 import downArrow from "../assets/downArrow.svg";
 import axios from "axios";
 
@@ -19,7 +18,6 @@ const override: CSSProperties = {
 const Container = styled.div`
   margin-top: 18px;
   display: flex;
-  /* background-color: red; */
 `;
 
 const Title = styled.h1`
@@ -28,20 +26,17 @@ const Title = styled.h1`
 `;
 
 const ChatContainer = styled.div`
-/* background-color: aquamarine; */
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-/* list-style: none; */
 `;
 
 const MessageList = styled.ul`
-  /* background-color: #de6f6f; */
   margin: 0;
-  width: 80%;
+  width: 100%;
   overflow-y: scroll;
-  height: 70vh;
+  height: 80vh;
 `;
 
 const InputContainer = styled.div`
@@ -62,6 +57,8 @@ const Button = styled.button`
   padding: 5px 10px;
 `;
 const Nav = styled.nav`
+height: 92vh;
+overflow-y: scroll;
   flex: 2;
   border-right: 1px solid #000000;
 `;
@@ -97,7 +94,6 @@ const Loader = styled.div`
   height: 20px;
 `;
 const Img = styled.button`
-  /* border: 1px solid black; */
   position: absolute;
   bottom: 50px;
   right: 50%;
@@ -111,25 +107,27 @@ const Img = styled.button`
     width: 2.2rem;
   }
 `;
-
+const RoomButton = styled.div`
+border-top: 1px solid #a8a8a8;
+	display: flex;
+  width: 100%;
+	font-size: 2rem;
+	cursor: pointer;
+  height: 7vh;
+  
+`;
 type Chat = {
   name: string;
   text: string;
-  // timestamp: string;
   roomId: string;
 };
 type ChatLog = Array<Chat>;
-
-// const socket: Socket = io("http://localhost:3443");
 const socket: Socket = io("http://localhost:3000/eventss");
 
 const ChatRoomPage = () => {
   const dispatch = useDispatch();
-  const {state:{room,userName,logRoom}}:{state:LocationState} = useLocation();
   const navigate = useNavigate();
-
-  //ルーム名、ユーザー名
-  // const [userName, setUserName] = useState(searchParams.get("name"));
+  const {state:{room,userName,logRoom}}:{state:LocationState} = useLocation();
 
   const [chatLog, setChatLog] = useState<ChatLog>([]);
   const [text, setText] = useState<string>(""); //入力するテクスト
@@ -146,21 +144,14 @@ const ChatRoomPage = () => {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
   }, [messageListRef.current]);
-
    useEffect(() => {
     setNowRoom(room)
     socket.on("connect", () => {
-      // console.log("接続ID : ", socket.id);
+      console.log("接続ID : ", socket.id);
     });
     socket.emit("join", { name: userName, room: room.name }, (data:any) => {
       dispatch(showChat(true));
     }); 
- 
-    // 切断
-    // return () => {
-    // 	console.log("切断");
-    // 	socket.disconnect();
-    // };
   },[]);
 
   useEffect(() => {
@@ -174,24 +165,24 @@ const ChatRoomPage = () => {
   }, [text]);
 
   const sendMessage = () => {
-    const data = {
-      name: userName,
-      roomId: nowRoom?.id,
-      text: text,
-    }
+    // const data = {
+    //   name: userName,
+    //   roomId: nowRoom?.id,
+    //   text: text,
+    // }
     setText("");
-    // socket.emit(
-    //   "createMessage",
-    //   { name: userName, room: roomName, text: text },
-    //   () => {
-    //     setText("");
-    //   }
-    // );
-    axios
-    .post("http://localhost:3000/messages/", data)
-    .then(()=>{
-      console.log("ok")
-    })
+    socket.emit(
+      "createMessage",
+      { name: userName, roomId: nowRoom?.id, text: text },
+      () => {
+        setText("");
+      }
+    );
+    // axios
+    // .post("http://localhost:3000/messages/", data)
+    // .then(()=>{
+    //   console.log("ok")
+    // })
   };
   
   const BackMessage = () => {
@@ -210,11 +201,10 @@ const ChatRoomPage = () => {
   };
 
   useEffect(() => {
-    // console.log("useEffectで登録サーバーから初期値を取得");
+    socket.on("message", (message) => {
+      setChatLog((current) => [...current, message]); //currentでメッセージリストをもう一個追加する 
+    });
 
-    // socket.on("message", (message) => {
-    //   setChatLog((current) => [...current, message]); //currentでメッセージリストをもう一個追加する 
-    // });
     socket.on("typing", ({ name, isTyping }) => {
       console.log("誰かが入力してます");
       if (isTyping) {
@@ -272,25 +262,23 @@ const ChatRoomPage = () => {
       setChatLog(log=>[...log,msg]);
     });
   },[]);
-
-// console.log(joined)
-// console.log("nowRoom",nowRoom)
+  console.log()
   return (
     <Container>
       <Nav>
         <h2>Select a room:</h2>
         { logRoom && (logRoom.map((item:{name:string, id: string}, index:number)=>{
           return (
-            <RoomButton onClick={() => handleChangeGroup(item.id)} key={index}>
-              {item.name}
-            </RoomButton>
+                  <RoomButton onClick={() => handleChangeGroup(item.id)} key={index}>
+                    {item.name}
+                  </RoomButton>
             )
-        }))}
+          }))}
       </Nav>
       <Article>
         <Main>
           <Title>Chat Room: {nowRoom?.name}</Title>
-          <Button style={{ "marginLeft": "78%"}} onClick={exitMessenger}>Exit</Button>
+          {/* <Button style={{ "marginLeft": "78%"}} onClick={exitMessenger}>Exit</Button> */}
           {joined ? (
             <ChatContainer>
               <MessageList
